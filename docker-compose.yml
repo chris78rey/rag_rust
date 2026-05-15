@@ -1,4 +1,13 @@
 services:
+  qdrant:
+    image: qdrant/qdrant:v1.12.6
+    container_name: rag_rust_qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
   app:
     build: .
     container_name: rag_rust_app
@@ -11,3 +20,9 @@ services:
       - ./data:/app/data
     environment:
       RUST_LOG: info
+      QDRANT_URL: http://qdrant:6333
+    depends_on:
+      - qdrant
+
+volumes:
+  qdrant_storage:
