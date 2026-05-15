@@ -11,4 +11,5 @@ data/state/
 # OS/editor noise
 .DS_Store
 Thumbs.db
+nul
 *.log

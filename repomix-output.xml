@@ -40,15 +40,14 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
+.dockerignore
 .env.example
 .gitignore
 Cargo.toml
-data/documents/ACTA_DE_COMPROMISO_REFUERZO_MATEM_TICA__1_.pdf
 data/documents/llideas.txt
 data/documents/RESULTADOS-RUIZ_CAZAR_REINALDO_AQUILES-1701575423-260511102-13134328.pdf
 docker-compose.yml
 Dockerfile
-nul
 rag-cli.sh
 README.md
 src/main.rs
@@ -56,6 +55,17 @@ src/main.rs
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path=".dockerignore">
+target/
+data/
+.git/
+.env
+.env.local
+*.log
+nul
+.tmp/
+</file>
 
 <file path=".env.example">
 # Copiar este archivo a .env
@@ -84,6 +94,37 @@ DEFAULT_TOP_K=3
 
 APP_HOST=0.0.0.0
 APP_PORT=8080
+
+
+
+
+
+
+
+# Copiar este archivo a .env
+# cp .env.example .env
+
+# Administrador inicial. Se crea solo la primera vez si no existe.
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
+AUTH_SALT=cambie-esta-sal-local
+SESSION_HOURS=24
+
+# OpenRouter se usa SOLO para redactar la respuesta final.
+# Si se deja vacío, el sistema funciona en modo privado.
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=anthropic/claude-opus-4.7
+OPENROUTER_MAX_TOKENS=4096
+
+DOCS_DIR=/app/data/documents
+STATE_DIR=/app/data/state
+
+# RAG léxico local: SQLite FTS5/BM25. No usa embeddings ni Qdrant.
+INDEX_INTERVAL_SECONDS=3600
+DEFAULT_TOP_K=6
+
+APP_HOST=0.0.0.0
+APP_PORT=8080
 </file>
 
 <file path=".gitignore">
@@ -100,13 +141,14 @@ data/state/
 # OS/editor noise
 .DS_Store
 Thumbs.db
+nul
 *.log
 </file>
 
 <file path="Cargo.toml">
 [package]
 name = "rag-rust-openrouter"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 [dependencies]
@@ -114,10 +156,9 @@ anyhow = "1"
 axum = { version = "0.8", features = ["macros", "multipart"] }
 chrono = { version = "0.4", features = ["serde"] }
 encoding_rs = "0.8"
-fastembed = "5.13.4"
 futures = "0.3"
 hex = "0.4"
-reqwest = { version = "0.12", features = ["json", "rustls-tls", "stream"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream", "http2", "charset"] }
 rusqlite = { version = "0.32", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -966,25 +1007,10 @@ Este enfoque garantiza que se minimicen los riesgos de pérdida de información 
 
 <file path="docker-compose.yml">
 services:
-  qdrant:
-    image: qdrant/qdrant:latest
-    container_name: rag_qdrant
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:16333:6333"
-    volumes:
-      - qdrant_storage:/qdrant/storage
-    environment:
-      QDRANT_HTTP_MAX_BODY_SIZE: 100000000
-      QDRANT_GRPC_MAX_RECV_MESSAGE_SIZE: 100000000
-      QDRANT__STORAGE__PERFORMANCE__MAX_OPTIMIZATION_THREADS: 4
-
   app:
     build: .
     container_name: rag_rust_app
     restart: unless-stopped
-    depends_on:
-      - qdrant
     env_file:
       - .env
     ports:
@@ -993,34 +1019,26 @@ services:
       - ./data:/app/data
     environment:
       RUST_LOG: info
-
-volumes:
-  qdrant_storage:
 </file>
 
 <file path="Dockerfile">
-FROM rust:1-trixie AS builder
+FROM rust:1-slim-bookworm AS builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    pkg-config \
-    libssl-dev \
-    clang \
-    cmake \
-    protobuf-compiler \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Solo necesita lo mínimo: rust-slim ya incluye cc/gcc para compilar rusqlite (bundled)
+# reqwest usa rustls-tls (sin OpenSSL) → cero dependencias extra
 
 WORKDIR /app
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 RUN cargo build --release
 
-FROM debian:trixie-slim
+FROM debian:bookworm-slim
 
+# Solo poppler-utils para extraer texto de PDFs con pdftotext
+# ca-certificates para HTTPS hacia OpenRouter
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     poppler-utils \
-    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -1033,139 +1051,6 @@ ENV STATE_DIR=/app/data/state
 
 EXPOSE 8080
 CMD ["rag-rust-openrouter"]
-</file>
-
-<file path="nul">
-warning: Not a git repository. Use --no-index to compare two paths outside a working tree
-usage: git diff --no-index [<options>] <path> <path> [<pathspec>...]
-
-Diff output format options
-    -p, --patch           generate patch
-    -s, --no-patch        suppress diff output
-    -u                    generate patch
-    -U, --unified[=<n>]   generate diffs with <n> lines context
-    -W, --[no-]function-context
-                          generate diffs with <n> lines context
-    --raw                 generate the diff in raw format
-    --patch-with-raw      synonym for '-p --raw'
-    --patch-with-stat     synonym for '-p --stat'
-    --numstat             machine friendly --stat
-    --shortstat           output only the last line of --stat
-    -X, --dirstat[=<param1>,<param2>...]
-                          output the distribution of relative amount of changes for each sub-directory
-    --cumulative          synonym for --dirstat=cumulative
-    --dirstat-by-file[=<param1>,<param2>...]
-                          synonym for --dirstat=files,<param1>,<param2>...
-    --check               warn if changes introduce conflict markers or whitespace errors
-    --summary             condensed summary such as creations, renames and mode changes
-    --name-only           show only names of changed files
-    --name-status         show only names and status of changed files
-    --stat[=<width>[,<name-width>[,<count>]]]
-                          generate diffstat
-    --stat-width <width>  generate diffstat with a given width
-    --stat-name-width <width>
-                          generate diffstat with a given name width
-    --stat-graph-width <width>
-                          generate diffstat with a given graph width
-    --stat-count <count>  generate diffstat with limited lines
-    --[no-]compact-summary
-                          generate compact summary in diffstat
-    --binary              output a binary diff that can be applied
-    --[no-]full-index     show full pre- and post-image object names on the "index" lines
-    --[no-]color[=<when>] show colored diff
-    --ws-error-highlight <kind>
-                          highlight whitespace errors in the 'context', 'old' or 'new' lines in the diff
-    -z                    do not munge pathnames and use NULs as output field terminators in --raw or --numstat
-    --[no-]abbrev[=<n>]   use <n> digits to display object names
-    --src-prefix <prefix> show the given source prefix instead of "a/"
-    --dst-prefix <prefix> show the given destination prefix instead of "b/"
-    --line-prefix <prefix>
-                          prepend an additional prefix to every line of output
-    --no-prefix           do not show any source or destination prefix
-    --default-prefix      use default prefixes a/ and b/
-    --inter-hunk-context <n>
-                          show context between diff hunks up to the specified number of lines
-    --output-indicator-new <char>
-                          specify the character to indicate a new line instead of '+'
-    --output-indicator-old <char>
-                          specify the character to indicate an old line instead of '-'
-    --output-indicator-context <char>
-                          specify the character to indicate a context instead of ' '
-
-Diff rename options
-    -B, --break-rewrites[=<n>[/<m>]]
-                          break complete rewrite changes into pairs of delete and create
-    -M, --find-renames[=<n>]
-                          detect renames
-    -D, --irreversible-delete
-                          omit the preimage for deletes
-    -C, --find-copies[=<n>]
-                          detect copies
-    --[no-]find-copies-harder
-                          use unmodified files as source to find copies
-    --no-renames          disable rename detection
-    --[no-]rename-empty   use empty blobs as rename source
-    --[no-]follow         continue listing the history of a file beyond renames
-    -l <n>                prevent rename/copy detection if the number of rename/copy targets exceeds given limit
-
-Diff algorithm options
-    --minimal             produce the smallest possible diff
-    -w, --ignore-all-space
-                          ignore whitespace when comparing lines
-    -b, --ignore-space-change
-                          ignore changes in amount of whitespace
-    --ignore-space-at-eol ignore changes in whitespace at EOL
-    --ignore-cr-at-eol    ignore carrier-return at the end of line
-    --ignore-blank-lines  ignore changes whose lines are all blank
-    -I, --[no-]ignore-matching-lines <regex>
-                          ignore changes whose all lines match <regex>
-    --[no-]indent-heuristic
-                          heuristic to shift diff hunk boundaries for easy reading
-    --patience            generate diff using the "patience diff" algorithm
-    --histogram           generate diff using the "histogram diff" algorithm
-    --diff-algorithm <algorithm>
-                          choose a diff algorithm
-    --anchored <text>     generate diff using the "anchored diff" algorithm
-    --word-diff[=<mode>]  show word diff, using <mode> to delimit changed words
-    --word-diff-regex <regex>
-                          use <regex> to decide what a word is
-    --color-words[=<regex>]
-                          equivalent to --word-diff=color --word-diff-regex=<regex>
-    --[no-]color-moved[=<mode>]
-                          moved lines of code are colored differently
-    --[no-]color-moved-ws <mode>
-                          how white spaces are ignored in --color-moved
-
-Other diff options
-    --[no-]relative[=<prefix>]
-                          when run from subdir, exclude changes outside and show relative paths
-    -a, --[no-]text       treat all files as text
-    -R                    swap two inputs, reverse the diff
-    --[no-]exit-code      exit with 1 if there were differences, 0 otherwise
-    --[no-]quiet          disable all output of the program
-    --[no-]ext-diff       allow an external diff helper to be executed
-    --[no-]textconv       run external text conversion filters when comparing binary files
-    --ignore-submodules[=<when>]
-                          ignore changes to submodules in the diff generation
-    --submodule[=<format>]
-                          specify how differences in submodules are shown
-    --ita-invisible-in-index
-                          hide 'git add -N' entries from the index
-    --ita-visible-in-index
-                          treat 'git add -N' entries as real in the index
-    -S <string>           look for differences that change the number of occurrences of the specified string
-    -G <regex>            look for differences that change the number of occurrences of the specified regex
-    --pickaxe-all         show all changes in the changeset with -S or -G
-    --pickaxe-regex       treat <string> in -S as extended POSIX regular expression
-    -O <file>             control the order in which files appear in the output
-    --rotate-to <path>    show the change in the specified path first
-    --skip-to <path>      skip the output to the specified path
-    --find-object <object-id>
-                          look for differences that change the number of occurrences of the specified object
-    --diff-filter [(A|C|D|M|R|T|U|X|B)...[*]]
-                          select files by diff type
-    --max-depth <depth>   maximum tree depth to recurse
-    --output <file>       output to a specific file
 </file>
 
 <file path="rag-cli.sh">
@@ -1440,19 +1325,18 @@ use axum::{
 };
 use chrono::Utc;
 use encoding_rs::WINDOWS_1252;
-use fastembed::{EmbeddingModel, InitOptions, TextEmbedding};
 use reqwest::Client;
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::{
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     convert::Infallible,
     env, fs,
     path::{Path, PathBuf},
     process::Command,
-    sync::{Arc, Mutex},
+    sync::Arc,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 use tokio::{net::TcpListener, sync::mpsc};
@@ -1462,18 +1346,15 @@ use tracing::{error, info, warn};
 use uuid::Uuid;
 use walkdir::WalkDir;
 
-const VECTOR_SIZE: usize = 384;
 const CHUNK_WORDS: usize = 300;
 const CHUNK_OVERLAP_WORDS: usize = 50;
-const EMBED_BATCH_SIZE: usize = 4;
-const INDEX_PIPELINE_VERSION: &str = "2026-05-13-e5large-v1";
+const INDEX_PIPELINE_VERSION: &str = "2026-05-15-lexical-bm25-v1";
 const COOKIE_NAME: &str = "rag_session";
 
 #[derive(Clone)]
 struct AppState {
     config: Arc<Config>,
     http: Client,
-    embedder: Arc<Mutex<TextEmbedding>>,
     index_lock: Arc<tokio::sync::Mutex<()>>,
 }
 
@@ -1481,8 +1362,6 @@ struct AppState {
 struct Config {
     docs_dir: PathBuf,
     state_dir: PathBuf,
-    qdrant_url: String,
-    collection: String,
     openrouter_api_key: Option<String>,
     openrouter_model: String,
     openrouter_max_tokens: u32,
@@ -1500,9 +1379,6 @@ impl Config {
     fn from_env() -> Self {
         let docs_dir = env::var("DOCS_DIR").unwrap_or_else(|_| "/app/data/documents".to_string());
         let state_dir = env::var("STATE_DIR").unwrap_or_else(|_| "/app/data/state".to_string());
-        let qdrant_url = env::var("QDRANT_URL").unwrap_or_else(|_| "http://qdrant:6333".to_string());
-        let collection = env::var("QDRANT_COLLECTION").unwrap_or_else(|_| "docs_rag".to_string());
-
         let openrouter_api_key = env::var("OPENROUTER_API_KEY")
             .ok()
             .map(|s| s.trim().to_string())
@@ -1523,8 +1399,6 @@ impl Config {
         Self {
             docs_dir: PathBuf::from(docs_dir),
             state_dir: PathBuf::from(state_dir),
-            qdrant_url,
-            collection,
             openrouter_api_key,
             openrouter_model,
             openrouter_max_tokens,
@@ -1659,8 +1533,7 @@ struct SearchFragment {
 #[derive(Debug, Serialize)]
 struct StatusResponse {
     docs_dir: String,
-    qdrant_url: String,
-    collection: String,
+    search_engine: String,
     openrouter_enabled: bool,
     openrouter_model: String,
     index_interval_seconds: u64,
@@ -1723,19 +1596,11 @@ async fn main() -> Result<()> {
         .pool_max_idle_per_host(0)
         .build()?;
 
-    wait_for_qdrant(&http, &config.qdrant_url).await?;
-    ensure_qdrant_collection(&http, &config).await?;
-
-    info!("Inicializando modelo de embeddings local en CPU...");
-
-    let embedder = TextEmbedding::try_new(
-        InitOptions::new(EmbeddingModel::ParaphraseMLMiniLML12V2).with_show_download_progress(true),
-    )?;
+    info!("Motor RAG léxico activo: SQLite FTS5/BM25, sin embeddings y sin Qdrant.");
 
     let state = AppState {
         config,
         http,
-        embedder: Arc::new(Mutex::new(embedder)),
         index_lock: Arc::new(tokio::sync::Mutex::new(())),
     };
 
@@ -1756,7 +1621,8 @@ async fn main() -> Result<()> {
         .route("/api/admin/upload", post(upload_documents))
         .route("/api/admin/users", get(list_users).post(create_user))
         .route("/api/admin/users/block", post(block_user))
-        .route("/api/admin/documents", get(list_documents))
+        .route("/api/admin/documents", get(list_documents).delete(delete_document))
+        .route("/api/admin/cache/clear", post(clear_cache))
         .layer(DefaultBodyLimit::max(100 * 1024 * 1024))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())
@@ -1891,8 +1757,7 @@ async fn status(
 
     Ok(Json(StatusResponse {
         docs_dir: state.config.docs_dir.display().to_string(),
-        qdrant_url: state.config.qdrant_url.clone(),
-        collection: state.config.collection.clone(),
+        search_engine: "SQLite FTS5 / BM25 léxico local".to_string(),
         openrouter_enabled: state.config.openrouter_api_key.is_some(),
         openrouter_model: state.config.openrouter_model.clone(),
         index_interval_seconds: state.config.index_interval_seconds,
@@ -1932,7 +1797,7 @@ async fn chat(
         state.config.openrouter_max_tokens,
     );
 
-    let fragments = semantic_search(&state, question, top_k)
+    let fragments = lexical_search(&state, question, top_k)
         .await
         .map_err(anyhow::Error::from)?;
     let filtered_fragments = filter_fragments_by_sources(&fragments, req.selected_sources.as_deref());
@@ -1955,7 +1820,9 @@ async fn chat(
             .await
             .map_err(anyhow::Error::from)?;
 
-        let _ = store_faq_cache(&state.config, question, &answer);
+        if !is_empty_answer(&answer) {
+            let _ = store_faq_cache(&state.config, question, &answer);
+        }
 
         Ok(Json(ChatResponse {
                 answer,
@@ -2020,7 +1887,7 @@ async fn chat_stream(
 
         let (top_k, max_chars, max_tokens) = (req.top_k.unwrap_or(6).clamp(1, 15), 2500usize, state.config.openrouter_max_tokens);
 
-        let fragments = match semantic_search(&state, &question, top_k).await {
+        let fragments = match lexical_search(&state, &question, top_k).await {
             Ok(f) => f,
             Err(e) => {
                 send_event(&tx, "error", e.to_string()).await;
@@ -2061,7 +1928,9 @@ async fn chat_stream(
                             }
                         }
                     }
-                    let _ = store_faq_cache(&state.config, &question, &full);
+                    if !is_empty_answer(&full) {
+                        let _ = store_faq_cache(&state.config, &question, &full);
+                    }
                 }
                 Err(e) => {
                     send_event(&tx, "error", e.to_string()).await;
@@ -2304,6 +2173,51 @@ async fn list_documents(
     Ok(Json(out))
 }
 
+#[derive(Debug, Deserialize)]
+struct DeleteDocumentRequest {
+    path: String,
+}
+
+async fn delete_document(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<DeleteDocumentRequest>,
+) -> Result<Json<Value>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let path = req.path.trim().to_string();
+    if path.is_empty() || path.contains("..") {
+        return Err(AppError::new(StatusCode::BAD_REQUEST, "Ruta inválida."));
+    }
+
+    // Eliminar chunks del índice
+    delete_chunks_by_source(&state.config, &path).map_err(anyhow::Error::from)?;
+
+    // Eliminar del manifiesto
+    remove_manifest_document(&state.config, &path).map_err(anyhow::Error::from)?;
+
+    // Eliminar archivo físico
+    let file_path = state.config.docs_dir.join(&path);
+    if file_path.exists() {
+        fs::remove_file(&file_path).map_err(|e| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, format!("No se pudo eliminar el archivo: {e}")))?;
+    }
+
+    info!("Documento eliminado: {path}");
+    Ok(Json(json!({"ok": true, "deleted": path})))
+}
+
+async fn clear_cache(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<Value>, AppError> {
+    require_admin(&state, &headers)?;
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+    let count: i64 = conn.query_row("SELECT COUNT(*) FROM faq_cache", [], |r| r.get(0)).map_err(anyhow::Error::from)?;
+    conn.execute("DELETE FROM faq_cache", []).map_err(anyhow::Error::from)?;
+    info!("Caché limpiado: {count} entradas");
+    Ok(Json(json!({"ok": true, "cleared": count})))
+}
+
 fn require_user(state: &AppState, headers: &HeaderMap) -> Result<AuthUser, AppError> {
     get_user_from_headers(state, headers)?.ok_or_else(AppError::unauthorized)
 }
@@ -2429,7 +2343,7 @@ async fn run_indexer(state: &AppState) -> Result<IndexSummary> {
 
     for old_path in known {
         if !seen_paths.contains(&old_path) {
-            delete_points_by_source(&state.http, &state.config, &old_path).await?;
+            delete_chunks_by_source(&state.config, &old_path)?;
             remove_manifest_document(&state.config, &old_path)?;
             summary.deleted_files += 1;
         }
@@ -2459,52 +2373,18 @@ async fn index_one_file(
     let text = extract_text(path, &bytes)?;
     let chunks = chunk_text(&text, CHUNK_WORDS, CHUNK_OVERLAP_WORDS);
 
-    delete_points_by_source(&state.http, &state.config, rel_source).await?;
+    // Reindexación segura por documento: primero elimina solo los fragmentos de la fuente actual.
+    // No toca otros documentos ni borra archivos físicos.
+    delete_chunks_by_source(&state.config, rel_source)?;
 
     let mut total = 0usize;
-
-    for (batch_start, batch) in chunks.chunks(EMBED_BATCH_SIZE).enumerate() {
-        let passages: Vec<String> = batch
-            .iter()
-            .map(|c| format!("passage: {}", c))
-            .collect();
-
-        let vectors = {
-            let mut embedder = state
-                .embedder
-                .lock()
-                .map_err(|_| anyhow!("No se pudo bloquear el modelo de embeddings"))?;
-
-            embedder.embed(passages, None)?
-        };
-
-        let mut points = Vec::new();
-
-        for (i, vector) in vectors.into_iter().enumerate() {
-            let chunk_index = batch_start * EMBED_BATCH_SIZE + i;
-
-            let id = Uuid::new_v5(
-                &Uuid::NAMESPACE_URL,
-                format!("{}:{}:{}", rel_source, hash, chunk_index).as_bytes(),
-            );
-
-            points.push(json!({
-                "id": id.to_string(),
-                "vector": vector,
-                "payload": {
-                    "source": rel_source,
-                    "chunk_index": chunk_index,
-                    "text": batch[i],
-                    "hash": hash,
-                    "indexed_at": Utc::now().to_rfc3339()
-                }
-            }));
+    for (chunk_index, chunk) in chunks.iter().enumerate() {
+        if chunk.trim().is_empty() {
+            continue;
         }
 
-        total += points.len();
-
-        upsert_points(&state.http, &state.config, points).await?;
-        tokio::time::sleep(Duration::from_millis(200)).await;
+        insert_lexical_chunk(&state.config, rel_source, chunk_index, chunk, &hash)?;
+        total += 1;
     }
 
     upsert_manifest_document(&state.config, rel_source, &hash, modified, total)?;
@@ -2583,84 +2463,372 @@ fn chunk_text(text: &str, chunk_words: usize, overlap_words: usize) -> Vec<Strin
     chunks
 }
 
-async fn semantic_search(
+async fn lexical_search(
     state: &AppState,
     question: &str,
     top_k: usize,
 ) -> Result<Vec<SearchFragment>> {
-    let embedding = {
-        let mut embedder = state
-            .embedder
-            .lock()
-            .map_err(|_| anyhow!("No se pudo bloquear el modelo de embeddings"))?;
+    let query_terms = expand_query_terms(question);
 
-        let mut vectors = embedder.embed(vec![format!("query: {}", question)], None)?;
+    if query_terms.is_empty() {
+        return Ok(Vec::new());
+    }
 
-        vectors
-            .pop()
-            .ok_or_else(|| anyhow!("No se generó embedding para la pregunta"))?
-    };
-
-    let url = format!(
-        "{}/collections/{}/points/search",
-        state.config.qdrant_url, state.config.collection
-    );
-
-    let body = json!({
-        "vector": embedding,
-        "limit": top_k,
-        "with_payload": true
-    });
-
-    let value: Value = state
-        .http
-        .post(url)
-        .json(&body)
-        .send()
-        .await?
-        .error_for_status()?
-        .json()
-        .await?;
-
-    let result = value
-        .get("result")
-        .and_then(|v| v.as_array())
-        .cloned()
-        .unwrap_or_default();
+    let fts_query = build_fts_query(&query_terms);
+    let conn = Connection::open(state.config.db_path())?;
 
     let mut fragments = Vec::new();
 
-    for item in result {
-        let score = item.get("score").and_then(|v| v.as_f64()).unwrap_or(0.0) as f32;
-        let payload = item.get("payload").cloned().unwrap_or(Value::Null);
+    if !fts_query.trim().is_empty() {
+        let sql = r#"
+            SELECT source, chunk_index, text, bm25(document_chunks_fts) AS rank
+            FROM document_chunks_fts
+            WHERE document_chunks_fts MATCH ?1
+            ORDER BY rank
+            LIMIT ?2
+        "#;
 
-        let source = payload
-            .get("source")
-            .and_then(|v| v.as_str())
-            .unwrap_or("sin_fuente")
-            .to_string();
+        match conn.prepare(sql) {
+            Ok(mut stmt) => {
+                let rows = stmt.query_map(params![fts_query, (top_k * 4).max(top_k) as i64], |r| {
+                    let rank: f64 = r.get(3)?;
+                    Ok(SearchFragment {
+                        // FTS5 bm25 devuelve valores menores para mejores coincidencias.
+                        // Se invierte para mostrar un score amigable en la interfaz.
+                        score: (1.0 / (1.0 + rank.abs())) as f32,
+                        source: r.get(0)?,
+                        chunk_index: r.get::<_, i64>(1)? as usize,
+                        text: r.get(2)?,
+                    })
+                });
 
-        let chunk_index = payload
-            .get("chunk_index")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0) as usize;
-
-        let text = payload
-            .get("text")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
-
-        fragments.push(SearchFragment {
-            score,
-            source,
-            chunk_index,
-            text,
-        });
+                match rows {
+                    Ok(rows) => {
+                        for row in rows {
+                            fragments.push(row?);
+                        }
+                    }
+                    Err(e) => warn!("Búsqueda FTS5 falló; se usará fallback léxico: {e}"),
+                }
+            }
+            Err(e) => warn!("No se pudo preparar búsqueda FTS5; se usará fallback léxico: {e}"),
+        }
     }
 
-    Ok(fragments)
+    // Segunda capa: re-ranking propio para mejorar términos cortados, sinónimos y pequeños errores.
+    let mut reranked = rerank_fragments(question, &query_terms, fragments);
+
+    if reranked.len() < top_k {
+        let fallback = lexical_scan_fallback(&conn, question, &query_terms, top_k * 3)?;
+        reranked.extend(fallback);
+        reranked = dedup_and_sort_fragments(reranked);
+    }
+
+    reranked.truncate(top_k);
+    Ok(reranked)
 }
+
+fn insert_lexical_chunk(
+    config: &Config,
+    source: &str,
+    chunk_index: usize,
+    text: &str,
+    hash: &str,
+) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+    let now = Utc::now().to_rfc3339();
+
+    conn.execute(
+        r#"
+        INSERT INTO document_chunks(source, chunk_index, text, hash, indexed_at)
+        VALUES (?1, ?2, ?3, ?4, ?5)
+        ON CONFLICT(source, chunk_index) DO UPDATE SET
+            text = excluded.text,
+            hash = excluded.hash,
+            indexed_at = excluded.indexed_at
+        "#,
+        params![source, chunk_index as i64, text, hash, now],
+    )?;
+
+    conn.execute(
+        "INSERT INTO document_chunks_fts(source, chunk_index, text) VALUES (?1, ?2, ?3)",
+        params![source, chunk_index as i64, text],
+    )?;
+
+    Ok(())
+}
+
+fn delete_chunks_by_source(config: &Config, source: &str) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+    conn.execute("DELETE FROM document_chunks WHERE source = ?1", params![source])?;
+    conn.execute("DELETE FROM document_chunks_fts WHERE source = ?1", params![source])?;
+    Ok(())
+}
+
+fn build_fts_query(terms: &[String]) -> String {
+    let mut parts = Vec::new();
+
+    for term in terms.iter().take(40) {
+        let clean = normalize_token(term);
+        if clean.len() < 3 || is_stopword(&clean) {
+            continue;
+        }
+
+        // Prefix search: ayuda con palabras cortadas como "jurispru" o "hiperten".
+        parts.push(format!("{}*", clean));
+    }
+
+    parts.sort();
+    parts.dedup();
+    parts.join(" OR ")
+}
+
+fn expand_query_terms(question: &str) -> Vec<String> {
+    let mut terms = tokenize_normalized(question)
+        .into_iter()
+        .filter(|t| t.len() >= 3 && !is_stopword(t))
+        .collect::<Vec<_>>();
+
+    let synonyms = domain_synonyms();
+    let original = terms.clone();
+
+    for term in original {
+        if let Some(expanded) = synonyms.get(term.as_str()) {
+            for value in expanded {
+                terms.push((*value).to_string());
+            }
+        }
+    }
+
+    terms.sort();
+    terms.dedup();
+    terms
+}
+
+fn domain_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
+    HashMap::from([
+        ("seguridad", vec!["confidencialidad", "auditoria", "trazabilidad", "acceso", "permisos", "roles"]),
+        ("confidencialidad", vec!["seguridad", "reserva", "proteccion", "datos"]),
+        ("interoperabilidad", vec!["integracion", "hl7", "fhir", "api", "interfaces", "conexion"]),
+        ("integracion", vec!["interoperabilidad", "interfaces", "conexion", "api", "hl7", "fhir"]),
+        ("medico", vec!["doctor", "profesional", "salud", "especialista", "clinico"]),
+        ("paciente", vec!["usuario", "afiliado", "beneficiario", "atencion"]),
+        ("historia", vec!["expediente", "clinica", "registro", "paciente"]),
+        ("clinica", vec!["salud", "medica", "historia", "paciente"]),
+        ("legal", vec!["juridico", "normativa", "ley", "reglamento", "contrato"]),
+        ("juridico", vec!["legal", "normativa", "ley", "reglamento", "derecho"]),
+        ("contrato", vec!["contratacion", "convenio", "obligacion", "adjudicacion"]),
+        ("demanda", vec!["accion", "reclamo", "pretension", "proceso"]),
+        ("responsabilidad", vec!["culpa", "incumplimiento", "obligacion", "danos"]),
+        ("encuesta", vec!["formulario", "cuestionario", "respuestas", "evaluacion"]),
+        ("carrera", vec!["programa", "profesion", "area", "academica"]),
+        ("practicas", vec!["pasantias", "preprofesionales", "internado", "rotacion"]),
+        ("demora", vec!["espera", "tardanza", "retraso", "lento", "fila"]),
+        ("atencion", vec!["servicio", "trato", "usuario", "paciente"]),
+        ("recomendacion", vec!["sugerencia", "mejora", "propuesta", "accion"]),
+        ("hta", vec!["hipertension", "presion", "arterial"]),
+        ("epoc", vec!["pulmonar", "obstructiva", "cronica", "disnea"]),
+        ("diabetes", vec!["diabetico", "glucosa", "dm2", "mellitus"]),
+    ])
+}
+
+fn rerank_fragments(
+    question: &str,
+    terms: &[String],
+    fragments: Vec<SearchFragment>,
+) -> Vec<SearchFragment> {
+    let query_tokens = tokenize_normalized(question);
+    let scored = fragments
+        .into_iter()
+        .map(|mut f| {
+            let lexical = lexical_score(&f.text, terms, &query_tokens);
+            f.score = (f.score * 2.0) + lexical;
+            f
+        })
+        .collect::<Vec<_>>();
+
+    dedup_and_sort_fragments(scored)
+}
+
+fn lexical_scan_fallback(
+    conn: &Connection,
+    question: &str,
+    terms: &[String],
+    limit: usize,
+) -> Result<Vec<SearchFragment>> {
+    let query_tokens = tokenize_normalized(question);
+    let mut stmt = conn.prepare(
+        "SELECT source, chunk_index, text FROM document_chunks ORDER BY source, chunk_index",
+    )?;
+
+    let rows = stmt.query_map([], |r| {
+        Ok(SearchFragment {
+            score: 0.0,
+            source: r.get(0)?,
+            chunk_index: r.get::<_, i64>(1)? as usize,
+            text: r.get(2)?,
+        })
+    })?;
+
+    let mut scored = Vec::new();
+    for row in rows {
+        let mut fragment = row?;
+        let score = lexical_score(&fragment.text, terms, &query_tokens);
+        if score > 0.0 {
+            fragment.score = score;
+            scored.push(fragment);
+        }
+    }
+
+    let mut scored = dedup_and_sort_fragments(scored);
+    scored.truncate(limit);
+    Ok(scored)
+}
+
+fn dedup_and_sort_fragments(mut fragments: Vec<SearchFragment>) -> Vec<SearchFragment> {
+    let mut seen = HashSet::new();
+    fragments.retain(|f| seen.insert((f.source.clone(), f.chunk_index)));
+    fragments.sort_by(|a, b| {
+        b.score
+            .partial_cmp(&a.score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| a.source.cmp(&b.source))
+            .then_with(|| a.chunk_index.cmp(&b.chunk_index))
+    });
+    fragments
+}
+
+fn lexical_score(text: &str, terms: &[String], query_tokens: &[String]) -> f32 {
+    let text_tokens = tokenize_normalized(text);
+
+    if text_tokens.is_empty() {
+        return 0.0;
+    }
+
+    let token_set: HashSet<&str> = text_tokens.iter().map(|s| s.as_str()).collect();
+    let mut score = 0.0f32;
+
+    for term in terms {
+        if token_set.contains(term.as_str()) {
+            score += 4.0;
+            continue;
+        }
+
+        if text_tokens.iter().any(|t| t.starts_with(term) || term.starts_with(t)) {
+            score += 2.0;
+            continue;
+        }
+
+        if term.len() >= 6 && text_tokens.iter().any(|t| fuzzy_close(term, t)) {
+            score += 1.0;
+        }
+    }
+
+    // Pequeña bonificación para frases cercanas de la pregunta original.
+    for window in query_tokens.windows(2) {
+        if window.len() == 2 {
+            let phrase = format!("{} {}", window[0], window[1]);
+            if normalize_text(text).contains(&phrase) {
+                score += 3.0;
+            }
+        }
+    }
+
+    score / (1.0 + (text_tokens.len() as f32 / 300.0))
+}
+
+fn fuzzy_close(a: &str, b: &str) -> bool {
+    let min_len = a.len().min(b.len());
+    let max_len = a.len().max(b.len());
+
+    if min_len < 5 || max_len.saturating_sub(min_len) > 2 {
+        return false;
+    }
+
+    levenshtein_limited(a, b, 2) <= 2
+}
+
+fn levenshtein_limited(a: &str, b: &str, limit: usize) -> usize {
+    let a_chars: Vec<char> = a.chars().collect();
+    let b_chars: Vec<char> = b.chars().collect();
+
+    if a_chars.len().abs_diff(b_chars.len()) > limit {
+        return limit + 1;
+    }
+
+    let mut prev: Vec<usize> = (0..=b_chars.len()).collect();
+    let mut curr = vec![0usize; b_chars.len() + 1];
+
+    for (i, ca) in a_chars.iter().enumerate() {
+        curr[0] = i + 1;
+        let mut row_min = curr[0];
+
+        for (j, cb) in b_chars.iter().enumerate() {
+            let cost = if ca == cb { 0 } else { 1 };
+            curr[j + 1] = (prev[j + 1] + 1)
+                .min(curr[j] + 1)
+                .min(prev[j] + cost);
+            row_min = row_min.min(curr[j + 1]);
+        }
+
+        if row_min > limit {
+            return limit + 1;
+        }
+
+        std::mem::swap(&mut prev, &mut curr);
+    }
+
+    prev[b_chars.len()]
+}
+
+fn tokenize_normalized(text: &str) -> Vec<String> {
+    normalize_text(text)
+        .split_whitespace()
+        .map(|s| s.to_string())
+        .filter(|s| !s.is_empty())
+        .collect()
+}
+
+fn normalize_token(text: &str) -> String {
+    normalize_text(text).replace(' ', "")
+}
+
+fn normalize_text(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+
+    for c in text.chars() {
+        let mapped = match c {
+            'á' | 'à' | 'ä' | 'â' | 'Á' | 'À' | 'Ä' | 'Â' => 'a',
+            'é' | 'è' | 'ë' | 'ê' | 'É' | 'È' | 'Ë' | 'Ê' => 'e',
+            'í' | 'ì' | 'ï' | 'î' | 'Í' | 'Ì' | 'Ï' | 'Î' => 'i',
+            'ó' | 'ò' | 'ö' | 'ô' | 'Ó' | 'Ò' | 'Ö' | 'Ô' => 'o',
+            'ú' | 'ù' | 'ü' | 'û' | 'Ú' | 'Ù' | 'Ü' | 'Û' => 'u',
+            'ñ' | 'Ñ' => 'n',
+            _ => c.to_ascii_lowercase(),
+        };
+
+        if mapped.is_ascii_alphanumeric() || mapped.is_whitespace() {
+            out.push(mapped);
+        } else {
+            out.push(' ');
+        }
+    }
+
+    out.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn is_stopword(token: &str) -> bool {
+    matches!(
+        token,
+        "que" | "como" | "para" | "por" | "con" | "una" | "uno" | "unos" | "unas" |
+        "del" | "las" | "los" | "este" | "esta" | "esto" | "ese" | "esa" | "eso" |
+        "son" | "ser" | "fue" | "han" | "hay" | "mas" | "muy" | "sin" | "sus" |
+        "sobre" | "entre" | "donde" | "cuando" | "cual" | "cuales" | "debe" |
+        "deben" | "tiene" | "tienen" | "desde" | "hacia" | "cada" | "todo" |
+        "toda" | "todos" | "todas" | "segun" | "base" | "informacion" | "documento"
+    )
+}
+
 
 fn filter_fragments_by_sources(
     fragments: &[SearchFragment],
@@ -2817,7 +2985,7 @@ Reglas:
         .post("https://openrouter.ai/api/v1/chat/completions")
         .bearer_auth(api_key)
         .header("Content-Type", "application/json")
-        .header("X-OpenRouter-Title", "Rust Local RAG")
+        .header("X-OpenRouter-Title", "Rust Lexical RAG")
         .json(&body)
         .timeout(Duration::from_secs(30))
         .send()
@@ -2930,7 +3098,7 @@ Reglas:
         .post("https://openrouter.ai/api/v1/chat/completions")
         .bearer_auth(api_key)
         .header("Content-Type", "application/json")
-        .header("X-OpenRouter-Title", "Rust Local RAG")
+        .header("X-OpenRouter-Title", "Rust Lexical RAG")
         .json(&body)
         .timeout(Duration::from_secs(120))
         .send()
@@ -3007,114 +3175,6 @@ fn build_local_response(question: &str, fragments: &[SearchFragment]) -> String 
     response
 }
 
-async fn wait_for_qdrant(http: &Client, qdrant_url: &str) -> Result<()> {
-    let url = format!("{}/", qdrant_url.trim_end_matches('/'));
-
-    for _ in 0..60 {
-        if let Ok(resp) = http.get(&url).send().await {
-            if resp.status().is_success() {
-                return Ok(());
-            }
-        }
-
-        tokio::time::sleep(Duration::from_secs(1)).await;
-    }
-
-    Err(anyhow!("Qdrant no respondió en {}", qdrant_url))
-}
-
-async fn ensure_qdrant_collection(http: &Client, config: &Config) -> Result<()> {
-    let get_url = format!("{}/collections/{}", config.qdrant_url, config.collection);
-
-    let exists = http
-        .get(&get_url)
-        .send()
-        .await
-        .map(|r| r.status().is_success())
-        .unwrap_or(false);
-
-    if exists {
-        return Ok(());
-    }
-
-    let create_url = format!("{}/collections/{}", config.qdrant_url, config.collection);
-
-    let body = json!({
-        "vectors": {
-            "size": VECTOR_SIZE,
-            "distance": "Cosine"
-        }
-    });
-
-    http.put(create_url)
-        .json(&body)
-        .send()
-        .await?
-        .error_for_status()?;
-
-    Ok(())
-}
-
-async fn upsert_points(http: &Client, config: &Config, points: Vec<Value>) -> Result<()> {
-    if points.is_empty() {
-        return Ok(());
-    }
-
-    let url = format!(
-        "{}/collections/{}/points?wait=true",
-        config.qdrant_url, config.collection
-    );
-
-    let mut last_err = None;
-    for attempt in 0u32..3 {
-        if attempt > 0 {
-            tokio::time::sleep(Duration::from_millis(500 * (attempt as u64 + 1))).await;
-        }
-        match http
-            .put(&url)
-            .json(&json!({ "points": &points }))
-            .send()
-            .await
-        {
-            Ok(resp) => match resp.error_for_status() {
-                Ok(_) => return Ok(()),
-                Err(e) => last_err = Some(anyhow::Error::from(e)),
-            },
-            Err(e) => last_err = Some(anyhow::Error::from(e)),
-        }
-    }
-
-    Err(last_err.unwrap_or_else(|| anyhow!("upsert_points: falló sin error específico")))
-}
-
-async fn delete_points_by_source(http: &Client, config: &Config, source: &str) -> Result<()> {
-    let url = format!(
-        "{}/collections/{}/points/delete?wait=true",
-        config.qdrant_url, config.collection
-    );
-
-    let body = json!({
-        "filter": {
-            "must": [
-                {
-                    "key": "source",
-                    "match": {
-                        "value": source
-                    }
-                }
-            ]
-        }
-    });
-
-    http.post(url)
-        .json(&body)
-        .send()
-        .await?
-        .error_for_status()?;
-
-    Ok(())
-}
-
 fn init_db(config: &Config) -> Result<()> {
     let conn = Connection::open(config.db_path())?;
 
@@ -3127,6 +3187,25 @@ fn init_db(config: &Config) -> Result<()> {
             indexed_at TEXT NOT NULL,
             chunk_count INTEGER NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS document_chunks (
+            source TEXT NOT NULL,
+            chunk_index INTEGER NOT NULL,
+            text TEXT NOT NULL,
+            hash TEXT NOT NULL,
+            indexed_at TEXT NOT NULL,
+            PRIMARY KEY(source, chunk_index)
+        );
+
+        CREATE VIRTUAL TABLE IF NOT EXISTS document_chunks_fts
+        USING fts5(
+            source UNINDEXED,
+            chunk_index UNINDEXED,
+            text,
+            tokenize = 'unicode61 remove_diacritics 2'
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_document_chunks_source ON document_chunks(source);
 
         CREATE TABLE IF NOT EXISTS faq_cache (
             question_hash TEXT PRIMARY KEY,
@@ -3226,6 +3305,15 @@ fn faq_question_hash(question: &str) -> String {
     hasher.update(question.as_bytes());
 
     hex::encode(hasher.finalize())[..16].to_string()
+}
+
+fn is_empty_answer(response: &str) -> bool {
+    let r = response.trim().to_lowercase();
+    r.is_empty()
+        || r.contains("no se encontró información")
+        || r.contains("no se encontro informacion")
+        || r.contains("no se encontró")
+        || r.contains("sin informacion")
 }
 
 fn normalize_question(question: &str) -> String {
@@ -3887,6 +3975,7 @@ async function status() {
       `<p><b>Documentos:</b> ${s.manifest_documents}</p>
        <p><b>OpenRouter:</b> ${s.openrouter_enabled ? 'habilitado' : 'modo privado'}</p>
        <p><b>Modelo:</b> ${escapeHtml(s.openrouter_model)}</p>
+       <p><b>Búsqueda:</b> ${escapeHtml(s.search_engine || 'RAG léxico local')}</p>
        <p><b>Actualización:</b> cada ${s.index_interval_seconds}s</p>`;
   } catch (e) {
     document.getElementById('statusBox').textContent = e.message;
@@ -4103,6 +4192,7 @@ async function loadDocs() {
                   <td>${escapeHtml(d.path)}</td>
                   <td>${d.chunk_count}</td>
                   <td>${escapeHtml(d.indexed_at)}</td>
+                  <td><button class="bad" onclick="deleteDoc('${escapeJs(d.path)}')" style="padding:4px 10px;font-size:12px">🗑 Borrar</button></td>
                 </tr>`
             )
             .join('')}
@@ -4110,6 +4200,21 @@ async function loadDocs() {
       : 'No hay documentos indexados.';
   } catch (e) {
     document.getElementById('docsBox').textContent = e.message;
+  }
+}
+
+async function deleteDoc(path) {
+  if (!confirm('¿Eliminar definitivamente «' + path + '»?\nSe borrará el archivo y su índice.')) return;
+  try {
+    await api('/api/admin/documents', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    });
+    loadDocs();
+    status();
+  } catch (e) {
+    alert(e.message);
   }
 }
 

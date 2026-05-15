@@ -1,23 +1,8 @@
 services:
-  qdrant:
-    image: qdrant/qdrant:latest
-    container_name: rag_qdrant
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:16333:6333"
-    volumes:
-      - qdrant_storage:/qdrant/storage
-    environment:
-      QDRANT_HTTP_MAX_BODY_SIZE: 100000000
-      QDRANT_GRPC_MAX_RECV_MESSAGE_SIZE: 100000000
-      QDRANT__STORAGE__PERFORMANCE__MAX_OPTIMIZATION_THREADS: 4
-
   app:
     build: .
     container_name: rag_rust_app
     restart: unless-stopped
-    depends_on:
-      - qdrant
     env_file:
       - .env
     ports:
@@ -26,6 +11,3 @@ services:
       - ./data:/app/data
     environment:
       RUST_LOG: info
-
-volumes:
-  qdrant_storage:

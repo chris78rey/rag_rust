@@ -1,25 +1,20 @@
-FROM rust:1-trixie AS builder
+FROM rust:1-slim-bookworm AS builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    pkg-config \
-    libssl-dev \
-    clang \
-    cmake \
-    protobuf-compiler \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Solo necesita lo mínimo: rust-slim ya incluye cc/gcc para compilar rusqlite (bundled)
+# reqwest usa rustls-tls (sin OpenSSL) → cero dependencias extra
 
 WORKDIR /app
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 RUN cargo build --release
 
-FROM debian:trixie-slim
+FROM debian:bookworm-slim
 
+# Solo poppler-utils para extraer texto de PDFs con pdftotext
+# ca-certificates para HTTPS hacia OpenRouter
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     poppler-utils \
-    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

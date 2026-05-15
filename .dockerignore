@@ -1,0 +1,8 @@
+target/
+data/
+.git/
+.env
+.env.local
+*.log
+nul
+.tmp/

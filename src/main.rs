@@ -11,19 +11,18 @@ use axum::{
 };
 use chrono::Utc;
 use encoding_rs::WINDOWS_1252;
-use fastembed::{EmbeddingModel, InitOptions, TextEmbedding};
 use reqwest::Client;
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::{
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     convert::Infallible,
     env, fs,
     path::{Path, PathBuf},
     process::Command,
-    sync::{Arc, Mutex},
+    sync::Arc,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 use tokio::{net::TcpListener, sync::mpsc};
@@ -33,18 +32,15 @@ use tracing::{error, info, warn};
 use uuid::Uuid;
 use walkdir::WalkDir;
 
-const VECTOR_SIZE: usize = 384;
 const CHUNK_WORDS: usize = 300;
 const CHUNK_OVERLAP_WORDS: usize = 50;
-const EMBED_BATCH_SIZE: usize = 4;
-const INDEX_PIPELINE_VERSION: &str = "2026-05-13-e5large-v1";
+const INDEX_PIPELINE_VERSION: &str = "2026-05-15-lexical-bm25-v1";
 const COOKIE_NAME: &str = "rag_session";
 
 #[derive(Clone)]
 struct AppState {
     config: Arc<Config>,
     http: Client,
-    embedder: Arc<Mutex<TextEmbedding>>,
     index_lock: Arc<tokio::sync::Mutex<()>>,
 }
 
@@ -52,8 +48,6 @@ struct AppState {
 struct Config {
     docs_dir: PathBuf,
     state_dir: PathBuf,
-    qdrant_url: String,
-    collection: String,
     openrouter_api_key: Option<String>,
     openrouter_model: String,
     openrouter_max_tokens: u32,
@@ -71,9 +65,6 @@ impl Config {
     fn from_env() -> Self {
         let docs_dir = env::var("DOCS_DIR").unwrap_or_else(|_| "/app/data/documents".to_string());
         let state_dir = env::var("STATE_DIR").unwrap_or_else(|_| "/app/data/state".to_string());
-        let qdrant_url = env::var("QDRANT_URL").unwrap_or_else(|_| "http://qdrant:6333".to_string());
-        let collection = env::var("QDRANT_COLLECTION").unwrap_or_else(|_| "docs_rag".to_string());
-
         let openrouter_api_key = env::var("OPENROUTER_API_KEY")
             .ok()
             .map(|s| s.trim().to_string())
@@ -94,8 +85,6 @@ impl Config {
         Self {
             docs_dir: PathBuf::from(docs_dir),
             state_dir: PathBuf::from(state_dir),
-            qdrant_url,
-            collection,
             openrouter_api_key,
             openrouter_model,
             openrouter_max_tokens,
@@ -230,8 +219,7 @@ struct SearchFragment {
 #[derive(Debug, Serialize)]
 struct StatusResponse {
     docs_dir: String,
-    qdrant_url: String,
-    collection: String,
+    search_engine: String,
     openrouter_enabled: bool,
     openrouter_model: String,
     index_interval_seconds: u64,
@@ -294,19 +282,11 @@ async fn main() -> Result<()> {
         .pool_max_idle_per_host(0)
         .build()?;
 
-    wait_for_qdrant(&http, &config.qdrant_url).await?;
-    ensure_qdrant_collection(&http, &config).await?;
-
-    info!("Inicializando modelo de embeddings local en CPU...");
-
-    let embedder = TextEmbedding::try_new(
-        InitOptions::new(EmbeddingModel::ParaphraseMLMiniLML12V2).with_show_download_progress(true),
-    )?;
+    info!("Motor RAG léxico activo: SQLite FTS5/BM25, sin embeddings y sin Qdrant.");
 
     let state = AppState {
         config,
         http,
-        embedder: Arc::new(Mutex::new(embedder)),
         index_lock: Arc::new(tokio::sync::Mutex::new(())),
     };
 
@@ -462,8 +442,7 @@ async fn status(
 
     Ok(Json(StatusResponse {
         docs_dir: state.config.docs_dir.display().to_string(),
-        qdrant_url: state.config.qdrant_url.clone(),
-        collection: state.config.collection.clone(),
+        search_engine: "SQLite FTS5 / BM25 léxico local".to_string(),
         openrouter_enabled: state.config.openrouter_api_key.is_some(),
         openrouter_model: state.config.openrouter_model.clone(),
         index_interval_seconds: state.config.index_interval_seconds,
@@ -498,12 +477,12 @@ async fn chat(
     }
 
     let (top_k, max_chars, max_tokens) = (
-        req.top_k.unwrap_or(state.config.default_top_k).clamp(1, 15),
-        2500usize,
+        req.top_k.unwrap_or(state.config.default_top_k).clamp(1, 30),
+        4000usize,
         state.config.openrouter_max_tokens,
     );
 
-    let fragments = semantic_search(&state, question, top_k)
+    let fragments = lexical_search(&state, question, top_k)
         .await
         .map_err(anyhow::Error::from)?;
     let filtered_fragments = filter_fragments_by_sources(&fragments, req.selected_sources.as_deref());
@@ -589,9 +568,9 @@ async fn chat_stream(
             return;
         }
 
-        let (top_k, max_chars, max_tokens) = (req.top_k.unwrap_or(6).clamp(1, 15), 2500usize, state.config.openrouter_max_tokens);
+        let (top_k, max_chars, max_tokens) = (req.top_k.unwrap_or(state.config.default_top_k).clamp(1, 30), 4000usize, state.config.openrouter_max_tokens);
 
-        let fragments = match semantic_search(&state, &question, top_k).await {
+        let fragments = match lexical_search(&state, &question, top_k).await {
             Ok(f) => f,
             Err(e) => {
                 send_event(&tx, "error", e.to_string()).await;
@@ -1000,7 +979,7 @@ async fn run_indexer(state: &AppState) -> Result<IndexSummary> {
 
     for old_path in known {
         if !seen_paths.contains(&old_path) {
-            delete_points_by_source(&state.http, &state.config, &old_path).await?;
+            delete_chunks_by_source(&state.config, &old_path)?;
             remove_manifest_document(&state.config, &old_path)?;
             summary.deleted_files += 1;
         }
@@ -1030,52 +1009,18 @@ async fn index_one_file(
     let text = extract_text(path, &bytes)?;
     let chunks = chunk_text(&text, CHUNK_WORDS, CHUNK_OVERLAP_WORDS);
 
-    delete_points_by_source(&state.http, &state.config, rel_source).await?;
+    // Reindexación segura por documento: primero elimina solo los fragmentos de la fuente actual.
+    // No toca otros documentos ni borra archivos físicos.
+    delete_chunks_by_source(&state.config, rel_source)?;
 
     let mut total = 0usize;
-
-    for (batch_start, batch) in chunks.chunks(EMBED_BATCH_SIZE).enumerate() {
-        let passages: Vec<String> = batch
-            .iter()
-            .map(|c| format!("passage: {}", c))
-            .collect();
-
-        let vectors = {
-            let mut embedder = state
-                .embedder
-                .lock()
-                .map_err(|_| anyhow!("No se pudo bloquear el modelo de embeddings"))?;
-
-            embedder.embed(passages, None)?
-        };
-
-        let mut points = Vec::new();
-
-        for (i, vector) in vectors.into_iter().enumerate() {
-            let chunk_index = batch_start * EMBED_BATCH_SIZE + i;
-
-            let id = Uuid::new_v5(
-                &Uuid::NAMESPACE_URL,
-                format!("{}:{}:{}", rel_source, hash, chunk_index).as_bytes(),
-            );
-
-            points.push(json!({
-                "id": id.to_string(),
-                "vector": vector,
-                "payload": {
-                    "source": rel_source,
-                    "chunk_index": chunk_index,
-                    "text": batch[i],
-                    "hash": hash,
-                    "indexed_at": Utc::now().to_rfc3339()
-                }
-            }));
+    for (chunk_index, chunk) in chunks.iter().enumerate() {
+        if chunk.trim().is_empty() {
+            continue;
         }
 
-        total += points.len();
-
-        upsert_points(&state.http, &state.config, points).await?;
-        tokio::time::sleep(Duration::from_millis(200)).await;
+        insert_lexical_chunk(&state.config, rel_source, chunk_index, chunk, &hash)?;
+        total += 1;
     }
 
     upsert_manifest_document(&state.config, rel_source, &hash, modified, total)?;
@@ -1154,96 +1099,507 @@ fn chunk_text(text: &str, chunk_words: usize, overlap_words: usize) -> Vec<Strin
     chunks
 }
 
-async fn semantic_search(
+async fn lexical_search(
     state: &AppState,
     question: &str,
     top_k: usize,
 ) -> Result<Vec<SearchFragment>> {
-    let embedding = {
-        let mut embedder = state
-            .embedder
-            .lock()
-            .map_err(|_| anyhow!("No se pudo bloquear el modelo de embeddings"))?;
+    let query_terms = expand_query_terms(question);
 
-        let mut vectors = embedder.embed(vec![format!("query: {}", question)], None)?;
+    if query_terms.is_empty() {
+        return Ok(Vec::new());
+    }
 
-        vectors
-            .pop()
-            .ok_or_else(|| anyhow!("No se generó embedding para la pregunta"))?
-    };
-
-    let url = format!(
-        "{}/collections/{}/points/search",
-        state.config.qdrant_url, state.config.collection
-    );
-
-    let body = json!({
-        "vector": embedding,
-        "limit": top_k,
-        "with_payload": true
-    });
-
-    let value: Value = state
-        .http
-        .post(url)
-        .json(&body)
-        .send()
-        .await?
-        .error_for_status()?
-        .json()
-        .await?;
-
-    let result = value
-        .get("result")
-        .and_then(|v| v.as_array())
-        .cloned()
-        .unwrap_or_default();
-
+    let conn = Connection::open(state.config.db_path())?;
     let mut fragments = Vec::new();
 
-    for item in result {
-        let score = item.get("score").and_then(|v| v.as_f64()).unwrap_or(0.0) as f32;
-        let payload = item.get("payload").cloned().unwrap_or(Value::Null);
+    // ===== INICIO CAMBIO SEGURO PRODUCCIÓN =====
+    // Recuperación iterativa léxica:
+    // 1) búsqueda amplia OR con términos originales + sinónimos,
+    // 2) búsqueda focalizada con términos principales,
+    // 3) fallback por escaneo léxico/fuzzy,
+    // 4) expansión con fragmentos vecinos para dar más contexto al LLM.
+    for fts_query in build_iterative_fts_queries(question, &query_terms) {
+        if fts_query.trim().is_empty() {
+            continue;
+        }
 
-        let source = payload
-            .get("source")
-            .and_then(|v| v.as_str())
-            .unwrap_or("sin_fuente")
-            .to_string();
+        let mut found = search_fts_fragments(&conn, &fts_query, (top_k * 6).max(20))?;
+        fragments.append(&mut found);
+    }
 
-        let chunk_index = payload
-            .get("chunk_index")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0) as usize;
+    let mut reranked = rerank_fragments(question, &query_terms, fragments);
 
-        let text = payload
-            .get("text")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
+    // Aunque FTS5 encuentre resultados, se añade una pasada fallback liviana.
+    // Esto mejora palabras mal digitadas, cortadas o no coincidentes exactamente.
+    let fallback = lexical_scan_fallback(&conn, question, &query_terms, top_k * 5)?;
+    reranked.extend(fallback);
+    reranked = dedup_and_sort_fragments(reranked);
 
-        fragments.push(SearchFragment {
-            score,
-            source,
-            chunk_index,
-            text,
-        });
+    // Agrega fragmentos anterior/siguiente de los mejores resultados.
+    // Esto ayuda a que el informe no quede "flaco" cuando la respuesta está repartida
+    // en párrafos vecinos del mismo documento.
+    let mut expanded = expand_with_neighbor_chunks(&conn, reranked, 1, top_k)?;
+    expanded = dedup_and_sort_fragments(expanded);
+
+    // Se devuelve más contexto que el top_k original, pero con límite conservador.
+    // Sigue siendo liviano y no usa embeddings.
+    let final_limit = (top_k * 2).clamp(top_k, 30);
+    expanded.truncate(final_limit);
+    Ok(expanded)
+    // ===== FIN CAMBIO SEGURO PRODUCCIÓN =====
+}
+
+fn search_fts_fragments(
+    conn: &Connection,
+    fts_query: &str,
+    limit: usize,
+) -> Result<Vec<SearchFragment>> {
+    let sql = r#"
+        SELECT source, chunk_index, text, bm25(document_chunks_fts) AS rank
+        FROM document_chunks_fts
+        WHERE document_chunks_fts MATCH ?1
+        ORDER BY rank
+        LIMIT ?2
+    "#;
+
+    let mut stmt = match conn.prepare(sql) {
+        Ok(stmt) => stmt,
+        Err(e) => {
+            warn!("No se pudo preparar búsqueda FTS5; se omitirá esta pasada: {e}");
+            return Ok(Vec::new());
+        }
+    };
+
+    let rows = match stmt.query_map(params![fts_query, limit as i64], |r| {
+        let rank: f64 = r.get(3)?;
+        Ok(SearchFragment {
+            // FTS5 bm25 devuelve valores menores para mejores coincidencias.
+            score: (1.0 / (1.0 + rank.abs())) as f32,
+            source: r.get(0)?,
+            chunk_index: r.get::<_, i64>(1)? as usize,
+            text: r.get(2)?,
+        })
+    }) {
+        Ok(rows) => rows,
+        Err(e) => {
+            warn!("Búsqueda FTS5 falló; se omitirá esta pasada: {e}");
+            return Ok(Vec::new());
+        }
+    };
+
+    let mut fragments = Vec::new();
+    for row in rows {
+        fragments.push(row?);
     }
 
     Ok(fragments)
 }
 
+fn build_iterative_fts_queries(question: &str, terms: &[String]) -> Vec<String> {
+    let mut queries = Vec::new();
+
+    // Pasada amplia: términos originales + sinónimos.
+    let broad = build_fts_query(terms);
+    if !broad.trim().is_empty() {
+        queries.push(broad);
+    }
+
+    // Pasada focalizada: solo términos principales de la pregunta original.
+    let mut primary_terms = tokenize_normalized(question)
+        .into_iter()
+        .filter(|t| t.len() >= 4 && !is_stopword(t))
+        .collect::<Vec<_>>();
+    primary_terms.sort();
+    primary_terms.dedup();
+
+    let focused = build_fts_query(&primary_terms);
+    if !focused.trim().is_empty() {
+        queries.push(focused);
+    }
+
+    // Pasada por pares de palabras cercanas: mejora preguntas con frases como
+    // "proteccion datos", "sistema hospitalario", "pistas auditoria".
+    for pair in primary_terms.windows(2).take(8) {
+        if pair.len() == 2 {
+            let q = format!("{}* AND {}*", normalize_token(&pair[0]), normalize_token(&pair[1]));
+            queries.push(q);
+        }
+    }
+
+    queries.sort();
+    queries.dedup();
+    queries
+}
+
+fn expand_with_neighbor_chunks(
+    conn: &Connection,
+    fragments: Vec<SearchFragment>,
+    window: usize,
+    seed_limit: usize,
+) -> Result<Vec<SearchFragment>> {
+    let mut expanded = fragments.clone();
+
+    for base in fragments.iter().take(seed_limit) {
+        for offset in 1..=window {
+            if let Some(prev_idx) = base.chunk_index.checked_sub(offset) {
+                if let Some(mut prev) = load_chunk(conn, &base.source, prev_idx)? {
+                    prev.score = (base.score * 0.92).max(0.01);
+                    expanded.push(prev);
+                }
+            }
+
+            let next_idx = base.chunk_index + offset;
+            if let Some(mut next) = load_chunk(conn, &base.source, next_idx)? {
+                next.score = (base.score * 0.90).max(0.01);
+                expanded.push(next);
+            }
+        }
+    }
+
+    Ok(expanded)
+}
+
+fn load_chunk(
+    conn: &Connection,
+    source: &str,
+    chunk_index: usize,
+) -> Result<Option<SearchFragment>> {
+    let found = conn
+        .query_row(
+            "SELECT source, chunk_index, text FROM document_chunks WHERE source = ?1 AND chunk_index = ?2",
+            params![source, chunk_index as i64],
+            |r| {
+                Ok(SearchFragment {
+                    score: 0.0,
+                    source: r.get(0)?,
+                    chunk_index: r.get::<_, i64>(1)? as usize,
+                    text: r.get(2)?,
+                })
+            },
+        )
+        .optional()?;
+
+    Ok(found)
+}
+
+fn insert_lexical_chunk(
+    config: &Config,
+    source: &str,
+    chunk_index: usize,
+    text: &str,
+    hash: &str,
+) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+    let now = Utc::now().to_rfc3339();
+
+    conn.execute(
+        r#"
+        INSERT INTO document_chunks(source, chunk_index, text, hash, indexed_at)
+        VALUES (?1, ?2, ?3, ?4, ?5)
+        ON CONFLICT(source, chunk_index) DO UPDATE SET
+            text = excluded.text,
+            hash = excluded.hash,
+            indexed_at = excluded.indexed_at
+        "#,
+        params![source, chunk_index as i64, text, hash, now],
+    )?;
+
+    conn.execute(
+        "INSERT INTO document_chunks_fts(source, chunk_index, text) VALUES (?1, ?2, ?3)",
+        params![source, chunk_index as i64, text],
+    )?;
+
+    Ok(())
+}
+
+fn delete_chunks_by_source(config: &Config, source: &str) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+    conn.execute("DELETE FROM document_chunks WHERE source = ?1", params![source])?;
+    conn.execute("DELETE FROM document_chunks_fts WHERE source = ?1", params![source])?;
+    Ok(())
+}
+
+fn build_fts_query(terms: &[String]) -> String {
+    let mut parts = Vec::new();
+
+    for term in terms.iter().take(40) {
+        let clean = normalize_token(term);
+        if clean.len() < 3 || is_stopword(&clean) {
+            continue;
+        }
+
+        // Prefix search: ayuda con palabras cortadas como "jurispru" o "hiperten".
+        parts.push(format!("{}*", clean));
+    }
+
+    parts.sort();
+    parts.dedup();
+    parts.join(" OR ")
+}
+
+fn expand_query_terms(question: &str) -> Vec<String> {
+    let mut terms = tokenize_normalized(question)
+        .into_iter()
+        .filter(|t| t.len() >= 3 && !is_stopword(t))
+        .collect::<Vec<_>>();
+
+    let synonyms = domain_synonyms();
+    let original = terms.clone();
+
+    for term in original {
+        if let Some(expanded) = synonyms.get(term.as_str()) {
+            for value in expanded {
+                terms.push((*value).to_string());
+            }
+        }
+    }
+
+    terms.sort();
+    terms.dedup();
+    terms
+}
+
+fn domain_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
+    HashMap::from([
+        ("seguridad", vec!["confidencialidad", "auditoria", "trazabilidad", "acceso", "permisos", "roles"]),
+        ("confidencialidad", vec!["seguridad", "reserva", "proteccion", "datos"]),
+        ("interoperabilidad", vec!["integracion", "hl7", "fhir", "api", "interfaces", "conexion"]),
+        ("integracion", vec!["interoperabilidad", "interfaces", "conexion", "api", "hl7", "fhir"]),
+        ("medico", vec!["doctor", "profesional", "salud", "especialista", "clinico"]),
+        ("paciente", vec!["usuario", "afiliado", "beneficiario", "atencion"]),
+        ("historia", vec!["expediente", "clinica", "registro", "paciente"]),
+        ("clinica", vec!["salud", "medica", "historia", "paciente"]),
+        ("legal", vec!["juridico", "normativa", "ley", "reglamento", "contrato"]),
+        ("juridico", vec!["legal", "normativa", "ley", "reglamento", "derecho"]),
+        ("contrato", vec!["contratacion", "convenio", "obligacion", "adjudicacion"]),
+        ("demanda", vec!["accion", "reclamo", "pretension", "proceso"]),
+        ("responsabilidad", vec!["culpa", "incumplimiento", "obligacion", "danos"]),
+        ("encuesta", vec!["formulario", "cuestionario", "respuestas", "evaluacion"]),
+        ("carrera", vec!["programa", "profesion", "area", "academica"]),
+        ("practicas", vec!["pasantias", "preprofesionales", "internado", "rotacion"]),
+        ("demora", vec!["espera", "tardanza", "retraso", "lento", "fila"]),
+        ("atencion", vec!["servicio", "trato", "usuario", "paciente"]),
+        ("recomendacion", vec!["sugerencia", "mejora", "propuesta", "accion"]),
+        ("hta", vec!["hipertension", "presion", "arterial"]),
+        ("epoc", vec!["pulmonar", "obstructiva", "cronica", "disnea"]),
+        ("diabetes", vec!["diabetico", "glucosa", "dm2", "mellitus"]),
+    ])
+}
+
+fn rerank_fragments(
+    question: &str,
+    terms: &[String],
+    fragments: Vec<SearchFragment>,
+) -> Vec<SearchFragment> {
+    let query_tokens = tokenize_normalized(question);
+    let scored = fragments
+        .into_iter()
+        .map(|mut f| {
+            let lexical = lexical_score(&f.text, terms, &query_tokens);
+            f.score = (f.score * 2.0) + lexical;
+            f
+        })
+        .collect::<Vec<_>>();
+
+    dedup_and_sort_fragments(scored)
+}
+
+fn lexical_scan_fallback(
+    conn: &Connection,
+    question: &str,
+    terms: &[String],
+    limit: usize,
+) -> Result<Vec<SearchFragment>> {
+    let query_tokens = tokenize_normalized(question);
+    let mut stmt = conn.prepare(
+        "SELECT source, chunk_index, text FROM document_chunks ORDER BY source, chunk_index",
+    )?;
+
+    let rows = stmt.query_map([], |r| {
+        Ok(SearchFragment {
+            score: 0.0,
+            source: r.get(0)?,
+            chunk_index: r.get::<_, i64>(1)? as usize,
+            text: r.get(2)?,
+        })
+    })?;
+
+    let mut scored = Vec::new();
+    for row in rows {
+        let mut fragment = row?;
+        let score = lexical_score(&fragment.text, terms, &query_tokens);
+        if score > 0.0 {
+            fragment.score = score;
+            scored.push(fragment);
+        }
+    }
+
+    let mut scored = dedup_and_sort_fragments(scored);
+    scored.truncate(limit);
+    Ok(scored)
+}
+
+fn dedup_and_sort_fragments(mut fragments: Vec<SearchFragment>) -> Vec<SearchFragment> {
+    let mut seen = HashSet::new();
+    fragments.retain(|f| seen.insert((f.source.clone(), f.chunk_index)));
+    fragments.sort_by(|a, b| {
+        b.score
+            .partial_cmp(&a.score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| a.source.cmp(&b.source))
+            .then_with(|| a.chunk_index.cmp(&b.chunk_index))
+    });
+    fragments
+}
+
+fn lexical_score(text: &str, terms: &[String], query_tokens: &[String]) -> f32 {
+    let text_tokens = tokenize_normalized(text);
+
+    if text_tokens.is_empty() {
+        return 0.0;
+    }
+
+    let token_set: HashSet<&str> = text_tokens.iter().map(|s| s.as_str()).collect();
+    let mut score = 0.0f32;
+
+    for term in terms {
+        if token_set.contains(term.as_str()) {
+            score += 4.0;
+            continue;
+        }
+
+        if text_tokens.iter().any(|t| t.starts_with(term) || term.starts_with(t)) {
+            score += 2.0;
+            continue;
+        }
+
+        if term.len() >= 6 && text_tokens.iter().any(|t| fuzzy_close(term, t)) {
+            score += 1.0;
+        }
+    }
+
+    // Pequeña bonificación para frases cercanas de la pregunta original.
+    for window in query_tokens.windows(2) {
+        if window.len() == 2 {
+            let phrase = format!("{} {}", window[0], window[1]);
+            if normalize_text(text).contains(&phrase) {
+                score += 3.0;
+            }
+        }
+    }
+
+    score / (1.0 + (text_tokens.len() as f32 / 300.0))
+}
+
+fn fuzzy_close(a: &str, b: &str) -> bool {
+    let min_len = a.len().min(b.len());
+    let max_len = a.len().max(b.len());
+
+    if min_len < 5 || max_len.saturating_sub(min_len) > 2 {
+        return false;
+    }
+
+    levenshtein_limited(a, b, 2) <= 2
+}
+
+fn levenshtein_limited(a: &str, b: &str, limit: usize) -> usize {
+    let a_chars: Vec<char> = a.chars().collect();
+    let b_chars: Vec<char> = b.chars().collect();
+
+    if a_chars.len().abs_diff(b_chars.len()) > limit {
+        return limit + 1;
+    }
+
+    let mut prev: Vec<usize> = (0..=b_chars.len()).collect();
+    let mut curr = vec![0usize; b_chars.len() + 1];
+
+    for (i, ca) in a_chars.iter().enumerate() {
+        curr[0] = i + 1;
+        let mut row_min = curr[0];
+
+        for (j, cb) in b_chars.iter().enumerate() {
+            let cost = if ca == cb { 0 } else { 1 };
+            curr[j + 1] = (prev[j + 1] + 1)
+                .min(curr[j] + 1)
+                .min(prev[j] + cost);
+            row_min = row_min.min(curr[j + 1]);
+        }
+
+        if row_min > limit {
+            return limit + 1;
+        }
+
+        std::mem::swap(&mut prev, &mut curr);
+    }
+
+    prev[b_chars.len()]
+}
+
+fn tokenize_normalized(text: &str) -> Vec<String> {
+    normalize_text(text)
+        .split_whitespace()
+        .map(|s| s.to_string())
+        .filter(|s| !s.is_empty())
+        .collect()
+}
+
+fn normalize_token(text: &str) -> String {
+    normalize_text(text).replace(' ', "")
+}
+
+fn normalize_text(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+
+    for c in text.chars() {
+        let mapped = match c {
+            'á' | 'à' | 'ä' | 'â' | 'Á' | 'À' | 'Ä' | 'Â' => 'a',
+            'é' | 'è' | 'ë' | 'ê' | 'É' | 'È' | 'Ë' | 'Ê' => 'e',
+            'í' | 'ì' | 'ï' | 'î' | 'Í' | 'Ì' | 'Ï' | 'Î' => 'i',
+            'ó' | 'ò' | 'ö' | 'ô' | 'Ó' | 'Ò' | 'Ö' | 'Ô' => 'o',
+            'ú' | 'ù' | 'ü' | 'û' | 'Ú' | 'Ù' | 'Ü' | 'Û' => 'u',
+            'ñ' | 'Ñ' => 'n',
+            _ => c.to_ascii_lowercase(),
+        };
+
+        if mapped.is_ascii_alphanumeric() || mapped.is_whitespace() {
+            out.push(mapped);
+        } else {
+            out.push(' ');
+        }
+    }
+
+    out.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn is_stopword(token: &str) -> bool {
+    matches!(
+        token,
+        "que" | "como" | "para" | "por" | "con" | "una" | "uno" | "unos" | "unas" |
+        "del" | "las" | "los" | "este" | "esta" | "esto" | "ese" | "esa" | "eso" |
+        "son" | "ser" | "fue" | "han" | "hay" | "mas" | "muy" | "sin" | "sus" |
+        "sobre" | "entre" | "donde" | "cuando" | "cual" | "cuales" | "debe" |
+        "deben" | "tiene" | "tienen" | "desde" | "hacia" | "cada" | "todo" |
+        "toda" | "todos" | "todas" | "segun" | "base" | "informacion" | "documento"
+    )
+}
+
+
 fn filter_fragments_by_sources(
     fragments: &[SearchFragment],
     selected_sources: Option<&[String]>,
 ) -> Vec<SearchFragment> {
+    // ===== INICIO CAMBIO SEGURO PRODUCCIÓN =====
+    // None o [] significa: usar todas las fuentes.
+    // Solo se filtra cuando el usuario marca fuentes específicas.
     let Some(selected_sources) = selected_sources else {
         return fragments.to_vec();
     };
 
     if selected_sources.is_empty() {
-        return Vec::new();
+        return fragments.to_vec();
     }
+    // ===== FIN CAMBIO SEGURO PRODUCCIÓN =====
 
     let selected: HashSet<&str> = selected_sources.iter().map(|s| s.as_str()).collect();
 
@@ -1351,23 +1707,39 @@ Reglas:
 
     let system_prompt = r#"Eres un asistente experto en analisis documental que responde en espanol.
 
-Produce una respuesta breve, precisa y directa con esta estructura:
+Tu trabajo es redactar un INFORME EXTENDIDO usando unicamente la evidencia entregada.
+No inventes datos, autores, leyes, diagnosticos, articulos, cifras ni conclusiones que no esten sustentadas.
+Si la evidencia es parcial, indicalo sin bloquear la respuesta completa.
 
-## Respuesta
-Contesta la pregunta en 1-3 frases, sin rodeos.
+Estructura obligatoria:
 
-## Sustento
-Incluye solo 2-3 puntos cortos con la evidencia mas relevante.
+## Resumen Ejecutivo
+Explica de que trata la documentacion y responde directamente la pregunta.
+
+## Hallazgos Principales
+Lista los hallazgos mas importantes, agrupando ideas repetidas de distintas fuentes.
+
+## Analisis Detallado por Temas
+Desarrolla los temas encontrados. Relaciona la evidencia con la pregunta del usuario.
+
+## Datos o Evidencias Relevantes
+Incluye datos concretos, nombres de modulos, procesos, riesgos, requisitos, actores o conceptos encontrados.
+
+## Limitaciones de la Evidencia
+Indica que puntos no pueden afirmarse con seguridad si no aparecen en las fuentes.
+
+## Conclusion
+Cierra con una respuesta clara, practica y util.
 
 Reglas:
-- Responde unicamente con base en la evidencia proporcionada.
-- Si la evidencia no alcanza para identificar algo con certeza, dilo explicitamente.
-- Prioriza precision sobre extension.
-- Evita repeticiones, relleno y conclusiones obvias.
-- Usa Markdown simple."#;
+- Usa Markdown.
+- Mantiene tono profesional e institucional.
+- No digas que eres IA.
+- No uses frases de relleno.
+- Prioriza claridad, detalle y utilidad."#;
 
     let user_prompt = format!(
-        "Pregunta del usuario:\n{}\n\nEvidencia:\n{}\n\nGenera una respuesta breve y precisa:",
+        "Pregunta del usuario:\n{}\n\nPaquete de evidencia recuperado por Rust:\n{}\n\nRedacta el informe extendido con base estricta en esa evidencia:",
         question, context
     );
 
@@ -1388,7 +1760,7 @@ Reglas:
         .post("https://openrouter.ai/api/v1/chat/completions")
         .bearer_auth(api_key)
         .header("Content-Type", "application/json")
-        .header("X-OpenRouter-Title", "Rust Local RAG")
+        .header("X-OpenRouter-Title", "Rust Lexical RAG")
         .json(&body)
         .timeout(Duration::from_secs(30))
         .send()
@@ -1463,23 +1835,39 @@ Reglas:
 
     let system_prompt = r#"Eres un asistente experto en analisis documental que responde en espanol.
 
-Produce una respuesta breve, precisa y directa con esta estructura:
+Tu trabajo es redactar un INFORME EXTENDIDO usando unicamente la evidencia entregada.
+No inventes datos, autores, leyes, diagnosticos, articulos, cifras ni conclusiones que no esten sustentadas.
+Si la evidencia es parcial, indicalo sin bloquear la respuesta completa.
 
-## Respuesta
-Contesta la pregunta en 1-3 frases, sin rodeos.
+Estructura obligatoria:
 
-## Sustento
-Incluye solo 2-3 puntos cortos con la evidencia mas relevante.
+## Resumen Ejecutivo
+Explica de que trata la documentacion y responde directamente la pregunta.
+
+## Hallazgos Principales
+Lista los hallazgos mas importantes, agrupando ideas repetidas de distintas fuentes.
+
+## Analisis Detallado por Temas
+Desarrolla los temas encontrados. Relaciona la evidencia con la pregunta del usuario.
+
+## Datos o Evidencias Relevantes
+Incluye datos concretos, nombres de modulos, procesos, riesgos, requisitos, actores o conceptos encontrados.
+
+## Limitaciones de la Evidencia
+Indica que puntos no pueden afirmarse con seguridad si no aparecen en las fuentes.
+
+## Conclusion
+Cierra con una respuesta clara, practica y util.
 
 Reglas:
-- Responde unicamente con base en la evidencia proporcionada.
-- Si la evidencia no alcanza para identificar algo con certeza, dilo explicitamente.
-- Prioriza precision sobre extension.
-- Evita repeticiones, relleno y conclusiones obvias.
-- Usa Markdown simple."#;
+- Usa Markdown.
+- Mantiene tono profesional e institucional.
+- No digas que eres IA.
+- No uses frases de relleno.
+- Prioriza claridad, detalle y utilidad."#;
 
     let user_prompt = format!(
-        "Pregunta del usuario:\n{}\n\nEvidencia:\n{}\n\nGenera una respuesta breve y precisa:",
+        "Pregunta del usuario:\n{}\n\nPaquete de evidencia recuperado por Rust:\n{}\n\nRedacta el informe extendido con base estricta en esa evidencia:",
         question, context
     );
 
@@ -1501,7 +1889,7 @@ Reglas:
         .post("https://openrouter.ai/api/v1/chat/completions")
         .bearer_auth(api_key)
         .header("Content-Type", "application/json")
-        .header("X-OpenRouter-Title", "Rust Local RAG")
+        .header("X-OpenRouter-Title", "Rust Lexical RAG")
         .json(&body)
         .timeout(Duration::from_secs(120))
         .send()
@@ -1578,114 +1966,6 @@ fn build_local_response(question: &str, fragments: &[SearchFragment]) -> String 
     response
 }
 
-async fn wait_for_qdrant(http: &Client, qdrant_url: &str) -> Result<()> {
-    let url = format!("{}/", qdrant_url.trim_end_matches('/'));
-
-    for _ in 0..60 {
-        if let Ok(resp) = http.get(&url).send().await {
-            if resp.status().is_success() {
-                return Ok(());
-            }
-        }
-
-        tokio::time::sleep(Duration::from_secs(1)).await;
-    }
-
-    Err(anyhow!("Qdrant no respondió en {}", qdrant_url))
-}
-
-async fn ensure_qdrant_collection(http: &Client, config: &Config) -> Result<()> {
-    let get_url = format!("{}/collections/{}", config.qdrant_url, config.collection);
-
-    let exists = http
-        .get(&get_url)
-        .send()
-        .await
-        .map(|r| r.status().is_success())
-        .unwrap_or(false);
-
-    if exists {
-        return Ok(());
-    }
-
-    let create_url = format!("{}/collections/{}", config.qdrant_url, config.collection);
-
-    let body = json!({
-        "vectors": {
-            "size": VECTOR_SIZE,
-            "distance": "Cosine"
-        }
-    });
-
-    http.put(create_url)
-        .json(&body)
-        .send()
-        .await?
-        .error_for_status()?;
-
-    Ok(())
-}
-
-async fn upsert_points(http: &Client, config: &Config, points: Vec<Value>) -> Result<()> {
-    if points.is_empty() {
-        return Ok(());
-    }
-
-    let url = format!(
-        "{}/collections/{}/points?wait=true",
-        config.qdrant_url, config.collection
-    );
-
-    let mut last_err = None;
-    for attempt in 0u32..3 {
-        if attempt > 0 {
-            tokio::time::sleep(Duration::from_millis(500 * (attempt as u64 + 1))).await;
-        }
-        match http
-            .put(&url)
-            .json(&json!({ "points": &points }))
-            .send()
-            .await
-        {
-            Ok(resp) => match resp.error_for_status() {
-                Ok(_) => return Ok(()),
-                Err(e) => last_err = Some(anyhow::Error::from(e)),
-            },
-            Err(e) => last_err = Some(anyhow::Error::from(e)),
-        }
-    }
-
-    Err(last_err.unwrap_or_else(|| anyhow!("upsert_points: falló sin error específico")))
-}
-
-async fn delete_points_by_source(http: &Client, config: &Config, source: &str) -> Result<()> {
-    let url = format!(
-        "{}/collections/{}/points/delete?wait=true",
-        config.qdrant_url, config.collection
-    );
-
-    let body = json!({
-        "filter": {
-            "must": [
-                {
-                    "key": "source",
-                    "match": {
-                        "value": source
-                    }
-                }
-            ]
-        }
-    });
-
-    http.post(url)
-        .json(&body)
-        .send()
-        .await?
-        .error_for_status()?;
-
-    Ok(())
-}
-
 fn init_db(config: &Config) -> Result<()> {
     let conn = Connection::open(config.db_path())?;
 
@@ -1698,6 +1978,25 @@ fn init_db(config: &Config) -> Result<()> {
             indexed_at TEXT NOT NULL,
             chunk_count INTEGER NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS document_chunks (
+            source TEXT NOT NULL,
+            chunk_index INTEGER NOT NULL,
+            text TEXT NOT NULL,
+            hash TEXT NOT NULL,
+            indexed_at TEXT NOT NULL,
+            PRIMARY KEY(source, chunk_index)
+        );
+
+        CREATE VIRTUAL TABLE IF NOT EXISTS document_chunks_fts
+        USING fts5(
+            source UNINDEXED,
+            chunk_index UNINDEXED,
+            text,
+            tokenize = 'unicode61 remove_diacritics 2'
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_document_chunks_source ON document_chunks(source);
 
         CREATE TABLE IF NOT EXISTS faq_cache (
             question_hash TEXT PRIMARY KEY,
@@ -2458,6 +2757,7 @@ async function status() {
       `<p><b>Documentos:</b> ${s.manifest_documents}</p>
        <p><b>OpenRouter:</b> ${s.openrouter_enabled ? 'habilitado' : 'modo privado'}</p>
        <p><b>Modelo:</b> ${escapeHtml(s.openrouter_model)}</p>
+       <p><b>Búsqueda:</b> ${escapeHtml(s.search_engine || 'RAG léxico local')}</p>
        <p><b>Actualización:</b> cada ${s.index_interval_seconds}s</p>`;
   } catch (e) {
     document.getElementById('statusBox').textContent = e.message;
