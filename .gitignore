@@ -1,0 +1,14 @@
+target/
+.tmp/
+
+# Local environment
+.env
+.env.local
+
+# SQLite state and local data
+data/state/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.log

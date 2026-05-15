@@ -1,0 +1,831 @@
+
+La idea de este presente documento es poder hacer una lluvia de ideas con respecto a la la modernización del sistema de gestión hospitalario el mismo que es importante te comento que estamos en una casa de salud la misma que es una casa de salud de tercer nivel es un hospital de especialidades el cual debe ser considerado y manejado con las seguridades y medidas de precaución necesarias el hecho es que se tiene un sistema de gestión hospitalaria desarrollado en Oracle forms el cual cumple con el 70% de las opciones o procesos del hospital pero siempre es necesario realizar una modernización para lo cual se necesita siempre cumplir con ciertos requisitos previos entre ellos se debe emitir la documentación previa para poder modernizar si ha tenido reuniones con los organismos de control como son contra el origen general del estado la cual ha sugerido tener una serie de documentos previos de estudios previos los cuales permitirán iniciar el proceso de contratación otra de las entidades importantes que con las cuales hemos tenido reunión es del ministerio de telecomunicaciones del cual ha manifestado que tenemos que cumplir ciertos requisitos para poder obtener las apropiaciones respectivas.
+
+
+
+    • Estudios previos
+    • Proyecciones y controles
+    • Estrategias para evitar la omisión de componentes necesarios en el software
+    • Cubrir todo el hospital
+    • Evitar sanciones de los organismos de control
+    • Migración de datos
+    • Estimación de tiempos
+    • Ver que todos los componentes sean beneficiosos para el hospital y no para la empresa que va a desarrollar el software
+    • Mantener el motor de base de datos actual y generar nuevas interfaces web modernas e inclusive para dispositivos móviles
+    • Presentación de informes en los que se indique todo el plan de la de TIC para llegar a un buen proyecto
+    • Cumplir con las leyes de protección de datos personales del ecuador
+    • Conexión con servicios externos es decir por ejemplo w sistemas de laboratorio
+    • Conectividad con el issfa
+    • Módulos de facturación con el servicio de rentas internas
+    • Conectividades esigef
+    • Manejo de inteligencia de negocios
+    • Cumplimiento de normativa médica
+    • Nuevos nuevos módulos de hemodiálisis y derivaciones
+    • Mantener el motor de base de datos actual
+    • La información migrada todo el proceso de extracción transformación y carga es de responsabilidad de la empresa a la cual se le adjudique el contrato
+    • Se debe cotizar en base a un número determinado de interfaces o pantallas y se debe establecer la metodología de estimación de costos y tiempos
+    • Una vez que la empresa se encuentre ya adjudicada a las opciones existentes en la línea base se debe buscar la manera de mejorar optimizar y plasmarlo en una interfase moderna
+    • La línea base para la construcción del nuevo sistema de gestión hospitalaria es del sistema actual que se encuentra funcionando y que con el cual nos encargamos de cobrar y hacer el funcionamiento del hospital todos los días para ello esta línea base tiene sus opciones dentro de las diferentes interfaces de usuario estas interfaces servirán como base para la implantación de nuevo sistema de gestión hospitalario y en la etapa en la que se pueda mejorar se hará esto.
+    • Dentro del hospital estamos conformados por diferentes actores entre ellos están las autoridades el departamento de sistemas el área usuaria y los jefes de los diferentes servicios se debe evaluar tanto los procesos funcionales como los no funcionales la parte no funcional debe estar hecha a cargo por el departamento de tecnologías de la información comunicaciones pero los requerimientos de usuarios finales los deben manejar ellos y para definir criterios de aceptación una vez que ya se encuentra adjudicado el proceso la empresa deberá de ver la manera de mejorar las interfaces actuales de nuestro sistema actual y con los usuarios finales establecer mecanismos de aceptación en este caso deberían existir actas de reuniones con los usuarios finales y para poder pagar el trabajo se debe tener la firma tanto del usuario final como la del jefe de cada uno de los servicios, esto debe ser entregado al administrador del contrato para que siga juntando su expediente final.
+    • Se debe pagar por proceso terminado es decir una vez que se desarrolle algo existe el criterio de aceptación y las firmas de los usuarios finales y también de los jefes de cada uno de los servicios y la respectiva acta entrega recepción ese será el criterio para pagar estas opciones
+    • Se debe definir claramente cuáles son las fases del proceso se debe tener en cuenta qué módulos son independientes y aquellos módulos que también están interrelacionados.
+    • La migración de los datos debe ser llevada a su totalidad es decir el 100% de los datos en el caso de qué la información del sistema actual no cuadre con el nuevo sistema la empresa adjudicada debe ser la encargada de ver el modo de poder que ésta se ajuste a sus interfaces y se despliegue siempre la misma información que se encuentra en nuestro sistema base es decir en la línea base es decir en el sistema de gestión hospitalario que está funcionando actualmente
+    • Se debe fijar de una buena manera los criterios de aceptación un criterio de aceptación que permita siempre en favor del hospital no de la empresa adjudicada siempre se debe velar por que el personal del hospital salga bien parado siempre de este proceso.
+    • Debe existir una etapa de integración de la solución
+    • Debe haber una etapa en la cual se verifique que se generen los datos financieros y que estén bien generados
+    • Se debe tomar en cuenta las particularidades del hospital como en este caso en el tema financiero el manejo de paquetes y agrupadores estos son particularidades del hospital los mismos que deben funcionar tal y como se encuentra funcionando en la actualidad para generar los cobros para poder recuperar la cartera
+    • El módulo de derivaciones debe permitir que se genere desde las entidades externas de este módulo
+    • Compromiso clave del hospital es que las autoridades se encarguen de gestionar antes del inicio del proceso el tener acceso a los web services de las diferentes instituciones para extraer la información de cada uno de los usuarios del sistema nuevo de gestión hospitalaria
+    •  Se debe implementar un nuevo módulo de control de equipamiento médico
+    • Se debe tomar en cuenta los módulos web existentes en el sistema de gestión hospitalaria actual estos están interconectados con el sistema de gestión hospitalaria actual no tiene módulo de pagos ni de cobros todo eso lo realizan con conexiones hacia el sistema actual en ese sentido se debe considerar esto en el nuevo sistema y debe ser desarrollado también tal y cual se encuentra funcionando el sistema en la actualidad
+    • Se debe tener en cuenta los módulos de banco de sangre que utilizan un sistema externo es la solución nueva debe estar integrada este sistema y debe transferir la información al mismo y debe recuperar información para poder sacar reportes y obtener estadísticas de la misma
+    • La interconectividad con el isfa mediante el debeline de base de datos debe mantenerse funcionando como un mecanismo de actualización de datos en el caso de que el web service no esté disponible
+    • La empresa adjudicada debe tomar en cuenta y hacer que se mantenga la continuidad de las operaciones en el caso de que los web services como sucede comúnmente que los servicios web se encuentren fuera de servicio no se debe de tener bajo ninguna circunstancia por la ausencia de estos servicios las prestaciones hospitalarias y los sistemas deben seguir funcionando hasta que las entidades externas se encarguen de solucionar estos problemas.
+    • Todas las conexiones existentes con entidades externas financieras para cobro o recuperación de cartera o para pagos deben mantenerse funcionando tal y cual funciona en el sistema de gestión hospitalaria actual y si es posible se deben mejorar para que sea más eficiente este control y esta comunicación
+    • Deben existir interfaces que conecten tanto bodegas como farmacia al sistema financiero para poder subir la información necesaria al sistema esigef
+    • Existen Jobs en el sistema actual que se encargan de hacer procesos automatizados los mismos deben ser considerados en el nuevo sistema para que funcionen los aplicativos del mismo modo el sistema actual o mejorado
+    • Se debe explicar a los técnicos de sistemas cómo tener respaldos del sistema nuevo implementado
+    • En el caso de manejo de la seguridad de la información se debe proponer o se debe hacer que las nuevas ventanas no permitan ver usuarios no autorizados que puedan ver los expedientes clínicos de los usuarios si estos no están siendo atendidos por el médico actual es decir solo que el médico que lo atienda puede ver su historial clínica los datos de los pacientes son siempre reservados y se debe poder anonimizar a los pacientes en el caso de reportes estadísticos.
+    • A partir de la entrada del sistema la empresa adjudicada debe obligatoriamente dar el soporte para el sistema y dar las soluciones respectivas
+    • Se debe establecer un cronograma detallado de cómo se va a manejar la capacitación a los desarrolladores de la solución que pertenecen al hospital es decir a los desarrolladores internos del hospital que van a ser quienes puedan dar el soporte posteriormente a la implantación del sistema
+    • La empresa adjudicada debe dar los requerimientos a nivel de hardware y software en el hospital se trabaja con máquinas virtuales que se llevan con virtualización en este caso tienen binguard la optimización de la aplicación debe ser realizada por parte de la empresa adjudicada y no deben existir excusas y decir que el hospital no ha dado los recursos necesarios sino que la empresa adjudicada debe tener presente que la alta disponibilidad sitio alterno y desempeño de la aplicación es responsabilidad de la empresa adjudicada y debe ser solventada por la misma
+    • Empresas adjudicada debe dar los requisitos mínimos de memoria que debe disponer las máquinas virtuales para poder trabajar eso se debe establecer de manera obligatoria, la optimización de las aplicaciones y lentitud y en caso de que se produzca lentitud en el servicio es responsabilidad de la empresa adjudicado la misma empresa debe también hacer sugerencias de qué tipo de red se debe trabajar y en el caso de errores en el aplicativo debe poder parametrizar su aplicación para que funcione de la manera más óptima.
+    • La nueva solución debe tener alta disponibilidad y manejo de contingencia.
+    • Para la elaboración de la documentación previa se debe recopilar todos los documentación en chasquis e informes emitidos y se los debe tener organizados para presentarse en caso de una posible auditoría futura eso corresponde al departamento de sistemas
+    • El desglose de las actividades de los requerimientos debe ser entregada en forma total el departamento de tecnologías de la información y comunicaciones no es el responsable de estos requerimientos porque eso lo hace el área funcional el área de tecnologías de la información y comunicaciones estará a cargo de los requerimientos no funcionales de seguridad de administración de la red de anchos de banda de tecnología utilizarse en las interfaces web pero el usuario final médico y administrativo del sistema es el responsable de que se cumplan todos los requerimientos en el caso de que ellos omitan algún requerimiento ellos deben hacerse cargo de esa situación y a qué sistemas de techo cargo solo de la parte técnica más no de los requerimientos de usuarios finales de la aplicación recordemos que el departamento de tecnologías de la información y comunicaciones se encarga de que el sistema se encuentre disponible.
+    • El departamento de desarrollo de soporte es el que conoce a cierto nivel el cómo funciona el sistema de gestión hospitalaria coma áreas como la base de datos debe ver la continuidad de las operaciones los respaldos y manejo de la información pero los requerimientos funcionales es netamente del área usuaria.
+    • Para poder cotizar bien cuánto costaría el software de gestión hospitalaria vamos a utilizar una metodología en la cual se tenga un estimado de número de pantallas el mismo que debe ser adjuntado todo ese cálculo en documentación externa pero se debe consolidar los módulos y los totalizados para saber cuánto es el costo total y sobre todo el tiempo en el que se va a desarrollar la solución
+    • Se dará el acceso necesario a la empresa adjudicada para que pueda revisar aquellas dudas que tenga sobre el sistema de gestión hospitalaria que está funcionando actualmente para que ellos puedan revisar se les dará el acceso a los sql para que ellos puedan analizar revisar y poder extraer la información que ellos necesiten o entender la regla de negocio.
+    • El de TIC o el departamento de tecnologías de la información y comunicaciones debe establecer un plan de contingencias en el cual en el caso de que la empresa adjudicada no llegue a cumplir con la implantación del proyecto se pueda retornar a la solución que está funcionando en la actualidad y con ello mantener el control y darle operatividad y que se cobren las respectivas multas o se los declare contratistas incumplidos a la empresa que no pueda llegar a concluir con lo que ellos ofrecen que si pueden hacer el momento de aceptar una adjudicación con el hospital de especialidades fuerzas armadas número uno.
+    • Se debe considerar que los médicos y usuarios finales realizan actividades diarias es por ello que las empresas adjudicadas deben buscar el tiempo de esos usuarios que les sea más útil para que puedan mejorar y optimizar las interfaces ya que ellos van a ser quienes den la aceptación final de la utilización de esta nueva solución conjuntamente con los jefes de cada uno de los servicios o los jefes departamentales y esto será entregado al administrador de contrato que le sirve a él como respaldo ya que si los usuarios finales aceptan el administrador de contrato tiene un respaldo para decir que él firmó las actas de entrega en base a que los usuarios finales aceptaron el funcionamiento del producto
+    • La sugerencia que se da es que se hagan simulaciones con los millones de registro que maneja o con el número de millones de registros que maneja el hospital es decir para que se pueda saber desde un inicio cómo se va a comportar el sistema con carga de datos lo suficientemente grande simulando a la realidad del hospital.
+    • En el caso de haber anticipo en el proyecto no debe superar este el 5% del valor total de la implementación el resto de entregables debe ser de acuerdo a módulo entregado o módulo cobrado.
+    • No se podría entregar un proyecto intermedio o inconcluso el proyecto debe ser entregado en su totalidad ya funcionando con datos migrados y la responsabilidad de estos es de la empresa adjudicada se deberán hacer las revisiones de los reportes financieros y se debe ver que se cuadre la información a lo que funciona el sistema actual es decir el sistema actual servirá de base para que el nuevo sistema pueda validar que los cobros son los mismos
+    • Se debe considerar el manejo histórico de los tarifarios nacionales es decir en el caso de que un ítem haya esté presente en un tarifario antiguo se debe crear un nuevo ítem con el nuevo tarifario es decir si hay un cambio en el año actual el ítem antiguo debe permanecer y el ítem actual también debe reflejarse en el nuevo sistema
+    • Debe manejarse el control de pistas de auditoría a nivel de tablas a nivel de transacciones de todas las tablas del sistema
+
+    • Se debe tomar en cuenta que para hacer el cálculo de tiempo se va a basar en un tema estimado de estimación es decir que no va a ser un valor exacto si no va a ser de acuerdo al criterio que el jefe de del departamento de tecnologías de la información y comunicaciones establezca al igual que el número de ventanas que se va a analizar se van a avisar de acuerdo al menú existente actual y será un aproximado y estas pueden crecer o disminuir.
+    • En base a las reuniones establecidas con el ministerio de telecomunicaciones este ha sugerido que para la modernización del sistema de gestión hospitalaria se mantenga la base de datos en el motor que está funcionando actualmente es por ello que toda la documentación las vamos a hacer en ese sentido la reunión fue establecida con la señora ingeniera de apellido Lara en dónde también solicitó que se tenga desagregados todos los menús del sistema de gestión hospitalaria actual para poder establecer de manera correcta los tiempos de desarrollo de la nueva solución.
+    • Las interfaces web que se desarrollen debe ser poder desplegada Santo a nivel de dispositivos móviles como de navegadores web
+    • El tiempo de los procesos que se manejan por lote del hospital de especialidades fuerzas armadas número 1 no debe superar los 10 minutos tal y cual lo realiza el sistema de gestión hospitalaria actual aquellos procesos que demoren más de ese tiempo o aquellas actividades que demoren más de ese tiempo la empresa adjudicada debe revisarlos y minimizar el tiempo de ejecución eso es responsabilidad de la empresa adjudicada y no se aceptará que manifiesten que el departamento de tecnologías de la información y comunicaciones es el responsable de eso ya que ellos conocen su plataforma y por ello también se le solicita que ellos pidan la empresa que conoce cómo funciona su software solicite los requerimientos tanto a nivel de memoria como de procesador.
+    • Se debe expresar en varios en uno en varios documentos en este sentido cuáles son las necesidades del departamento de tecnologías de la información y comunicaciones se debe expresar eso y se debe ser muy claro que que en los términos de referencia esas cosas son las que nosotros vamos a colocar más no actividades de en sí de la operación del sistema de las características funcionales nosotros no somos responsables vamos a hacer tenemos que hacer un informe muy detallado en el cual se exprese cuáles son los requerimientos del departamento de tecnologías de la información y comunicaciones
+    • Se debe migrar la empresa adjudicada debe considerar que se va a migrar alrededor de 80 millones de registros entre las diferentes datos que dispone el hospital.
+    • Se debe también considerar que existe ya un módulo de inteligencia de negocios que está funcionando y que sirve para tomar decisiones estratégicas el nuevo sistema también debe poder o permitir la utilización de estos dashboards para poder tomar decisiones estratégicas y debe estar incluido dentro de los módulos que se van a desarrollar.
+    • De acuerdo a las reuniones establecidas se establece siempre que se debe contar con estudios previos estos estudios previos permitirán que el proyecto sea llevado de mejor manera  y permitirá tener las métricas respectivas para poder realizar de mejor manera cualquier solución en este caso tiene una serie de documentos los cuales son importantes para poder llevar a cabo esta actividad de modernización del nuevo sistema de gestión hospitalaria.
+    •  se debe hacer un informe en donde se explique cómo se va a llevar a cabo la metodología qué consideraciones se van a tomar en cuenta qué cosas Se van a realizar y en el mismo informe explicar que eso parámetros se van a tomar en cuenta y que solo se cambiarán si es que las autoridades disponen de manera verbal o escrita ya que de ti considera que eso es lo mejor para el hospital y solo hará cambios en el caso de que las autoridades dispongan de manera verbal o escrita una visión diferente a la que el departamento de tecnologías de información y comunicaciones necesite
+    • Se debe analizar todos los procesos que necesiten en reversión ningún proceso podrá ser manipulado directamente en la base de datos y no debe tener una interfase de usuario mediante la cual se pueda manejar la información reversar procesos críticos y eso debe ser debe coordinar con las áreas usuarias
+    • Cualquier proceso de reversión que no tenga el sistema actual y que sea necesario debería ser obligatoriamente implementado por la nueva solución
+    • La transmisión de resultados de sistemas externos como por ejemplo el laboratorio y banco de sangre microbiología entre otros
+    • Se debe tomar en cuenta que del menú del sistema de gestión hospitalaria actual en cada uno de sus niveles las opciones determina la linea base para cualquier desarrollo. Cómo en base a este argumento se podría evitar la omisión de alguna opción importante
+    • De manera específica se debe explicar que el proceso de desagregación que el ministerio de telecomunicaciones recomendó para estimar los tiempos los está determinando el usuario finales decir médicos, enfermería y departamentos financiero, en este proceso es de los generadores de la necesidad y se deben validar por esas áreas. Este insumo debe calificarse de modo que se pueda establecer parámetros como tiempo de desarrollo, complejidad del requerimiento o pantalla, riesgo y calidad de redacción del requerimiento para que pueda ser entendido por quien lo implemente y la urgencia de implementación, eso sí lo hace Dtic.
+    • La idea de este proceso es basándonos en lo sugerido por el ministerio de telecomunicaciones es mantener la estructura de base de datos actual evitando así el riesgo de perder datos e información, lo importante es generar las interfase web/móvil o ambas, eso se debe tomar en cuenta.
+    • Se debe tomar en cuenta que se puede optimizar la linea base es decir optimizar o suprimir opciones innecesarias, eso lo debe determinar el oferente conjuntamente con el usuario final y oficializado al administrador de contrato.
+    • Un aspecto muy importante que se debe tomar en cuenta es que en el caso del nuevo o de la modernización del nuevo sistema de gestión hospitalaria se debe tomar en cuenta que mientras está desarrollando se debe mantener por continuidad de las operaciones del hospital se debe mantener el sistema predio funcionando hasta que salga producción  la modernización.
+    • Se sugiere actualizar el PETI(PLAN ESTRATÉGICO DE TECNOLOGÍAS DE LA INFORMACION) del DTIC antes de iniciar el proceso de contratación de la modernización.
+    • Se debe adjuntar en los informes Técnicos y de necesidad el menu de la línea base y la automatización de esas opciones es lo que la empresa oferente debe implementar, y se tiene las desagregaciones de los menús son referencias y si no estan en su totalidad, el menú de la linea base es el que se debe implementar con sus respectivas optimizaciones.
+    • Estos son los documentos de estudios previos que solicita la contraloría en estudios especiales.
+    • "Plan de control de accesos","Plan de pistas de auditaría","PETI: Plan estratégico de Tecnologías de la información","Plan de contingencia sobre desarrollo de software","Plan de infraestructura tecnológica para el nuevo sistema","Plan de medición de incremento de capacidad","Plan de recurrencia de usuarios (transacciones, proyecciones a futuro, tipos de usuario)","Requerimientos de seguridad","Plan de control de avance del proyecto, procedimientos de control y aprobaciones","Plan de obtención de respaldos del nuevo sistema","Plan de integridad de la solución","Observaciones a las normas de control interno de la Contraloría General del Estado (100-01, 100-02, 410-07)","Historias de usuario/Documento de especificación de requerimiento de software (ERS)","Metodología de trabajo sugerida","Cuadro de estimación de tiempo de desarrollo","Descripción general del Proyecto (requerimientos, limitaciones, riesgo general, objetivos, criterios de éxito)","Herramientas Métricas/de control de calidad","Plan de gestión de las comunicaciones","Plan de gestión","Plan de y (correos actas, reuniones de trabajo, oficio, memorando)","Usabilidad de la infraestructura actual (infraestructura recién adquirida)","Plan de migración de datos"
+    • Se debe hacer la integración entre los laboratorios es decir la transmisión de las variables y resultados de los exámenes. entre los sistemas externos y los internos.
+    • Se debe manejar los historicos de los resultados de exámenes y variables
+    • En la etapa de implementacion se definiria que opciones va a que rol en el caso de que no se tenga eso definido.
+    • La firma electronica debe estar implementada
+    • Se debe tomar en cuenta que por ser un sistema hospitalario especifico para el uso de pacientes militares tiene ciertas particularidades y en el caso de algunas empresas que ya tienen desarrollado en Odoo con muchos stored procedures les va tocar implementar y corregir su sistema
+    • Se debe tambien tomar en cuenta que en este caso el sistema hospitalario es un sistema personalizado a las necesidades de estos 11 años a las necesidades del Ministerio de Salud del ISSFA y demas aseguradoras, se debe considerar que muchos sistemas ya hechos tienen bien la logica pero adaptada al sector privado, por ejemplo los turnos del hospital el paciente no entra por página web a seleccionar su turno sino que se hace de acuerdo a la disponibilidad de turnos asignados a ciertos doctores, existen porcentajes de turnos de primera vez y subsecuentes asi como turnos extras, lo que en la empresa privada en cambio selecciona que dia quiere la atencion y con que medico.
+    • La dispensacion de medicina deberia ser aplicada no solo a los pacientes hospitalizados sino tambien a los de consulta externa
+    • Se deberá entregar una garantía en donde se comprometan a mantener la información de los pacientes es decir que habrá confidencialidad con la misma y la misma se migrara el 100%.
+
+
+
+
+El texto proporcionado describe detalladamente los requisitos y consideraciones para la modernización de un sistema de gestión hospitalaria (SGH). Sin embargo, desde una perspectiva informática y de infraestructura, hay varios aspectos que no se mencionan explícitamente y que podrían ser importantes para garantizar el éxito del proyecto. A continuación, se presenta un listado de estos aspectos:
+    1. Arquitectura del Sistema: No se especifica si se mantendrá la arquitectura cliente-servidor actual (Oracle Forms) o si se migrará a una arquitectura web más moderna (por ejemplo, modelo vista controlador).
+    2. Diseño de la Interfaz de Usuario (UI): Aunque se menciona la necesidad de interfaces web modernas y adaptables a dispositivos móviles, no se detalla si se seguirán estándares de diseño específicos (por ejemplo, Material Design) ni cómo se garantizará la accesibilidad para usuarios con discapacidades.
+    3. Tecnologías de Desarrollo Web: No se especifica qué tecnologías se utilizarán para desarrollar las nuevas interfaces web (por ejemplo, React, Angular, Vue.js) ni qué framework de backend se empleará (por ejemplo, Django, Flask, Express).
+    4. Pruebas de Rendimiento y Carga: No se menciona cómo se garantizará que el nuevo sistema pueda manejar la carga de trabajo esperada (por ejemplo, número de usuarios concurrentes, volumen de transacciones) ni cómo se realizarán pruebas de rendimiento y estrés para identificar cuellos de botella.
+    5. Seguridad: Aunque se menciona la protección de datos personales y la seguridad de la información, no se detalla qué medidas específicas se implementarán (por ejemplo, cifrado de datos, autenticación de usuarios, gestión de roles y permisos).
+    6. Integración Continua (CI) y Entrega Continua (CD): No se especifica si se implementarán prácticas de CI/CD para automatizar el proceso de desarrollo, pruebas y despliegue del sistema.
+    7. Monitorización y Mantenimiento: No se detalla cómo se monitorizará el rendimiento del sistema en producción ni cómo se gestionarán las actualizaciones y el mantenimiento a largo plazo.
+    8. Escalabilidad: No se menciona cómo se garantizará que el sistema pueda escalar para adaptarse a futuras necesidades (por ejemplo, aumento en el número de usuarios, nuevos módulos o funcionalidades).
+    9. Contenedores y Orquestación: No se especifica si se utilizarán tecnologías de contenedores (por ejemplo, Docker) y orquestación (por ejemplo, Kubernetes) para facilitar el despliegue y la gestión del sistema.
+    10. Infraestructura de Red: No se detalla qué tipo de infraestructura de red se requiere para soportar el nuevo sistema (por ejemplo, ancho de banda, redundancia, seguridad).
+    11. Hardware: No se especifica qué tipo de hardware se necesitará para ejecutar el nuevo sistema (por ejemplo, servidores, almacenamiento, balanceadores de carga).
+    12. Virtualización: Aunque se menciona que el hospital trabaja con máquinas virtuales, no se especifica qué plataforma de virtualización se utiliza ni cómo se gestionarán los recursos virtuales.
+    13. Respaldos y Recuperación ante Desastres: No se detalla cómo se realizarán los respaldos del sistema ni qué plan de recuperación ante desastres se implementará.
+    14. Documentación Técnica: No se especifica qué tipo de documentación técnica se entregará (por ejemplo, diagramas de arquitectura, manuales de usuario, guías de instalación y configuración).
+
+Es importante tener en cuenta estos aspectos para garantizar que la modernización del SGH sea exitosa y cumpla con los requisitos técnicos y de infraestructura necesarios.
+
+
+Claro, a continuación se detalla una propuesta de menú para una aplicación web de gestión hospitalaria, enfocada en la automatización de los procesos de derivación, referencia y contrareferencia.
+
+### Menú Principal de la Aplicación Web
+
+1. **Inicio**
+   - Dashboard
+   - Noticias y Comunicados
+
+2. **Pacientes**
+   - Registro de Pacientes
+   - Buscar Paciente
+   - Historia Clínica
+
+3. **Derivaciones**
+   - Nueva Derivación
+   - Seguimiento de Derivaciones
+   - Historial de Derivaciones
+   - Estadísticas de Derivaciones
+
+4. **Referencias**
+   - Nueva Referencia
+   - Seguimiento de Referencias
+   - Historial de Referencias
+   - Estadísticas de Referencias
+
+5. **Contrareferencias**
+   - Nueva Contrareferencia
+   - Seguimiento de Contrareferencias
+   - Historial de Contrareferencias
+   - Estadísticas de Contrareferencias
+
+6. **Citas y Programación**
+   - Agendar Cita
+   - Calendario de Citas
+   - Recordatorios de Citas
+   - Gestión de Disponibilidad
+
+7. **Comunicación**
+   - Mensajería Interna
+   - Videoconferencias/Telemedicina
+   - Notificaciones y Alertas
+
+8. **Informes y Análisis**
+   - Generar Informes
+   - Visualización de Datos
+   - Exportar Datos
+
+9. **Configuración**
+   - Gestión de Usuarios
+   - Permisos y Roles
+   - Preferencias del Sistema
+   - Seguridad y Privacidad
+
+10. **Ayuda y Soporte**
+    - Manual de Usuario
+    - Preguntas Frecuentes (FAQ)
+    - Contactar Soporte Técnico
+
+### Detalles de Cada Opción
+
+#### Derivaciones
+- **Nueva Derivación**: Formulario para registrar una nueva derivación con datos del paciente, motivo, destino, y profesional encargado.
+- **Seguimiento de Derivaciones**: Lista de derivaciones en curso con estados y acciones pendientes.
+- **Historial de Derivaciones**: Registro completo de todas las derivaciones realizadas, con capacidad de búsqueda y filtrado.
+- **Estadísticas de Derivaciones**: Informes y gráficos sobre el volumen y tipos de derivaciones, tiempos de respuesta, y resultados.
+
+#### Referencias
+- **Nueva Referencia**: Formulario para registrar una nueva referencia, similar al de derivaciones.
+- **Seguimiento de Referencias**: Lista y estado de las referencias en curso.
+- **Historial de Referencias**: Registro de todas las referencias realizadas.
+- **Estadísticas de Referencias**: Informes detallados sobre el desempeño de las referencias.
+
+#### Contrareferencias
+- **Nueva Contrareferencia**: Formulario para registrar una contrareferencia con detalles del paciente, informe de diagnóstico y tratamiento, y recomendaciones.
+- **Seguimiento de Contrareferencias**: Lista de contrareferencias en curso y pendientes.
+- **Historial de Contrareferencias**: Registro de todas las contrareferencias.
+- **Estadísticas de Contrareferencias**: Informes sobre el proceso de contrareferencia y su efectividad.
+
+#### Citas y Programación
+- **Agendar Cita**: Interfaz para programar nuevas citas.
+- **Calendario de Citas**: Visualización de citas programadas.
+- **Recordatorios de Citas**: Configuración y envío de recordatorios automáticos a pacientes y profesionales.
+- **Gestión de Disponibilidad**: Herramientas para gestionar la disponibilidad de los profesionales.
+
+#### Comunicación
+- **Mensajería Interna**: Plataforma de comunicación segura entre profesionales.
+- **Videoconferencias/Telemedicina**: Herramientas para consultas remotas.
+- **Notificaciones y Alertas**: Configuración de alertas y notificaciones sobre eventos importantes.
+
+#### Informes y Análisis
+- **Generar Informes**: Herramienta para crear informes personalizados.
+- **Visualización de Datos**: Paneles de control y gráficos interactivos.
+- **Exportar Datos**: Opciones para exportar informes y datos en varios formatos.
+
+#### Configuración
+- **Gestión de Usuarios**: Administración de cuentas de usuario.
+- **Permisos y Roles**: Definición y asignación de roles y permisos.
+- **Preferencias del Sistema**: Ajustes de configuración de la aplicación.
+- **Seguridad y Privacidad**: Herramientas para asegurar la confidencialidad y seguridad de los datos.
+
+#### Ayuda y Soporte
+- **Manual de Usuario**: Documentación detallada de uso.
+- **Preguntas Frecuentes (FAQ)**: Respuestas a preguntas comunes.
+- **Contactar Soporte Técnico**: Información para recibir asistencia técnica.
+
+Este menú ofrece una estructura clara y organizada que permite a los usuarios gestionar eficientemente los procesos de derivación, referencia y contrareferencia, asegurando una atención continua y coordinada para los pacientes.
+
+El Hospital de Especialidades Fuerzas Armadas No 1 en Ecuador ofrece una amplia gama de especialidades médicas. Las especialidades se dividen en varias categorías, incluyendo especialidades clínicas, quirúrgicas, materno-infantiles, salud oral y maxilofacial, auxiliares de diagnóstico y tratamiento, y apoyo terapéutico.
+
+### Especialidades Clínicas
+1. **Alergología**
+2. **Cardiología**
+3. **Dermatología**
+4. **Endocrinología y Metabólico**
+5. **Gastroenterología**
+6. **Geriatría**
+7. **Genética**
+8. **Hematología**
+9. **Infectología / Epidemiología**
+10. **Medicina Interna**
+11. **Nefrología**
+12. **Neumología**
+13. **Neurología**
+14. **Oncología**
+15. **Psicología / Psiquiatría**
+16. **Reumatología**
+
+### Especialidades Quirúrgicas
+1. **Cardiotorácica**
+2. **Cirugía General**
+3. **Cirugía Pediátrica**
+4. **Cirugía Plástica y Reconstructiva**
+5. **Cirugía Vascular**
+6. **Neurocirugía**
+7. **Oftalmología**
+8. **Otorrinolaringología**
+9. **Proctología**
+10. **Traumatología**
+11. **Urología**
+
+### Especialidades Materno-Infantiles
+1. **Ginecología y Obstetricia**
+2. **Neonatología**
+3. **Pediatría**
+4. **Neuropediatría**
+
+### Especialidades de Salud Oral y Maxilofacial
+1. **Cirugía Oral y Maxilofacial**
+2. **Odontopediatría**
+3. **Ortodoncia**
+4. **Periodoncia**
+5. **Endodoncia**
+6. **Rehabilitación Oral**
+7. **Operatoria Dental y Estética**
+8. **Implantología Oral**
+9. **Laboratorio e Imagen Dental**
+
+### Auxiliar de Diagnóstico y Tratamiento
+1. **Unidad de Radiognóstico e Imagen**
+2. **Unidad de Laboratorio Clínico**
+3. **Unidad de Laboratorio Microbiológico**
+4. **Unidad de Laboratorio de Inmunología**
+5. **Unidad de Laboratorio de Anatomía Patológica**
+
+### Apoyo Terapéutico
+1. **Acupuntura**
+2. **Nutrición y Dietética**
+3. **Terapia de Dolor y Cuidados Paliativos**
+4. **Medicina Física y Rehabilitación**
+5. **Unidad de Farmacia Institucional**
+6. **Banco de Sangre**
+7. **Radioterapia**
+
+Estas especialidades aseguran una atención integral y de alta calidad a los pacientes, cubriendo una amplia gama de necesidades médicas y terapéuticas.
+
+Fuentes:
+- [Hospital de Especialidades Fuerzas Armadas No. 1](https://www.hospitalmilitar.mil.ec)
+- [Servicios | Hospital Militar Quito](https://servicios.he1.mil.ec)
+
+
+Se tiene los datasets de analisis de datos en tableau y powerbi que necesitan ser automatizados
+como:
+ESTOY VIENDO LAS INTERRELACIONES QUE TIENE EL SISTEMA HOSPITALARIO ACTUAL CON OTROS MODULOS POR EJEMPLO EL MODULO DE BANCO DE SANGRE LA CONFIGURACION DE LOS PARAMETROS TIENE INTERELACION CON EL FINANCIERO CON CONSULTA EXTERNA CON HOSPITALIZACION CON LABORATORIO E IMAGEN Y EMERGENCIA
+LAS POSIBLES INTERELACIONES SON CON:
+ADMINISTRATIVO
+ABASTECIMIENTO
+FINANCIEROSCONSULTA EXTERNA
+HOSPITALIZACION
+ODONTOLOGIA
+LABORATORIO/IMAGEN
+EMERGENCIA
+
+
+Absolutamente, la precisión y coherencia de los reportes financieros son fundamentales para una efectiva recuperación de cartera en el ámbito hospitalario. Aquí te explico por qué y cómo se relacionan:
+
+**Importancia de la precisión en los reportes financieros:**
+
+* **Identificación de deudas:** Los reportes financieros claros y detallados permiten identificar con precisión las deudas pendientes de los pacientes, incluyendo montos, fechas de vencimiento y servicios prestados.
+* **Segmentación de la cartera:** La información financiera permite segmentar la cartera en diferentes categorías (por ejemplo, deudas recientes, morosas, en proceso de cobro), lo que facilita la aplicación de estrategias de recuperación específicas para cada grupo.
+* **Seguimiento de pagos:** Los reportes actualizados permiten realizar un seguimiento riguroso de los pagos recibidos, identificando retrasos, incumplimientos y posibles errores en la facturación.
+* **Toma de decisiones informadas:** La información financiera precisa proporciona una base sólida para tomar decisiones estratégicas sobre la gestión de la cartera, como la asignación de recursos, la negociación de acuerdos de pago y la implementación de acciones legales.
+* **Evaluación de la efectividad:** Los reportes financieros permiten evaluar la efectividad de las estrategias de recuperación de cartera, identificando áreas de mejora y ajustando los procesos para maximizar los resultados.
+
+**Conciliación y cuadre de reportes:**
+
+La conciliación de reportes financieros implica comparar la información de diferentes fuentes (por ejemplo, registros contables, informes de facturación, datos de sistemas de gestión hospitalaria) para asegurar su coherencia y detectar posibles discrepancias. El cuadre de reportes consiste en verificar que los saldos y movimientos contables coincidan con los registros de las transacciones realizadas.
+
+**Consecuencias de la falta de cuadre:**
+
+La falta de cuadre en los reportes financieros puede tener graves consecuencias para la recuperación de cartera, como:
+
+* **Dificultad para identificar deudas:** Errores en los reportes pueden dificultar la identificación precisa de las deudas pendientes, lo que puede llevar a pérdidas financieras para el hospital.
+* **Cobro erróneo o incompleto:** La falta de información precisa puede resultar en el cobro de montos incorrectos o la omisión de deudas, lo que puede generar conflictos con los pacientes y afectar la reputación del hospital.
+* **Toma de decisiones equivocadas:** Decisiones basadas en información financiera errónea pueden llevar a estrategias de recuperación ineficaces y pérdidas de ingresos.
+
+**Recomendaciones:**
+
+Para garantizar la precisión y coherencia de los reportes financieros y optimizar la recuperación de cartera, se recomienda:
+
+* **Implementar sistemas de gestión hospitalaria integrados:** Estos sistemas permiten centralizar la información financiera y facilitar la conciliación y cuadre de reportes.
+* **Establecer procedimientos claros:** Definir procedimientos claros y detallados para el registro de transacciones, la emisión de facturas y la gestión de cobros.
+* **Capacitar al personal:** Asegurar que el personal encargado de la gestión financiera esté capacitado en el uso de los sistemas y los procedimientos establecidos.
+* **Realizar conciliaciones periódicas:** Establecer un cronograma regular para la conciliación y cuadre de reportes, con el fin de detectar y corregir errores de manera oportuna.
+* **Utilizar herramientas de análisis de datos:** Emplear herramientas de análisis de datos para identificar patrones y tendencias en la cartera, lo que puede ayudar a tomar decisiones estratégicas más efectivas.
+
+En resumen, la precisión y coherencia de los reportes financieros son esenciales para una efectiva recuperación de cartera en el ámbito hospitalario. Al implementar las recomendaciones mencionadas, los hospitales pueden mejorar su gestión financiera, optimizar sus procesos de cobro y garantizar la sostenibilidad de sus operaciones.
+
+n.
+
+La etapa de manejo de datos y la integración de todos los módulos para evaluar el desempeño real en un entorno de desarrollo y su transición a producción es fundamental en el desarrollo de sistemas complejos como un sistema de gestión hospitalaria. Esta etapa se centra en asegurar que todos los componentes del sistema funcionen de manera cohesiva y eficiente antes de su implementación final. A continuación se detalla cómo sería esta etapa:
+
+### Etapa de Manejo de Datos e Integración de Módulos
+
+#### 1. Preparación del Entorno de Desarrollo
+
+- **Configuración del Entorno**: Establecer un entorno de desarrollo que refleje lo más posible el entorno de producción. Esto incluye hardware, software, redes y bases de datos.
+- **Carga de Datos de Prueba**: Utilizar datos de prueba que sean representativos de los datos reales. Estos datos deben incluir una variedad de casos de uso, como datos típicos, datos límite y datos incorrectos.
+
+#### 2. Integración de Módulos
+
+- **Ensayo de Integración**: Integrar todos los módulos del sistema, como administración, finanzas, laboratorio, imagenología, etc.
+- **Pruebas de Comunicación**: Verificar que todos los módulos se comuniquen correctamente entre sí. Esto incluye la transferencia de datos, la sincronización y la actualización de registros.
+- **Verificación de Interfaces**: Asegurar que todas las interfaces de usuario y API funcionen correctamente y que los datos se presenten y manipulen de manera adecuada.
+
+#### 3. Pruebas de Desempeño
+
+- **Pruebas de Carga**: Realizar pruebas para evaluar cómo el sistema maneja cargas pesadas. Simular el uso por múltiples usuarios simultáneamente y verificar tiempos de respuesta y estabilidad.
+- **Pruebas de Estrés**: Empujar el sistema más allá de su capacidad normal para ver cómo maneja situaciones extremas.
+- **Pruebas de Volumen**: Probar el sistema con grandes cantidades de datos para asegurar que puede manejar la cantidad de información que se espera en producción.
+
+#### 4. Manejo de Datos
+
+- **Migración de Datos**: Planificar y realizar la migración de datos desde el sistema antiguo al nuevo. Esto incluye la extracción, transformación y carga (ETL) de datos.
+- **Verificación de Integridad de Datos**: Asegurar que los datos se migren correctamente sin pérdida ni corrupción. Verificar la integridad de los datos antes y después de la migración.
+- **Pruebas de Consistencia de Datos**: Realizar pruebas para asegurar que los datos sean consistentes a través de todos los módulos del sistema.
+
+#### 5. Pruebas de Aceptación
+
+- **Pruebas de Aceptación del Usuario (UAT)**: Involucrar a los usuarios finales en las pruebas del sistema para asegurar que cumple con sus necesidades y expectativas. Recoger feedback y realizar ajustes necesarios.
+- **Validación de Requisitos**: Confirmar que todos los requisitos funcionales y no funcionales se han cumplido.
+
+#### 6. Preparación para la Producción
+
+- **Plan de Despliegue**: Crear un plan detallado para el despliegue del sistema en el entorno de producción. Esto incluye pasos específicos, responsables y cronogramas.
+- **Entrenamiento de Usuarios**: Capacitar a los usuarios finales y al personal de TI sobre el uso y mantenimiento del nuevo sistema.
+- **Documentación**: Asegurar que toda la documentación técnica y de usuario esté completa y accesible.
+
+#### 7. Despliegue en Producción
+
+- **Despliegue Gradual**: Considerar un despliegue gradual, comenzando con un grupo pequeño de usuarios antes de extenderlo a toda la organización. Esto permite detectar y solucionar problemas en una escala más manejable.
+- **Monitorización Inicial**: Monitorizar el sistema de cerca durante el periodo inicial de producción para detectar y solucionar problemas rápidamente.
+- **Soporte Continuo**: Establecer un equipo de soporte para atender cualquier problema que surja después del despliegue.
+
+### Consecuencias de No Realizar una Revisión Completa y Adecuada Integración
+
+1. **Errores en Producción**
+   - Problemas de funcionalidad que pueden no haber sido detectados durante el desarrollo.
+   - Fallos en la comunicación entre módulos, causando interrupciones en el flujo de trabajo.
+
+2. **Problemas de Rendimiento**
+   - El sistema puede no manejar la carga esperada, resultando en tiempos de respuesta lentos y posible caída del sistema.
+   - Degradación del rendimiento bajo alta carga, afectando la operatividad del hospital.
+
+3. **Vulnerabilidades de Seguridad**
+   - Brechas de seguridad debido a la falta de pruebas adecuadas.
+   - Riesgo de accesos no autorizados a datos sensibles.
+
+4. **Experiencia del Usuario**
+   - Mala experiencia del usuario debido a interfaces mal diseñadas o fallas en el sistema.
+   - Rechazo del sistema por parte de los usuarios finales, afectando la adopción y uso del nuevo sistema.
+
+5. **Costos Adicionales**
+   - Necesidad de correcciones y ajustes después de la implementación, resultando en costos adicionales.
+   - Daño a la reputación de la organización y pérdida de confianza por parte de los usuarios.
+
+Implementar una etapa de revisión exhaustiva y adecuada integración es esencial para el éxito del despliegue de un sistema de gestión hospitalaria, asegurando que el sistema funcione de manera eficiente y segura, cumpliendo con todas las necesidades y expectativas de los usuarios.
+
+
+
+---
+
+### Etapa de Revisión y Manejo de Datos con la Línea Base del Sistema Actual
+
+Una etapa de revisión en un proyecto de desarrollo de sistemas, especialmente en el contexto de un sistema de gestión hospitalaria, es crucial para asegurar la calidad y la funcionalidad del producto antes de su implementación completa. Utilizando la línea base del sistema actual, se puede mejorar y modernizar el sistema de manera efectiva. A continuación se describe cómo sería esta etapa y las posibles consecuencias de no realizar una revisión completa, con especial énfasis en la integración y manejo de datos.
+
+### Etapa de Revisión
+
+1. Planificación de la Revisión
+   -Definición de Objetivos: Establecer los objetivos específicos de la revisión, como verificar la funcionalidad, asegurar la integración correcta de todos los módulos y garantizar el cumplimiento de los requisitos. Basar estos objetivos en la línea base del sistema actual para asegurar que todas las funcionalidades críticas sean cubiertas.
+   -Asignación de Responsabilidades: Designar a los miembros del equipo que participarán en la revisión, incluyendo desarrolladores, analistas, personal del área usuaria y personal de TI.
+
+2. Revisión de Código
+   -Revisión de Calidad del Código: Verificar que el código cumple con los estándares de codificación establecidos. Comparar con el código del sistema actual para identificar áreas de mejora.
+   -Revisión de Seguridad: Asegurar que no hay vulnerabilidades de seguridad en el código, manteniendo las medidas de seguridad implementadas en el sistema actual.
+   -Revisión de Funcionalidad: Probar cada módulo de forma aislada para confirmar que cumple con sus especificaciones, manteniendo las funcionalidades clave del sistema actual.
+
+3. Pruebas de Integración
+-Integración de Módulos: Ensamblar los diferentes módulos del sistema y verificar que funcionan correctamente juntos. Asegurarse de que las interrelaciones entre módulos (como administración, finanzas, laboratorio, imagenología, etc.) son fluidas.
+-Pruebas de Interfaces: Asegurar que las interfaces entre módulos están funcionando correctamente y que la comunicación entre ellos es fluida.
+-Pruebas de Flujo de Datos: Verificar que los datos se transmiten correctamente entre módulos sin pérdida o corrupción, usando datos representativos del sistema actual.
+
+4. Pruebas de Rendimiento y Carga
+-Pruebas de Rendimiento: Evaluar el rendimiento del sistema bajo condiciones normales y de alta carga, comparándolo con el rendimiento del sistema actual.
+Pruebas de Carga: Simular condiciones de alta carga para asegurar que el sistema puede manejar el volumen esperado de usuarios y datos.
+
+Pruebas de Seguridad
+-Pruebas de Vulnerabilidad: Realizar pruebas para identificar y corregir posibles vulnerabilidades de seguridad.
+Revisión de Accesos y Permisos: Verificar que los controles de acceso y permisos están implementados correctamente, manteniendo las políticas de acceso del sistema actual.
+
+6. Revisión de Documentación
+   -Documentación Técnica: Asegurar que la documentación técnica está completa y precisa, incluyendo cambios y mejoras respecto al sistema actual.
+   -Manual de Usuario: Verificar que los manuales de usuario y guías de entrenamiento son claros y útiles, reflejando tanto las funcionalidades nuevas como las existentes.
+
+7. Pruebas de Aceptación por el Usuario (UAT)
+   -Pruebas con Usuarios Finales: Involucrar a los usuarios finales para que prueben el sistema y confirmen que cumple con sus necesidades y expectativas, comparando con el sistema actual.
+   -Recolección de Feedback: Recopilar feedback de los usuarios y realizar ajustes necesarios.
+
+### Consecuencias de No Realizar una Revisión Completa
+
+1. Errores No Detectados
+   -Fallas Funcionales: Módulos que no funcionan correctamente o no cumplen con las especificaciones.
+   -Problemas de Integración: Módulos que no se comunican correctamente entre sí, causando fallas en el flujo de trabajo.
+
+2. Problemas de Rendimiento
+   -Bajo Rendimiento: El sistema puede no manejar la carga esperada, resultando en tiempos de respuesta lentos.
+   -Caídas del Sistema: El sistema puede colapsar bajo alta carga, afectando la disponibilidad y fiabilidad.
+
+3. Vulnerabilidades de Seguridad
+   -Brechas de Seguridad: Vulnerabilidades que pueden ser explotadas por atacantes, comprometiendo datos sensibles.
+   -Accesos No Autorizados: Fallas en los controles de acceso que permiten a usuarios no autorizados acceder a información confidencial.
+
+4. Mala Experiencia del Usuario
+   -Interfaz de Usuario Deficiente: Una interfaz de usuario que no es intuitiva o tiene errores, lo que dificulta su uso.
+   -Rechazo del Sistema: Los usuarios finales pueden rechazar el sistema si no cumple con sus expectativas o es difícil de usar.
+
+5. Costos Adicionales
+   -Correcciones Post-Implementación: La necesidad de corregir errores después de la implementación puede ser costosa y demorada.
+   -Reputación Dañada: La falta de calidad en el sistema puede dañar la reputación de la organización y afectar la confianza de los usuarios.
+
+### Importancia de la Integración
+
+La integración es uno de los aspectos más críticos de un sistema de gestión hospitalaria, ya que este tipo de sistema depende de la interconexión fluida de diversos módulos. Una revisión completa asegura que:
+
+-Flujo de Trabajo Eficiente: Los datos se mueven de manera fluida y eficiente entre los módulos, permitiendo que los procesos operativos se realicen sin interrupciones.
+-Información Coherente: La información es coherente y consistente en todo el sistema, evitando discrepancias y errores de datos.
+-Optimización del Tiempo: Los tiempos de respuesta son rápidos y los usuarios pueden realizar sus tareas de manera eficiente.
+-Cumplimiento Normativo: El sistema cumple con todas las regulaciones y estándares necesarios, especialmente en lo que respecta a la seguridad y privacidad de los datos.
+
+### Etapa de Manejo de Datos e Integración de Módulos
+
+#### 1. Preparación del Entorno de Desarrollo
+
+-Configuración del Entorno: Establecer un entorno de desarrollo que refleje lo más posible el entorno de producción. Esto incluye hardware, software, redes y bases de datos. Basar esta configuración en el sistema actual.
+-Carga de Datos de Prueba: Utilizar datos de prueba que sean representativos de los datos reales. Estos datos deben incluir una variedad de casos de uso, como datos típicos, datos límite y datos incorrectos.
+
+#### 2. Integración de Módulos
+
+-Ensayo de Integración: Integrar todos los módulos del sistema, como administración, finanzas, laboratorio, imagenología, etc., asegurando que las interrelaciones se mantengan como en el sistema actual.
+-Pruebas de Comunicación: Verificar que todos los módulos se comuniquen correctamente entre sí. Esto incluye la transferencia de datos, la sincronización y la actualización de registros.
+-Verificación de Interfaces: Asegurar que todas las interfaces de usuario y API funcionen correctamente y que los datos se presenten y manipulen de manera adecuada.
+
+#### 3. Pruebas de Desempeño
+
+-Pruebas de Carga: Realizar pruebas para evaluar cómo el sistema maneja cargas pesadas. Simular el uso por múltiples usuarios simultáneamente y verificar tiempos de respuesta y estabilidad.
+-Pruebas de Estrés: Empujar el sistema más allá de su capacidad normal para ver cómo maneja situaciones extremas.
+-Pruebas de Volumen: Probar el sistema con grandes cantidades de datos para asegurar que puede manejar la cantidad de información que se espera en producción.
+
+#### 4. Manejo de Datos
+
+-Migración de Datos: Planificar y realizar la migración de datos desde el sistema antiguo al nuevo. Esto incluye la extracción, transformación y carga (ETL) de datos.
+-Verificación de Integridad de Datos: Asegurar que los datos se migren correctamente sin pérdida ni corrupción. Verificar la integridad de los datos antes y después de la migración.
+-Pruebas de Consistencia de Datos: Realizar pruebas para asegurar que los datos sean consistentes a través de todos los módulos del sistema.
+
+#### 5. Pruebas de Aceptación
+
+-Pruebas de Aceptación del Usuario (UAT): Involucrar a los usuarios finales en las pruebas del sistema para asegurar que cumple con sus necesidades y expectativas. Recoger feedback y realizar ajustes necesarios.
+-Validación de Requisitos: Confirmar que todos los requisitos funcionales y no funcionales se han cumplido.
+
+#### 6. Preparación para la Producción
+
+-Plan de Despliegue: Crear un plan detallado para el despliegue del sistema en el entorno de producción. Esto incluye pasos específicos, responsables y cronogramas.
+-Entrenamiento de Usuarios: Capacitar a los usuarios finales y al personal de TI sobre el uso y mantenimiento del nuevo sistema.
+-Documentación: Asegurar que toda la documentación técnica y de usuario esté completa y accesible.
+
+#### 7. Despliegue en Producción
+
+-Despliegue Gradual: Considerar un despliegue gradual, comenzando con un grupo pequeño de usuarios antes de extenderlo a toda la organización. Esto permite detectar y solucionar problemas en una escala más manejable.
+-Monitorización Inicial: Monitorizar el sistema de cerca durante el periodo inicial de producción para detectar y solucionar problemas rápidamente.
+-Soporte Continuo: Establecer un equipo de soporte para atender cualquier problema que surja después del despliegue.
+
+### Consecuencias de No Realizar una Revisión Completa y Adecuada Integración
+
+1. Errores en Producción
+   -Problemas de funcionalidad que pueden no haber sido detectados durante el desarrollo.
+   -Fallos en la comunicación entre módulos, causando interrupciones en el flujo de trabajo.
+
+2. Problemas de Rendimiento
+   -El sistema puede no manejar la carga esperada, resultando en tiempos de respuesta lentos y posible caída del sistema.
+   -Degradación del rendimiento bajo alta carga, afectando la operatividad del hospital.
+
+3. Vulnerabilidades de Seguridad
+   -Brechas de seguridad debido a la falta de pruebas adecuadas.
+   -Riesgo de accesos no autorizados a datos sensibles.
+
+4. Experiencia del Usuario
+   -Mala experiencia del usuario debido a interfaces mal diseñadas o fallas en el sistema.
+   -Rechazo del sistema por parte de los usuarios finales, afectando la adopción y uso del nuevo sistema.
+
+5. Costos Adicionales
+   -Necesidad de correcciones y ajustes después de la implementación, resultando en costos adicionales.
+   -Daño a la reputación de la organización y pérdida de confianza por parte de los usuarios.
+
+Implementar una etapa de revisión exhaustiva y adecuada integración es esencial para el éxito del despliegue de un sistema de gestión hospitalaria, asegurando que el sistema funcione de manera eficiente y segura, cumpliendo con todas las necesidades y expectativas de los usuarios.
+
+
+
+
+Orden de Ejecución de las Fases
+
+FASE 1: ANÁLISIS LÍNEA BASE
+Analista de Negocios: Especialista en capturar y documentar los requerimientos y procesos actuales.
+Especialista en Sistemas de Información Hospitalaria: Conocimiento profundo del sistema hospitalario actual.
+Arquitecto de Soluciones: Experto en diseñar soluciones tecnológicas alineadas con los requerimientos.
+Consultor de Procesos: Para optimizar los procesos identificados.
+FASE 2: CATÁLOGOS/SEGURIDAD
+Desarrollador Backend: Para la implementación de catálogos en el sistema.
+Especialista en Seguridad Informática: Para definir y configurar medidas de seguridad y control de accesos.
+Administrador de Bases de Datos (DBA): Para la gestión segura de los catálogos y datos.
+FASE 3: ADMINISTRATIVO/DOCENCIA
+Analista Funcional: Para adaptar los módulos administrativos y de docencia a los requerimientos específicos.
+Desarrollador de Software: Para la implementación de las funcionalidades administrativas.
+Especialista en Capacitación: Para desarrollar materiales y estrategias de formación en el uso del nuevo sistema.
+FASE 4.1: SISTEMA DE GESTIÓN HOSPITALARIA
+Especialista en Sistemas de Información Hospitalaria: Para asegurar la correcta implementación del módulo de gestión hospitalaria.
+Desarrollador de Software: Para la codificación y personalización del sistema.
+Analista de Pruebas: Para asegurar que las funcionalidades del sistema de gestión hospitalaria cumplen con los requerimientos.
+FASE 4.2: FINANCIERO/ABASTECIMIENTOS
+Especialista en Sistemas Financieros: Conocimiento en módulos financieros y de abastecimientos en sistemas de gestión.
+Desarrollador de Software: Para la implementación de estos módulos.
+Contador o Auditor: Para verificar que los procesos financieros se implementan correctamente.
+FASE 5: REPORTERÍA
+Especialista en Inteligencia de Negocios (BI): Para el desarrollo de reportes y dashboards.
+Analista de Datos: Para diseñar e implementar las consultas y reportes necesarios.
+Desarrollador de BI: Para la integración y despliegue de la reportería en la plataforma seleccionada.
+FASE 6: PRUEBAS
+Analista de Pruebas: Responsable de diseñar y ejecutar casos de prueba.
+Ingeniero de QA (Quality Assurance): Para garantizar la calidad del software desarrollado.
+Especialista en Automatización de Pruebas: Para automatizar pruebas repetitivas y de carga.
+FASE 7: INTEGRACIÓN
+Ingeniero de Integración: Para asegurar que todos los módulos se integren sin problemas.
+Especialista en Interoperabilidad: Para gestionar la interacción entre sistemas distintos (internos y externos).
+Desarrollador de APIs: Para la creación de interfaces que conecten los diferentes módulos.
+FASE 8: SITIO ALTERNO
+Ingeniero de Infraestructura: Para configurar y asegurar el sitio alterno.
+Especialista en Recuperación ante Desastres: Para diseñar y probar los planes de contingencia.
+Administrador de Redes: Para gestionar la conectividad y redundancia del sitio alterno.
+FASE 9: PASO A PRODUCCIÓN
+Ingeniero de DevOps: Para la automatización del despliegue en el ambiente de producción.
+Administrador de Sistemas: Para supervisar el entorno de producción.
+Especialista en Soporte Técnico: Para asegurar la estabilidad del sistema durante la transición.
+FASE 10: SOPORTE Y FEEDBACK
+Especialista en Soporte Técnico: Para atender y resolver incidencias post-producción.
+Analista de Feedback: Para recopilar y analizar las sugerencias y problemas reportados por los usuarios.
+Gestor de Proyectos: Para coordinar las actividades de soporte y feedback, asegurando la mejora continua.
+
+
+# Recursos
+Perfil
+Costo x hora
+Horas
+Fases intervención en el proyecto
+Total
+$1.00
+
+
+$18.90
+$664.00
+FASE 1(ANALISIS LINEA BASE)
+
+
+
+
+$12,549.60
+$1.00
+
+
+$18.90
+$1,746.00
+FASE 2(CATALOGOS/SEGURIDAD)
+
+
+
+
+$32,999.40
+$2.00
+
+
+$18.90
+$7,016.00
+FASE 3(ADMINISTRATIVO/DOCENCIA)
+
+
+
+
+$132,602.40
+$10.00
+
+
+$18.90
+$25,651.00
+FASE 4.1(SISTEMA GESTIÓN HOSPITALARIA)
+
+
+
+
+$484,803.90
+$17.00
+
+
+$18.90
+$44,610.00
+FASE 4.2(FINANCIERO/ABSTECIMIENTOS)
+
+
+
+
+$843,129.00
+$7.00
+
+
+$18.90
+$16,952.00
+FASE 5(REPORTERIA)
+
+
+
+
+$320,392.80
+$1.00
+
+
+$18.90
+$2,400.00
+FASE 6(PRUEBAS)
+
+
+
+
+$45,360.00
+$1.00
+
+
+$18.90
+$599.00
+FASE 7(INTEGRACION)
+
+
+
+
+$11,321.10
+$1.00
+
+
+$18.90
+$160.00
+FASE 8(SITIO ALTERNO)
+
+
+
+
+$3,024.00
+$1.00
+
+
+$18.90
+$600.00
+FASE 9(PASO A PRODUCCION)
+
+
+
+
+$11,340.00
+$1.00
+
+
+$18.90
+$2,396.00
+FASE 10(SOPORTE Y FEEDBACK)
+
+
+
+
+$45,284.40
+Subtotal:
+
+
+
+
+
+
+
+
+
+
+
+
+$1,942,806.60
+I.V.A (15%):
+
+
+
+
+
+
+
+
+
+
+
+
+$291,420.99
+Total
+
+
+
+
+
+
+
+
+
+
+
+
+$2,234,227.59
+
+
+
+
+
+
+Se debe tomar también en cuenta que en cuanto a la necesidad de la de TIC originalmente fue modernizar el sistema actual y en este caso las necesidades de cambio total del sistema es por parte de las autoridades específicamente la alta cúpula del hospital que ha decidido hacer este cambio no considerando lo que el departamento de tecnologías de la información y comunicaciones en este caso específicamente el ingeniero Jaime Padilla y el ingeniero Cristian Ruiz han visto como algo menos riesgoso pero de todas maneras hemos decidido colaborarles con la generación de la documentación necesaria. Una cosa también que se debe tomar en cuenta es que no se ha completado la disgregación de todos los requerimientos y tampoco existe firmas de responsabilidad de los usuarios finales con respecto a los requerimientos como solía hacerse dentro del sistema de gestión hospitalario actual y eso puede ser observado a futuro.
+
+
+
+Una cosa clave es que DTIC quiere modernizar el motor de base de datos actual mejorarlo y darle una interfaz web para que no exista la migración de datos es decir 0% de perdida de datos, en cualquier otro caso se pide el 100% de la migración de todos los pacientes.
+
+
+
+-- normativa
+
+Para elaborar un informe técnico sobre el manejo de un sistema de gestión hospitalaria y su información, considerando tanto la normativa ecuatoriana como internacional, es fundamental tener en cuenta diversas leyes, reglamentos y estándares. A continuación, se presentan algunas de las normativas y marcos legales relevantes que debes considerar:
+
+### Normativa Ecuatoriana
+
+1. **Constitución de la República del Ecuador (2008):*
+
+2. **Ley Orgánica de Protección de Datos Personales (LOPDP) (2021):**
+
+3. **Ley Orgánica de Salud (LOS):**
+
+4. **Reglamento de la Ley Orgánica de Salud:**
+5. **Ley Orgánica del Sistema Nacional de Contratación Pública (LOSNCP):**
+6. **Ley de Comercio Electrónico, Firmas Electrónicas y Mensajes de Datos:**
+3. **Estándares Internacionales de Seguridad de la Información (ISO/IEC 27001):**
+4. **Estándares HL7 y FHIR (Fast Healthcare Interoperability Resources):**
+   - Estos estándares son ampliamente utilizados a nivel internacional para la interoperabilidad de los sistemas de información en salud. Garantizan que los datos de salud puedan ser compartidos de manera segura y eficiente entre diferentes sistemas.
+
+5. **Normas ISO 27799 (Seguridad de la Información en Salud):**
+   - Específica para la gestión de la seguridad de la información en el ámbito de la salud, ofrece directrices para proteger la información personal de los pacientes en el contexto de los sistemas de información de salud.
+
+### Consideraciones Adicionales
+
+- **Política Nacional de Salud Digital:** Es importante estar al tanto de cualquier política o estrategia nacional relacionada con la salud digital o la informatización del sistema de salud en Ecuador.
+- **Normas Técnicas para la Interoperabilidad de Sistemas de Información en Salud (NTIS):** Emitidas por el Ministerio de Salud Pública, estas normas son esenciales para garantizar que los sistemas de información hospitalaria se integren adecuadamente con otros sistemas de salud a nivel nacional.
+
+
+
+Se ha decidido QUE SE VA A UTILIZAR SOFTWARE PRIVATIVO EN BASE A
+Se va a optar por un software privativo con componente de valor agregado ecuatoriano, de acuerdo con la prelación 2 del Artículo 148 del "Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación", está justificada por las necesidades específicas del Hospital de Especialidades Fuerzas Armadas No. 1 (HE-1). Luego de una evaluación exhaustiva de las alternativas propuestas, se determinó que la opción seleccionada no solo es la más económica, con un presupuesto de $1’828383.39 (Un millón ochocientos veintiocho mil trescientos ochenta y tres dólares con 39/100.) incluido impuestos, sino que también cumple con los estrictos requerimientos técnicos y operativos que demanda el hospital. Esta solución garantiza altos niveles de seguridad de la información, interoperabilidad con sistemas clave del sector público, como Esigef, ISSFA y SRI, y la escalabilidad necesaria para acompañar el crecimiento de las operaciones del hospital. Además, cumple con la normativa del sector salud en Ecuador, todo mientras promueve el desarrollo de la economía local al incluir un importante componente de valor agregado ecuatoriano.
+
+La elección de esta opción privativa está respaldada por la falta de alternativas de código abierto que puedan cumplir con los estándares técnicos, regulatorios y de seguridad requeridos por el HE-1. Las evaluaciones realizadas demostraron que las opciones de software de código abierto no lograban satisfacer las necesidades operativas críticas del hospital, ya sea por limitaciones técnicas o por la imposibilidad de adaptarlas a un costo razonable. Con base en estos análisis, se justifica la selección del software privativo.
+
+
+///////////////////////////////////////////////
+Arquitectura Definida para el Desarrollo.
+Actualmente, la capa de Oracle Forms 6i que se utiliza en el sistema hospitalario sigue una arquitectura cliente-servidor, la cual ha quedado desfasada y ya no recibe soporte oficial. Esto representa un desafío importante, ya que cualquier problema o necesidad de actualización requiere soluciones personalizadas, lo que puede incrementar los costos de mantenimiento y dificultar la resolución de problemas de compatibilidad o seguridad.
+
+Sin embargo, uno de los aspectos clave que se puede aprovechar es que el motor de base de datos utilizado actualmente en el hospital tiene la capacidad de ser actualizado a la versión más reciente disponible. Esta actualización permitiría mantener una infraestructura de base de datos robusta y moderna, que no solo mejoraría el rendimiento y la seguridad, sino que también permitiría implementar nuevas funcionalidades más fácilmente, garantizando la continuidad operativa del hospital sin comprometer la integridad de la información almacenada.
+
+Con la implementación de una nueva solución basada en una arquitectura monolítica para la capa web o GUI, se puede reemplazar la capa de Oracle Forms 6i, modernizando la interfaz de usuario y adaptándola a tecnologías actuales. Al mismo tiempo, se puede mantener y optimizar el motor de base de datos actual mediante la migración a versiones más avanzadas, lo que asegura que la infraestructura de datos esté actualizada y compatible con las demandas tecnológicas y de seguridad del sistema hospitalario.
+
+Este enfoque garantiza que se minimicen los riesgos de pérdida de información durante la transición y que el sistema de gestión hospitalaria pueda evolucionar de manera segura, mejorando la experiencia del usuario y asegurando la longevidad y escalabilidad del sistema en el futuro.

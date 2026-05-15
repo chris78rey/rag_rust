@@ -1,0 +1,4267 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.env.example
+.gitignore
+Cargo.toml
+data/documents/ACTA_DE_COMPROMISO_REFUERZO_MATEM_TICA__1_.pdf
+data/documents/llideas.txt
+data/documents/RESULTADOS-RUIZ_CAZAR_REINALDO_AQUILES-1701575423-260511102-13134328.pdf
+docker-compose.yml
+Dockerfile
+nul
+rag-cli.sh
+README.md
+src/main.rs
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".env.example">
+# Copiar este archivo a .env
+# cp .env.example .env
+
+# Administrador inicial. Se crea solo la primera vez si no existe.
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
+AUTH_SALT=cambie-esta-sal-local
+SESSION_HOURS=24
+
+# OpenRouter se usa SOLO para redactar la respuesta final.
+# Si se deja vacío, el sistema funciona en modo privado.
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=openai/gpt-5.2
+OPENROUTER_MAX_TOKENS=4096
+
+DOCS_DIR=/app/data/documents
+STATE_DIR=/app/data/state
+
+QDRANT_URL=http://qdrant:6333
+QDRANT_COLLECTION=docs_rag
+
+INDEX_INTERVAL_SECONDS=3600
+DEFAULT_TOP_K=3
+
+APP_HOST=0.0.0.0
+APP_PORT=8080
+</file>
+
+<file path=".gitignore">
+target/
+.tmp/
+
+# Local environment
+.env
+.env.local
+
+# SQLite state and local data
+data/state/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.log
+</file>
+
+<file path="Cargo.toml">
+[package]
+name = "rag-rust-openrouter"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+axum = { version = "0.8", features = ["macros", "multipart"] }
+chrono = { version = "0.4", features = ["serde"] }
+encoding_rs = "0.8"
+fastembed = "5.13.4"
+futures = "0.3"
+hex = "0.4"
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "stream"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tokio = { version = "1", features = ["full"] }
+tokio-stream = "0.1"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4", "v5", "serde"] }
+walkdir = "2"
+</file>
+
+<file path="data/documents/llideas.txt">
+La idea de este presente documento es poder hacer una lluvia de ideas con respecto a la la modernización del sistema de gestión hospitalario el mismo que es importante te comento que estamos en una casa de salud la misma que es una casa de salud de tercer nivel es un hospital de especialidades el cual debe ser considerado y manejado con las seguridades y medidas de precaución necesarias el hecho es que se tiene un sistema de gestión hospitalaria desarrollado en Oracle forms el cual cumple con el 70% de las opciones o procesos del hospital pero siempre es necesario realizar una modernización para lo cual se necesita siempre cumplir con ciertos requisitos previos entre ellos se debe emitir la documentación previa para poder modernizar si ha tenido reuniones con los organismos de control como son contra el origen general del estado la cual ha sugerido tener una serie de documentos previos de estudios previos los cuales permitirán iniciar el proceso de contratación otra de las entidades importantes que con las cuales hemos tenido reunión es del ministerio de telecomunicaciones del cual ha manifestado que tenemos que cumplir ciertos requisitos para poder obtener las apropiaciones respectivas.
+
+
+
+    • Estudios previos
+    • Proyecciones y controles
+    • Estrategias para evitar la omisión de componentes necesarios en el software
+    • Cubrir todo el hospital
+    • Evitar sanciones de los organismos de control
+    • Migración de datos
+    • Estimación de tiempos
+    • Ver que todos los componentes sean beneficiosos para el hospital y no para la empresa que va a desarrollar el software
+    • Mantener el motor de base de datos actual y generar nuevas interfaces web modernas e inclusive para dispositivos móviles
+    • Presentación de informes en los que se indique todo el plan de la de TIC para llegar a un buen proyecto
+    • Cumplir con las leyes de protección de datos personales del ecuador
+    • Conexión con servicios externos es decir por ejemplo w sistemas de laboratorio
+    • Conectividad con el issfa
+    • Módulos de facturación con el servicio de rentas internas
+    • Conectividades esigef
+    • Manejo de inteligencia de negocios
+    • Cumplimiento de normativa médica
+    • Nuevos nuevos módulos de hemodiálisis y derivaciones
+    • Mantener el motor de base de datos actual
+    • La información migrada todo el proceso de extracción transformación y carga es de responsabilidad de la empresa a la cual se le adjudique el contrato
+    • Se debe cotizar en base a un número determinado de interfaces o pantallas y se debe establecer la metodología de estimación de costos y tiempos
+    • Una vez que la empresa se encuentre ya adjudicada a las opciones existentes en la línea base se debe buscar la manera de mejorar optimizar y plasmarlo en una interfase moderna
+    • La línea base para la construcción del nuevo sistema de gestión hospitalaria es del sistema actual que se encuentra funcionando y que con el cual nos encargamos de cobrar y hacer el funcionamiento del hospital todos los días para ello esta línea base tiene sus opciones dentro de las diferentes interfaces de usuario estas interfaces servirán como base para la implantación de nuevo sistema de gestión hospitalario y en la etapa en la que se pueda mejorar se hará esto.
+    • Dentro del hospital estamos conformados por diferentes actores entre ellos están las autoridades el departamento de sistemas el área usuaria y los jefes de los diferentes servicios se debe evaluar tanto los procesos funcionales como los no funcionales la parte no funcional debe estar hecha a cargo por el departamento de tecnologías de la información comunicaciones pero los requerimientos de usuarios finales los deben manejar ellos y para definir criterios de aceptación una vez que ya se encuentra adjudicado el proceso la empresa deberá de ver la manera de mejorar las interfaces actuales de nuestro sistema actual y con los usuarios finales establecer mecanismos de aceptación en este caso deberían existir actas de reuniones con los usuarios finales y para poder pagar el trabajo se debe tener la firma tanto del usuario final como la del jefe de cada uno de los servicios, esto debe ser entregado al administrador del contrato para que siga juntando su expediente final.
+    • Se debe pagar por proceso terminado es decir una vez que se desarrolle algo existe el criterio de aceptación y las firmas de los usuarios finales y también de los jefes de cada uno de los servicios y la respectiva acta entrega recepción ese será el criterio para pagar estas opciones
+    • Se debe definir claramente cuáles son las fases del proceso se debe tener en cuenta qué módulos son independientes y aquellos módulos que también están interrelacionados.
+    • La migración de los datos debe ser llevada a su totalidad es decir el 100% de los datos en el caso de qué la información del sistema actual no cuadre con el nuevo sistema la empresa adjudicada debe ser la encargada de ver el modo de poder que ésta se ajuste a sus interfaces y se despliegue siempre la misma información que se encuentra en nuestro sistema base es decir en la línea base es decir en el sistema de gestión hospitalario que está funcionando actualmente
+    • Se debe fijar de una buena manera los criterios de aceptación un criterio de aceptación que permita siempre en favor del hospital no de la empresa adjudicada siempre se debe velar por que el personal del hospital salga bien parado siempre de este proceso.
+    • Debe existir una etapa de integración de la solución
+    • Debe haber una etapa en la cual se verifique que se generen los datos financieros y que estén bien generados
+    • Se debe tomar en cuenta las particularidades del hospital como en este caso en el tema financiero el manejo de paquetes y agrupadores estos son particularidades del hospital los mismos que deben funcionar tal y como se encuentra funcionando en la actualidad para generar los cobros para poder recuperar la cartera
+    • El módulo de derivaciones debe permitir que se genere desde las entidades externas de este módulo
+    • Compromiso clave del hospital es que las autoridades se encarguen de gestionar antes del inicio del proceso el tener acceso a los web services de las diferentes instituciones para extraer la información de cada uno de los usuarios del sistema nuevo de gestión hospitalaria
+    •  Se debe implementar un nuevo módulo de control de equipamiento médico
+    • Se debe tomar en cuenta los módulos web existentes en el sistema de gestión hospitalaria actual estos están interconectados con el sistema de gestión hospitalaria actual no tiene módulo de pagos ni de cobros todo eso lo realizan con conexiones hacia el sistema actual en ese sentido se debe considerar esto en el nuevo sistema y debe ser desarrollado también tal y cual se encuentra funcionando el sistema en la actualidad
+    • Se debe tener en cuenta los módulos de banco de sangre que utilizan un sistema externo es la solución nueva debe estar integrada este sistema y debe transferir la información al mismo y debe recuperar información para poder sacar reportes y obtener estadísticas de la misma
+    • La interconectividad con el isfa mediante el debeline de base de datos debe mantenerse funcionando como un mecanismo de actualización de datos en el caso de que el web service no esté disponible
+    • La empresa adjudicada debe tomar en cuenta y hacer que se mantenga la continuidad de las operaciones en el caso de que los web services como sucede comúnmente que los servicios web se encuentren fuera de servicio no se debe de tener bajo ninguna circunstancia por la ausencia de estos servicios las prestaciones hospitalarias y los sistemas deben seguir funcionando hasta que las entidades externas se encarguen de solucionar estos problemas.
+    • Todas las conexiones existentes con entidades externas financieras para cobro o recuperación de cartera o para pagos deben mantenerse funcionando tal y cual funciona en el sistema de gestión hospitalaria actual y si es posible se deben mejorar para que sea más eficiente este control y esta comunicación
+    • Deben existir interfaces que conecten tanto bodegas como farmacia al sistema financiero para poder subir la información necesaria al sistema esigef
+    • Existen Jobs en el sistema actual que se encargan de hacer procesos automatizados los mismos deben ser considerados en el nuevo sistema para que funcionen los aplicativos del mismo modo el sistema actual o mejorado
+    • Se debe explicar a los técnicos de sistemas cómo tener respaldos del sistema nuevo implementado
+    • En el caso de manejo de la seguridad de la información se debe proponer o se debe hacer que las nuevas ventanas no permitan ver usuarios no autorizados que puedan ver los expedientes clínicos de los usuarios si estos no están siendo atendidos por el médico actual es decir solo que el médico que lo atienda puede ver su historial clínica los datos de los pacientes son siempre reservados y se debe poder anonimizar a los pacientes en el caso de reportes estadísticos.
+    • A partir de la entrada del sistema la empresa adjudicada debe obligatoriamente dar el soporte para el sistema y dar las soluciones respectivas
+    • Se debe establecer un cronograma detallado de cómo se va a manejar la capacitación a los desarrolladores de la solución que pertenecen al hospital es decir a los desarrolladores internos del hospital que van a ser quienes puedan dar el soporte posteriormente a la implantación del sistema
+    • La empresa adjudicada debe dar los requerimientos a nivel de hardware y software en el hospital se trabaja con máquinas virtuales que se llevan con virtualización en este caso tienen binguard la optimización de la aplicación debe ser realizada por parte de la empresa adjudicada y no deben existir excusas y decir que el hospital no ha dado los recursos necesarios sino que la empresa adjudicada debe tener presente que la alta disponibilidad sitio alterno y desempeño de la aplicación es responsabilidad de la empresa adjudicada y debe ser solventada por la misma
+    • Empresas adjudicada debe dar los requisitos mínimos de memoria que debe disponer las máquinas virtuales para poder trabajar eso se debe establecer de manera obligatoria, la optimización de las aplicaciones y lentitud y en caso de que se produzca lentitud en el servicio es responsabilidad de la empresa adjudicado la misma empresa debe también hacer sugerencias de qué tipo de red se debe trabajar y en el caso de errores en el aplicativo debe poder parametrizar su aplicación para que funcione de la manera más óptima.
+    • La nueva solución debe tener alta disponibilidad y manejo de contingencia.
+    • Para la elaboración de la documentación previa se debe recopilar todos los documentación en chasquis e informes emitidos y se los debe tener organizados para presentarse en caso de una posible auditoría futura eso corresponde al departamento de sistemas
+    • El desglose de las actividades de los requerimientos debe ser entregada en forma total el departamento de tecnologías de la información y comunicaciones no es el responsable de estos requerimientos porque eso lo hace el área funcional el área de tecnologías de la información y comunicaciones estará a cargo de los requerimientos no funcionales de seguridad de administración de la red de anchos de banda de tecnología utilizarse en las interfaces web pero el usuario final médico y administrativo del sistema es el responsable de que se cumplan todos los requerimientos en el caso de que ellos omitan algún requerimiento ellos deben hacerse cargo de esa situación y a qué sistemas de techo cargo solo de la parte técnica más no de los requerimientos de usuarios finales de la aplicación recordemos que el departamento de tecnologías de la información y comunicaciones se encarga de que el sistema se encuentre disponible.
+    • El departamento de desarrollo de soporte es el que conoce a cierto nivel el cómo funciona el sistema de gestión hospitalaria coma áreas como la base de datos debe ver la continuidad de las operaciones los respaldos y manejo de la información pero los requerimientos funcionales es netamente del área usuaria.
+    • Para poder cotizar bien cuánto costaría el software de gestión hospitalaria vamos a utilizar una metodología en la cual se tenga un estimado de número de pantallas el mismo que debe ser adjuntado todo ese cálculo en documentación externa pero se debe consolidar los módulos y los totalizados para saber cuánto es el costo total y sobre todo el tiempo en el que se va a desarrollar la solución
+    • Se dará el acceso necesario a la empresa adjudicada para que pueda revisar aquellas dudas que tenga sobre el sistema de gestión hospitalaria que está funcionando actualmente para que ellos puedan revisar se les dará el acceso a los sql para que ellos puedan analizar revisar y poder extraer la información que ellos necesiten o entender la regla de negocio.
+    • El de TIC o el departamento de tecnologías de la información y comunicaciones debe establecer un plan de contingencias en el cual en el caso de que la empresa adjudicada no llegue a cumplir con la implantación del proyecto se pueda retornar a la solución que está funcionando en la actualidad y con ello mantener el control y darle operatividad y que se cobren las respectivas multas o se los declare contratistas incumplidos a la empresa que no pueda llegar a concluir con lo que ellos ofrecen que si pueden hacer el momento de aceptar una adjudicación con el hospital de especialidades fuerzas armadas número uno.
+    • Se debe considerar que los médicos y usuarios finales realizan actividades diarias es por ello que las empresas adjudicadas deben buscar el tiempo de esos usuarios que les sea más útil para que puedan mejorar y optimizar las interfaces ya que ellos van a ser quienes den la aceptación final de la utilización de esta nueva solución conjuntamente con los jefes de cada uno de los servicios o los jefes departamentales y esto será entregado al administrador de contrato que le sirve a él como respaldo ya que si los usuarios finales aceptan el administrador de contrato tiene un respaldo para decir que él firmó las actas de entrega en base a que los usuarios finales aceptaron el funcionamiento del producto
+    • La sugerencia que se da es que se hagan simulaciones con los millones de registro que maneja o con el número de millones de registros que maneja el hospital es decir para que se pueda saber desde un inicio cómo se va a comportar el sistema con carga de datos lo suficientemente grande simulando a la realidad del hospital.
+    • En el caso de haber anticipo en el proyecto no debe superar este el 5% del valor total de la implementación el resto de entregables debe ser de acuerdo a módulo entregado o módulo cobrado.
+    • No se podría entregar un proyecto intermedio o inconcluso el proyecto debe ser entregado en su totalidad ya funcionando con datos migrados y la responsabilidad de estos es de la empresa adjudicada se deberán hacer las revisiones de los reportes financieros y se debe ver que se cuadre la información a lo que funciona el sistema actual es decir el sistema actual servirá de base para que el nuevo sistema pueda validar que los cobros son los mismos
+    • Se debe considerar el manejo histórico de los tarifarios nacionales es decir en el caso de que un ítem haya esté presente en un tarifario antiguo se debe crear un nuevo ítem con el nuevo tarifario es decir si hay un cambio en el año actual el ítem antiguo debe permanecer y el ítem actual también debe reflejarse en el nuevo sistema
+    • Debe manejarse el control de pistas de auditoría a nivel de tablas a nivel de transacciones de todas las tablas del sistema
+
+    • Se debe tomar en cuenta que para hacer el cálculo de tiempo se va a basar en un tema estimado de estimación es decir que no va a ser un valor exacto si no va a ser de acuerdo al criterio que el jefe de del departamento de tecnologías de la información y comunicaciones establezca al igual que el número de ventanas que se va a analizar se van a avisar de acuerdo al menú existente actual y será un aproximado y estas pueden crecer o disminuir.
+    • En base a las reuniones establecidas con el ministerio de telecomunicaciones este ha sugerido que para la modernización del sistema de gestión hospitalaria se mantenga la base de datos en el motor que está funcionando actualmente es por ello que toda la documentación las vamos a hacer en ese sentido la reunión fue establecida con la señora ingeniera de apellido Lara en dónde también solicitó que se tenga desagregados todos los menús del sistema de gestión hospitalaria actual para poder establecer de manera correcta los tiempos de desarrollo de la nueva solución.
+    • Las interfaces web que se desarrollen debe ser poder desplegada Santo a nivel de dispositivos móviles como de navegadores web
+    • El tiempo de los procesos que se manejan por lote del hospital de especialidades fuerzas armadas número 1 no debe superar los 10 minutos tal y cual lo realiza el sistema de gestión hospitalaria actual aquellos procesos que demoren más de ese tiempo o aquellas actividades que demoren más de ese tiempo la empresa adjudicada debe revisarlos y minimizar el tiempo de ejecución eso es responsabilidad de la empresa adjudicada y no se aceptará que manifiesten que el departamento de tecnologías de la información y comunicaciones es el responsable de eso ya que ellos conocen su plataforma y por ello también se le solicita que ellos pidan la empresa que conoce cómo funciona su software solicite los requerimientos tanto a nivel de memoria como de procesador.
+    • Se debe expresar en varios en uno en varios documentos en este sentido cuáles son las necesidades del departamento de tecnologías de la información y comunicaciones se debe expresar eso y se debe ser muy claro que que en los términos de referencia esas cosas son las que nosotros vamos a colocar más no actividades de en sí de la operación del sistema de las características funcionales nosotros no somos responsables vamos a hacer tenemos que hacer un informe muy detallado en el cual se exprese cuáles son los requerimientos del departamento de tecnologías de la información y comunicaciones
+    • Se debe migrar la empresa adjudicada debe considerar que se va a migrar alrededor de 80 millones de registros entre las diferentes datos que dispone el hospital.
+    • Se debe también considerar que existe ya un módulo de inteligencia de negocios que está funcionando y que sirve para tomar decisiones estratégicas el nuevo sistema también debe poder o permitir la utilización de estos dashboards para poder tomar decisiones estratégicas y debe estar incluido dentro de los módulos que se van a desarrollar.
+    • De acuerdo a las reuniones establecidas se establece siempre que se debe contar con estudios previos estos estudios previos permitirán que el proyecto sea llevado de mejor manera  y permitirá tener las métricas respectivas para poder realizar de mejor manera cualquier solución en este caso tiene una serie de documentos los cuales son importantes para poder llevar a cabo esta actividad de modernización del nuevo sistema de gestión hospitalaria.
+    •  se debe hacer un informe en donde se explique cómo se va a llevar a cabo la metodología qué consideraciones se van a tomar en cuenta qué cosas Se van a realizar y en el mismo informe explicar que eso parámetros se van a tomar en cuenta y que solo se cambiarán si es que las autoridades disponen de manera verbal o escrita ya que de ti considera que eso es lo mejor para el hospital y solo hará cambios en el caso de que las autoridades dispongan de manera verbal o escrita una visión diferente a la que el departamento de tecnologías de información y comunicaciones necesite
+    • Se debe analizar todos los procesos que necesiten en reversión ningún proceso podrá ser manipulado directamente en la base de datos y no debe tener una interfase de usuario mediante la cual se pueda manejar la información reversar procesos críticos y eso debe ser debe coordinar con las áreas usuarias
+    • Cualquier proceso de reversión que no tenga el sistema actual y que sea necesario debería ser obligatoriamente implementado por la nueva solución
+    • La transmisión de resultados de sistemas externos como por ejemplo el laboratorio y banco de sangre microbiología entre otros
+    • Se debe tomar en cuenta que del menú del sistema de gestión hospitalaria actual en cada uno de sus niveles las opciones determina la linea base para cualquier desarrollo. Cómo en base a este argumento se podría evitar la omisión de alguna opción importante
+    • De manera específica se debe explicar que el proceso de desagregación que el ministerio de telecomunicaciones recomendó para estimar los tiempos los está determinando el usuario finales decir médicos, enfermería y departamentos financiero, en este proceso es de los generadores de la necesidad y se deben validar por esas áreas. Este insumo debe calificarse de modo que se pueda establecer parámetros como tiempo de desarrollo, complejidad del requerimiento o pantalla, riesgo y calidad de redacción del requerimiento para que pueda ser entendido por quien lo implemente y la urgencia de implementación, eso sí lo hace Dtic.
+    • La idea de este proceso es basándonos en lo sugerido por el ministerio de telecomunicaciones es mantener la estructura de base de datos actual evitando así el riesgo de perder datos e información, lo importante es generar las interfase web/móvil o ambas, eso se debe tomar en cuenta.
+    • Se debe tomar en cuenta que se puede optimizar la linea base es decir optimizar o suprimir opciones innecesarias, eso lo debe determinar el oferente conjuntamente con el usuario final y oficializado al administrador de contrato.
+    • Un aspecto muy importante que se debe tomar en cuenta es que en el caso del nuevo o de la modernización del nuevo sistema de gestión hospitalaria se debe tomar en cuenta que mientras está desarrollando se debe mantener por continuidad de las operaciones del hospital se debe mantener el sistema predio funcionando hasta que salga producción  la modernización.
+    • Se sugiere actualizar el PETI(PLAN ESTRATÉGICO DE TECNOLOGÍAS DE LA INFORMACION) del DTIC antes de iniciar el proceso de contratación de la modernización.
+    • Se debe adjuntar en los informes Técnicos y de necesidad el menu de la línea base y la automatización de esas opciones es lo que la empresa oferente debe implementar, y se tiene las desagregaciones de los menús son referencias y si no estan en su totalidad, el menú de la linea base es el que se debe implementar con sus respectivas optimizaciones.
+    • Estos son los documentos de estudios previos que solicita la contraloría en estudios especiales.
+    • "Plan de control de accesos","Plan de pistas de auditaría","PETI: Plan estratégico de Tecnologías de la información","Plan de contingencia sobre desarrollo de software","Plan de infraestructura tecnológica para el nuevo sistema","Plan de medición de incremento de capacidad","Plan de recurrencia de usuarios (transacciones, proyecciones a futuro, tipos de usuario)","Requerimientos de seguridad","Plan de control de avance del proyecto, procedimientos de control y aprobaciones","Plan de obtención de respaldos del nuevo sistema","Plan de integridad de la solución","Observaciones a las normas de control interno de la Contraloría General del Estado (100-01, 100-02, 410-07)","Historias de usuario/Documento de especificación de requerimiento de software (ERS)","Metodología de trabajo sugerida","Cuadro de estimación de tiempo de desarrollo","Descripción general del Proyecto (requerimientos, limitaciones, riesgo general, objetivos, criterios de éxito)","Herramientas Métricas/de control de calidad","Plan de gestión de las comunicaciones","Plan de gestión","Plan de y (correos actas, reuniones de trabajo, oficio, memorando)","Usabilidad de la infraestructura actual (infraestructura recién adquirida)","Plan de migración de datos"
+    • Se debe hacer la integración entre los laboratorios es decir la transmisión de las variables y resultados de los exámenes. entre los sistemas externos y los internos.
+    • Se debe manejar los historicos de los resultados de exámenes y variables
+    • En la etapa de implementacion se definiria que opciones va a que rol en el caso de que no se tenga eso definido.
+    • La firma electronica debe estar implementada
+    • Se debe tomar en cuenta que por ser un sistema hospitalario especifico para el uso de pacientes militares tiene ciertas particularidades y en el caso de algunas empresas que ya tienen desarrollado en Odoo con muchos stored procedures les va tocar implementar y corregir su sistema
+    • Se debe tambien tomar en cuenta que en este caso el sistema hospitalario es un sistema personalizado a las necesidades de estos 11 años a las necesidades del Ministerio de Salud del ISSFA y demas aseguradoras, se debe considerar que muchos sistemas ya hechos tienen bien la logica pero adaptada al sector privado, por ejemplo los turnos del hospital el paciente no entra por página web a seleccionar su turno sino que se hace de acuerdo a la disponibilidad de turnos asignados a ciertos doctores, existen porcentajes de turnos de primera vez y subsecuentes asi como turnos extras, lo que en la empresa privada en cambio selecciona que dia quiere la atencion y con que medico.
+    • La dispensacion de medicina deberia ser aplicada no solo a los pacientes hospitalizados sino tambien a los de consulta externa
+    • Se deberá entregar una garantía en donde se comprometan a mantener la información de los pacientes es decir que habrá confidencialidad con la misma y la misma se migrara el 100%.
+
+
+
+
+El texto proporcionado describe detalladamente los requisitos y consideraciones para la modernización de un sistema de gestión hospitalaria (SGH). Sin embargo, desde una perspectiva informática y de infraestructura, hay varios aspectos que no se mencionan explícitamente y que podrían ser importantes para garantizar el éxito del proyecto. A continuación, se presenta un listado de estos aspectos:
+    1. Arquitectura del Sistema: No se especifica si se mantendrá la arquitectura cliente-servidor actual (Oracle Forms) o si se migrará a una arquitectura web más moderna (por ejemplo, modelo vista controlador).
+    2. Diseño de la Interfaz de Usuario (UI): Aunque se menciona la necesidad de interfaces web modernas y adaptables a dispositivos móviles, no se detalla si se seguirán estándares de diseño específicos (por ejemplo, Material Design) ni cómo se garantizará la accesibilidad para usuarios con discapacidades.
+    3. Tecnologías de Desarrollo Web: No se especifica qué tecnologías se utilizarán para desarrollar las nuevas interfaces web (por ejemplo, React, Angular, Vue.js) ni qué framework de backend se empleará (por ejemplo, Django, Flask, Express).
+    4. Pruebas de Rendimiento y Carga: No se menciona cómo se garantizará que el nuevo sistema pueda manejar la carga de trabajo esperada (por ejemplo, número de usuarios concurrentes, volumen de transacciones) ni cómo se realizarán pruebas de rendimiento y estrés para identificar cuellos de botella.
+    5. Seguridad: Aunque se menciona la protección de datos personales y la seguridad de la información, no se detalla qué medidas específicas se implementarán (por ejemplo, cifrado de datos, autenticación de usuarios, gestión de roles y permisos).
+    6. Integración Continua (CI) y Entrega Continua (CD): No se especifica si se implementarán prácticas de CI/CD para automatizar el proceso de desarrollo, pruebas y despliegue del sistema.
+    7. Monitorización y Mantenimiento: No se detalla cómo se monitorizará el rendimiento del sistema en producción ni cómo se gestionarán las actualizaciones y el mantenimiento a largo plazo.
+    8. Escalabilidad: No se menciona cómo se garantizará que el sistema pueda escalar para adaptarse a futuras necesidades (por ejemplo, aumento en el número de usuarios, nuevos módulos o funcionalidades).
+    9. Contenedores y Orquestación: No se especifica si se utilizarán tecnologías de contenedores (por ejemplo, Docker) y orquestación (por ejemplo, Kubernetes) para facilitar el despliegue y la gestión del sistema.
+    10. Infraestructura de Red: No se detalla qué tipo de infraestructura de red se requiere para soportar el nuevo sistema (por ejemplo, ancho de banda, redundancia, seguridad).
+    11. Hardware: No se especifica qué tipo de hardware se necesitará para ejecutar el nuevo sistema (por ejemplo, servidores, almacenamiento, balanceadores de carga).
+    12. Virtualización: Aunque se menciona que el hospital trabaja con máquinas virtuales, no se especifica qué plataforma de virtualización se utiliza ni cómo se gestionarán los recursos virtuales.
+    13. Respaldos y Recuperación ante Desastres: No se detalla cómo se realizarán los respaldos del sistema ni qué plan de recuperación ante desastres se implementará.
+    14. Documentación Técnica: No se especifica qué tipo de documentación técnica se entregará (por ejemplo, diagramas de arquitectura, manuales de usuario, guías de instalación y configuración).
+
+Es importante tener en cuenta estos aspectos para garantizar que la modernización del SGH sea exitosa y cumpla con los requisitos técnicos y de infraestructura necesarios.
+
+
+Claro, a continuación se detalla una propuesta de menú para una aplicación web de gestión hospitalaria, enfocada en la automatización de los procesos de derivación, referencia y contrareferencia.
+
+### Menú Principal de la Aplicación Web
+
+1. **Inicio**
+   - Dashboard
+   - Noticias y Comunicados
+
+2. **Pacientes**
+   - Registro de Pacientes
+   - Buscar Paciente
+   - Historia Clínica
+
+3. **Derivaciones**
+   - Nueva Derivación
+   - Seguimiento de Derivaciones
+   - Historial de Derivaciones
+   - Estadísticas de Derivaciones
+
+4. **Referencias**
+   - Nueva Referencia
+   - Seguimiento de Referencias
+   - Historial de Referencias
+   - Estadísticas de Referencias
+
+5. **Contrareferencias**
+   - Nueva Contrareferencia
+   - Seguimiento de Contrareferencias
+   - Historial de Contrareferencias
+   - Estadísticas de Contrareferencias
+
+6. **Citas y Programación**
+   - Agendar Cita
+   - Calendario de Citas
+   - Recordatorios de Citas
+   - Gestión de Disponibilidad
+
+7. **Comunicación**
+   - Mensajería Interna
+   - Videoconferencias/Telemedicina
+   - Notificaciones y Alertas
+
+8. **Informes y Análisis**
+   - Generar Informes
+   - Visualización de Datos
+   - Exportar Datos
+
+9. **Configuración**
+   - Gestión de Usuarios
+   - Permisos y Roles
+   - Preferencias del Sistema
+   - Seguridad y Privacidad
+
+10. **Ayuda y Soporte**
+    - Manual de Usuario
+    - Preguntas Frecuentes (FAQ)
+    - Contactar Soporte Técnico
+
+### Detalles de Cada Opción
+
+#### Derivaciones
+- **Nueva Derivación**: Formulario para registrar una nueva derivación con datos del paciente, motivo, destino, y profesional encargado.
+- **Seguimiento de Derivaciones**: Lista de derivaciones en curso con estados y acciones pendientes.
+- **Historial de Derivaciones**: Registro completo de todas las derivaciones realizadas, con capacidad de búsqueda y filtrado.
+- **Estadísticas de Derivaciones**: Informes y gráficos sobre el volumen y tipos de derivaciones, tiempos de respuesta, y resultados.
+
+#### Referencias
+- **Nueva Referencia**: Formulario para registrar una nueva referencia, similar al de derivaciones.
+- **Seguimiento de Referencias**: Lista y estado de las referencias en curso.
+- **Historial de Referencias**: Registro de todas las referencias realizadas.
+- **Estadísticas de Referencias**: Informes detallados sobre el desempeño de las referencias.
+
+#### Contrareferencias
+- **Nueva Contrareferencia**: Formulario para registrar una contrareferencia con detalles del paciente, informe de diagnóstico y tratamiento, y recomendaciones.
+- **Seguimiento de Contrareferencias**: Lista de contrareferencias en curso y pendientes.
+- **Historial de Contrareferencias**: Registro de todas las contrareferencias.
+- **Estadísticas de Contrareferencias**: Informes sobre el proceso de contrareferencia y su efectividad.
+
+#### Citas y Programación
+- **Agendar Cita**: Interfaz para programar nuevas citas.
+- **Calendario de Citas**: Visualización de citas programadas.
+- **Recordatorios de Citas**: Configuración y envío de recordatorios automáticos a pacientes y profesionales.
+- **Gestión de Disponibilidad**: Herramientas para gestionar la disponibilidad de los profesionales.
+
+#### Comunicación
+- **Mensajería Interna**: Plataforma de comunicación segura entre profesionales.
+- **Videoconferencias/Telemedicina**: Herramientas para consultas remotas.
+- **Notificaciones y Alertas**: Configuración de alertas y notificaciones sobre eventos importantes.
+
+#### Informes y Análisis
+- **Generar Informes**: Herramienta para crear informes personalizados.
+- **Visualización de Datos**: Paneles de control y gráficos interactivos.
+- **Exportar Datos**: Opciones para exportar informes y datos en varios formatos.
+
+#### Configuración
+- **Gestión de Usuarios**: Administración de cuentas de usuario.
+- **Permisos y Roles**: Definición y asignación de roles y permisos.
+- **Preferencias del Sistema**: Ajustes de configuración de la aplicación.
+- **Seguridad y Privacidad**: Herramientas para asegurar la confidencialidad y seguridad de los datos.
+
+#### Ayuda y Soporte
+- **Manual de Usuario**: Documentación detallada de uso.
+- **Preguntas Frecuentes (FAQ)**: Respuestas a preguntas comunes.
+- **Contactar Soporte Técnico**: Información para recibir asistencia técnica.
+
+Este menú ofrece una estructura clara y organizada que permite a los usuarios gestionar eficientemente los procesos de derivación, referencia y contrareferencia, asegurando una atención continua y coordinada para los pacientes.
+
+El Hospital de Especialidades Fuerzas Armadas No 1 en Ecuador ofrece una amplia gama de especialidades médicas. Las especialidades se dividen en varias categorías, incluyendo especialidades clínicas, quirúrgicas, materno-infantiles, salud oral y maxilofacial, auxiliares de diagnóstico y tratamiento, y apoyo terapéutico.
+
+### Especialidades Clínicas
+1. **Alergología**
+2. **Cardiología**
+3. **Dermatología**
+4. **Endocrinología y Metabólico**
+5. **Gastroenterología**
+6. **Geriatría**
+7. **Genética**
+8. **Hematología**
+9. **Infectología / Epidemiología**
+10. **Medicina Interna**
+11. **Nefrología**
+12. **Neumología**
+13. **Neurología**
+14. **Oncología**
+15. **Psicología / Psiquiatría**
+16. **Reumatología**
+
+### Especialidades Quirúrgicas
+1. **Cardiotorácica**
+2. **Cirugía General**
+3. **Cirugía Pediátrica**
+4. **Cirugía Plástica y Reconstructiva**
+5. **Cirugía Vascular**
+6. **Neurocirugía**
+7. **Oftalmología**
+8. **Otorrinolaringología**
+9. **Proctología**
+10. **Traumatología**
+11. **Urología**
+
+### Especialidades Materno-Infantiles
+1. **Ginecología y Obstetricia**
+2. **Neonatología**
+3. **Pediatría**
+4. **Neuropediatría**
+
+### Especialidades de Salud Oral y Maxilofacial
+1. **Cirugía Oral y Maxilofacial**
+2. **Odontopediatría**
+3. **Ortodoncia**
+4. **Periodoncia**
+5. **Endodoncia**
+6. **Rehabilitación Oral**
+7. **Operatoria Dental y Estética**
+8. **Implantología Oral**
+9. **Laboratorio e Imagen Dental**
+
+### Auxiliar de Diagnóstico y Tratamiento
+1. **Unidad de Radiognóstico e Imagen**
+2. **Unidad de Laboratorio Clínico**
+3. **Unidad de Laboratorio Microbiológico**
+4. **Unidad de Laboratorio de Inmunología**
+5. **Unidad de Laboratorio de Anatomía Patológica**
+
+### Apoyo Terapéutico
+1. **Acupuntura**
+2. **Nutrición y Dietética**
+3. **Terapia de Dolor y Cuidados Paliativos**
+4. **Medicina Física y Rehabilitación**
+5. **Unidad de Farmacia Institucional**
+6. **Banco de Sangre**
+7. **Radioterapia**
+
+Estas especialidades aseguran una atención integral y de alta calidad a los pacientes, cubriendo una amplia gama de necesidades médicas y terapéuticas.
+
+Fuentes:
+- [Hospital de Especialidades Fuerzas Armadas No. 1](https://www.hospitalmilitar.mil.ec)
+- [Servicios | Hospital Militar Quito](https://servicios.he1.mil.ec)
+
+
+Se tiene los datasets de analisis de datos en tableau y powerbi que necesitan ser automatizados
+como:
+ESTOY VIENDO LAS INTERRELACIONES QUE TIENE EL SISTEMA HOSPITALARIO ACTUAL CON OTROS MODULOS POR EJEMPLO EL MODULO DE BANCO DE SANGRE LA CONFIGURACION DE LOS PARAMETROS TIENE INTERELACION CON EL FINANCIERO CON CONSULTA EXTERNA CON HOSPITALIZACION CON LABORATORIO E IMAGEN Y EMERGENCIA
+LAS POSIBLES INTERELACIONES SON CON:
+ADMINISTRATIVO
+ABASTECIMIENTO
+FINANCIEROSCONSULTA EXTERNA
+HOSPITALIZACION
+ODONTOLOGIA
+LABORATORIO/IMAGEN
+EMERGENCIA
+
+
+Absolutamente, la precisión y coherencia de los reportes financieros son fundamentales para una efectiva recuperación de cartera en el ámbito hospitalario. Aquí te explico por qué y cómo se relacionan:
+
+**Importancia de la precisión en los reportes financieros:**
+
+* **Identificación de deudas:** Los reportes financieros claros y detallados permiten identificar con precisión las deudas pendientes de los pacientes, incluyendo montos, fechas de vencimiento y servicios prestados.
+* **Segmentación de la cartera:** La información financiera permite segmentar la cartera en diferentes categorías (por ejemplo, deudas recientes, morosas, en proceso de cobro), lo que facilita la aplicación de estrategias de recuperación específicas para cada grupo.
+* **Seguimiento de pagos:** Los reportes actualizados permiten realizar un seguimiento riguroso de los pagos recibidos, identificando retrasos, incumplimientos y posibles errores en la facturación.
+* **Toma de decisiones informadas:** La información financiera precisa proporciona una base sólida para tomar decisiones estratégicas sobre la gestión de la cartera, como la asignación de recursos, la negociación de acuerdos de pago y la implementación de acciones legales.
+* **Evaluación de la efectividad:** Los reportes financieros permiten evaluar la efectividad de las estrategias de recuperación de cartera, identificando áreas de mejora y ajustando los procesos para maximizar los resultados.
+
+**Conciliación y cuadre de reportes:**
+
+La conciliación de reportes financieros implica comparar la información de diferentes fuentes (por ejemplo, registros contables, informes de facturación, datos de sistemas de gestión hospitalaria) para asegurar su coherencia y detectar posibles discrepancias. El cuadre de reportes consiste en verificar que los saldos y movimientos contables coincidan con los registros de las transacciones realizadas.
+
+**Consecuencias de la falta de cuadre:**
+
+La falta de cuadre en los reportes financieros puede tener graves consecuencias para la recuperación de cartera, como:
+
+* **Dificultad para identificar deudas:** Errores en los reportes pueden dificultar la identificación precisa de las deudas pendientes, lo que puede llevar a pérdidas financieras para el hospital.
+* **Cobro erróneo o incompleto:** La falta de información precisa puede resultar en el cobro de montos incorrectos o la omisión de deudas, lo que puede generar conflictos con los pacientes y afectar la reputación del hospital.
+* **Toma de decisiones equivocadas:** Decisiones basadas en información financiera errónea pueden llevar a estrategias de recuperación ineficaces y pérdidas de ingresos.
+
+**Recomendaciones:**
+
+Para garantizar la precisión y coherencia de los reportes financieros y optimizar la recuperación de cartera, se recomienda:
+
+* **Implementar sistemas de gestión hospitalaria integrados:** Estos sistemas permiten centralizar la información financiera y facilitar la conciliación y cuadre de reportes.
+* **Establecer procedimientos claros:** Definir procedimientos claros y detallados para el registro de transacciones, la emisión de facturas y la gestión de cobros.
+* **Capacitar al personal:** Asegurar que el personal encargado de la gestión financiera esté capacitado en el uso de los sistemas y los procedimientos establecidos.
+* **Realizar conciliaciones periódicas:** Establecer un cronograma regular para la conciliación y cuadre de reportes, con el fin de detectar y corregir errores de manera oportuna.
+* **Utilizar herramientas de análisis de datos:** Emplear herramientas de análisis de datos para identificar patrones y tendencias en la cartera, lo que puede ayudar a tomar decisiones estratégicas más efectivas.
+
+En resumen, la precisión y coherencia de los reportes financieros son esenciales para una efectiva recuperación de cartera en el ámbito hospitalario. Al implementar las recomendaciones mencionadas, los hospitales pueden mejorar su gestión financiera, optimizar sus procesos de cobro y garantizar la sostenibilidad de sus operaciones.
+
+n.
+
+La etapa de manejo de datos y la integración de todos los módulos para evaluar el desempeño real en un entorno de desarrollo y su transición a producción es fundamental en el desarrollo de sistemas complejos como un sistema de gestión hospitalaria. Esta etapa se centra en asegurar que todos los componentes del sistema funcionen de manera cohesiva y eficiente antes de su implementación final. A continuación se detalla cómo sería esta etapa:
+
+### Etapa de Manejo de Datos e Integración de Módulos
+
+#### 1. Preparación del Entorno de Desarrollo
+
+- **Configuración del Entorno**: Establecer un entorno de desarrollo que refleje lo más posible el entorno de producción. Esto incluye hardware, software, redes y bases de datos.
+- **Carga de Datos de Prueba**: Utilizar datos de prueba que sean representativos de los datos reales. Estos datos deben incluir una variedad de casos de uso, como datos típicos, datos límite y datos incorrectos.
+
+#### 2. Integración de Módulos
+
+- **Ensayo de Integración**: Integrar todos los módulos del sistema, como administración, finanzas, laboratorio, imagenología, etc.
+- **Pruebas de Comunicación**: Verificar que todos los módulos se comuniquen correctamente entre sí. Esto incluye la transferencia de datos, la sincronización y la actualización de registros.
+- **Verificación de Interfaces**: Asegurar que todas las interfaces de usuario y API funcionen correctamente y que los datos se presenten y manipulen de manera adecuada.
+
+#### 3. Pruebas de Desempeño
+
+- **Pruebas de Carga**: Realizar pruebas para evaluar cómo el sistema maneja cargas pesadas. Simular el uso por múltiples usuarios simultáneamente y verificar tiempos de respuesta y estabilidad.
+- **Pruebas de Estrés**: Empujar el sistema más allá de su capacidad normal para ver cómo maneja situaciones extremas.
+- **Pruebas de Volumen**: Probar el sistema con grandes cantidades de datos para asegurar que puede manejar la cantidad de información que se espera en producción.
+
+#### 4. Manejo de Datos
+
+- **Migración de Datos**: Planificar y realizar la migración de datos desde el sistema antiguo al nuevo. Esto incluye la extracción, transformación y carga (ETL) de datos.
+- **Verificación de Integridad de Datos**: Asegurar que los datos se migren correctamente sin pérdida ni corrupción. Verificar la integridad de los datos antes y después de la migración.
+- **Pruebas de Consistencia de Datos**: Realizar pruebas para asegurar que los datos sean consistentes a través de todos los módulos del sistema.
+
+#### 5. Pruebas de Aceptación
+
+- **Pruebas de Aceptación del Usuario (UAT)**: Involucrar a los usuarios finales en las pruebas del sistema para asegurar que cumple con sus necesidades y expectativas. Recoger feedback y realizar ajustes necesarios.
+- **Validación de Requisitos**: Confirmar que todos los requisitos funcionales y no funcionales se han cumplido.
+
+#### 6. Preparación para la Producción
+
+- **Plan de Despliegue**: Crear un plan detallado para el despliegue del sistema en el entorno de producción. Esto incluye pasos específicos, responsables y cronogramas.
+- **Entrenamiento de Usuarios**: Capacitar a los usuarios finales y al personal de TI sobre el uso y mantenimiento del nuevo sistema.
+- **Documentación**: Asegurar que toda la documentación técnica y de usuario esté completa y accesible.
+
+#### 7. Despliegue en Producción
+
+- **Despliegue Gradual**: Considerar un despliegue gradual, comenzando con un grupo pequeño de usuarios antes de extenderlo a toda la organización. Esto permite detectar y solucionar problemas en una escala más manejable.
+- **Monitorización Inicial**: Monitorizar el sistema de cerca durante el periodo inicial de producción para detectar y solucionar problemas rápidamente.
+- **Soporte Continuo**: Establecer un equipo de soporte para atender cualquier problema que surja después del despliegue.
+
+### Consecuencias de No Realizar una Revisión Completa y Adecuada Integración
+
+1. **Errores en Producción**
+   - Problemas de funcionalidad que pueden no haber sido detectados durante el desarrollo.
+   - Fallos en la comunicación entre módulos, causando interrupciones en el flujo de trabajo.
+
+2. **Problemas de Rendimiento**
+   - El sistema puede no manejar la carga esperada, resultando en tiempos de respuesta lentos y posible caída del sistema.
+   - Degradación del rendimiento bajo alta carga, afectando la operatividad del hospital.
+
+3. **Vulnerabilidades de Seguridad**
+   - Brechas de seguridad debido a la falta de pruebas adecuadas.
+   - Riesgo de accesos no autorizados a datos sensibles.
+
+4. **Experiencia del Usuario**
+   - Mala experiencia del usuario debido a interfaces mal diseñadas o fallas en el sistema.
+   - Rechazo del sistema por parte de los usuarios finales, afectando la adopción y uso del nuevo sistema.
+
+5. **Costos Adicionales**
+   - Necesidad de correcciones y ajustes después de la implementación, resultando en costos adicionales.
+   - Daño a la reputación de la organización y pérdida de confianza por parte de los usuarios.
+
+Implementar una etapa de revisión exhaustiva y adecuada integración es esencial para el éxito del despliegue de un sistema de gestión hospitalaria, asegurando que el sistema funcione de manera eficiente y segura, cumpliendo con todas las necesidades y expectativas de los usuarios.
+
+
+
+---
+
+### Etapa de Revisión y Manejo de Datos con la Línea Base del Sistema Actual
+
+Una etapa de revisión en un proyecto de desarrollo de sistemas, especialmente en el contexto de un sistema de gestión hospitalaria, es crucial para asegurar la calidad y la funcionalidad del producto antes de su implementación completa. Utilizando la línea base del sistema actual, se puede mejorar y modernizar el sistema de manera efectiva. A continuación se describe cómo sería esta etapa y las posibles consecuencias de no realizar una revisión completa, con especial énfasis en la integración y manejo de datos.
+
+### Etapa de Revisión
+
+1. Planificación de la Revisión
+   -Definición de Objetivos: Establecer los objetivos específicos de la revisión, como verificar la funcionalidad, asegurar la integración correcta de todos los módulos y garantizar el cumplimiento de los requisitos. Basar estos objetivos en la línea base del sistema actual para asegurar que todas las funcionalidades críticas sean cubiertas.
+   -Asignación de Responsabilidades: Designar a los miembros del equipo que participarán en la revisión, incluyendo desarrolladores, analistas, personal del área usuaria y personal de TI.
+
+2. Revisión de Código
+   -Revisión de Calidad del Código: Verificar que el código cumple con los estándares de codificación establecidos. Comparar con el código del sistema actual para identificar áreas de mejora.
+   -Revisión de Seguridad: Asegurar que no hay vulnerabilidades de seguridad en el código, manteniendo las medidas de seguridad implementadas en el sistema actual.
+   -Revisión de Funcionalidad: Probar cada módulo de forma aislada para confirmar que cumple con sus especificaciones, manteniendo las funcionalidades clave del sistema actual.
+
+3. Pruebas de Integración
+-Integración de Módulos: Ensamblar los diferentes módulos del sistema y verificar que funcionan correctamente juntos. Asegurarse de que las interrelaciones entre módulos (como administración, finanzas, laboratorio, imagenología, etc.) son fluidas.
+-Pruebas de Interfaces: Asegurar que las interfaces entre módulos están funcionando correctamente y que la comunicación entre ellos es fluida.
+-Pruebas de Flujo de Datos: Verificar que los datos se transmiten correctamente entre módulos sin pérdida o corrupción, usando datos representativos del sistema actual.
+
+4. Pruebas de Rendimiento y Carga
+-Pruebas de Rendimiento: Evaluar el rendimiento del sistema bajo condiciones normales y de alta carga, comparándolo con el rendimiento del sistema actual.
+Pruebas de Carga: Simular condiciones de alta carga para asegurar que el sistema puede manejar el volumen esperado de usuarios y datos.
+
+Pruebas de Seguridad
+-Pruebas de Vulnerabilidad: Realizar pruebas para identificar y corregir posibles vulnerabilidades de seguridad.
+Revisión de Accesos y Permisos: Verificar que los controles de acceso y permisos están implementados correctamente, manteniendo las políticas de acceso del sistema actual.
+
+6. Revisión de Documentación
+   -Documentación Técnica: Asegurar que la documentación técnica está completa y precisa, incluyendo cambios y mejoras respecto al sistema actual.
+   -Manual de Usuario: Verificar que los manuales de usuario y guías de entrenamiento son claros y útiles, reflejando tanto las funcionalidades nuevas como las existentes.
+
+7. Pruebas de Aceptación por el Usuario (UAT)
+   -Pruebas con Usuarios Finales: Involucrar a los usuarios finales para que prueben el sistema y confirmen que cumple con sus necesidades y expectativas, comparando con el sistema actual.
+   -Recolección de Feedback: Recopilar feedback de los usuarios y realizar ajustes necesarios.
+
+### Consecuencias de No Realizar una Revisión Completa
+
+1. Errores No Detectados
+   -Fallas Funcionales: Módulos que no funcionan correctamente o no cumplen con las especificaciones.
+   -Problemas de Integración: Módulos que no se comunican correctamente entre sí, causando fallas en el flujo de trabajo.
+
+2. Problemas de Rendimiento
+   -Bajo Rendimiento: El sistema puede no manejar la carga esperada, resultando en tiempos de respuesta lentos.
+   -Caídas del Sistema: El sistema puede colapsar bajo alta carga, afectando la disponibilidad y fiabilidad.
+
+3. Vulnerabilidades de Seguridad
+   -Brechas de Seguridad: Vulnerabilidades que pueden ser explotadas por atacantes, comprometiendo datos sensibles.
+   -Accesos No Autorizados: Fallas en los controles de acceso que permiten a usuarios no autorizados acceder a información confidencial.
+
+4. Mala Experiencia del Usuario
+   -Interfaz de Usuario Deficiente: Una interfaz de usuario que no es intuitiva o tiene errores, lo que dificulta su uso.
+   -Rechazo del Sistema: Los usuarios finales pueden rechazar el sistema si no cumple con sus expectativas o es difícil de usar.
+
+5. Costos Adicionales
+   -Correcciones Post-Implementación: La necesidad de corregir errores después de la implementación puede ser costosa y demorada.
+   -Reputación Dañada: La falta de calidad en el sistema puede dañar la reputación de la organización y afectar la confianza de los usuarios.
+
+### Importancia de la Integración
+
+La integración es uno de los aspectos más críticos de un sistema de gestión hospitalaria, ya que este tipo de sistema depende de la interconexión fluida de diversos módulos. Una revisión completa asegura que:
+
+-Flujo de Trabajo Eficiente: Los datos se mueven de manera fluida y eficiente entre los módulos, permitiendo que los procesos operativos se realicen sin interrupciones.
+-Información Coherente: La información es coherente y consistente en todo el sistema, evitando discrepancias y errores de datos.
+-Optimización del Tiempo: Los tiempos de respuesta son rápidos y los usuarios pueden realizar sus tareas de manera eficiente.
+-Cumplimiento Normativo: El sistema cumple con todas las regulaciones y estándares necesarios, especialmente en lo que respecta a la seguridad y privacidad de los datos.
+
+### Etapa de Manejo de Datos e Integración de Módulos
+
+#### 1. Preparación del Entorno de Desarrollo
+
+-Configuración del Entorno: Establecer un entorno de desarrollo que refleje lo más posible el entorno de producción. Esto incluye hardware, software, redes y bases de datos. Basar esta configuración en el sistema actual.
+-Carga de Datos de Prueba: Utilizar datos de prueba que sean representativos de los datos reales. Estos datos deben incluir una variedad de casos de uso, como datos típicos, datos límite y datos incorrectos.
+
+#### 2. Integración de Módulos
+
+-Ensayo de Integración: Integrar todos los módulos del sistema, como administración, finanzas, laboratorio, imagenología, etc., asegurando que las interrelaciones se mantengan como en el sistema actual.
+-Pruebas de Comunicación: Verificar que todos los módulos se comuniquen correctamente entre sí. Esto incluye la transferencia de datos, la sincronización y la actualización de registros.
+-Verificación de Interfaces: Asegurar que todas las interfaces de usuario y API funcionen correctamente y que los datos se presenten y manipulen de manera adecuada.
+
+#### 3. Pruebas de Desempeño
+
+-Pruebas de Carga: Realizar pruebas para evaluar cómo el sistema maneja cargas pesadas. Simular el uso por múltiples usuarios simultáneamente y verificar tiempos de respuesta y estabilidad.
+-Pruebas de Estrés: Empujar el sistema más allá de su capacidad normal para ver cómo maneja situaciones extremas.
+-Pruebas de Volumen: Probar el sistema con grandes cantidades de datos para asegurar que puede manejar la cantidad de información que se espera en producción.
+
+#### 4. Manejo de Datos
+
+-Migración de Datos: Planificar y realizar la migración de datos desde el sistema antiguo al nuevo. Esto incluye la extracción, transformación y carga (ETL) de datos.
+-Verificación de Integridad de Datos: Asegurar que los datos se migren correctamente sin pérdida ni corrupción. Verificar la integridad de los datos antes y después de la migración.
+-Pruebas de Consistencia de Datos: Realizar pruebas para asegurar que los datos sean consistentes a través de todos los módulos del sistema.
+
+#### 5. Pruebas de Aceptación
+
+-Pruebas de Aceptación del Usuario (UAT): Involucrar a los usuarios finales en las pruebas del sistema para asegurar que cumple con sus necesidades y expectativas. Recoger feedback y realizar ajustes necesarios.
+-Validación de Requisitos: Confirmar que todos los requisitos funcionales y no funcionales se han cumplido.
+
+#### 6. Preparación para la Producción
+
+-Plan de Despliegue: Crear un plan detallado para el despliegue del sistema en el entorno de producción. Esto incluye pasos específicos, responsables y cronogramas.
+-Entrenamiento de Usuarios: Capacitar a los usuarios finales y al personal de TI sobre el uso y mantenimiento del nuevo sistema.
+-Documentación: Asegurar que toda la documentación técnica y de usuario esté completa y accesible.
+
+#### 7. Despliegue en Producción
+
+-Despliegue Gradual: Considerar un despliegue gradual, comenzando con un grupo pequeño de usuarios antes de extenderlo a toda la organización. Esto permite detectar y solucionar problemas en una escala más manejable.
+-Monitorización Inicial: Monitorizar el sistema de cerca durante el periodo inicial de producción para detectar y solucionar problemas rápidamente.
+-Soporte Continuo: Establecer un equipo de soporte para atender cualquier problema que surja después del despliegue.
+
+### Consecuencias de No Realizar una Revisión Completa y Adecuada Integración
+
+1. Errores en Producción
+   -Problemas de funcionalidad que pueden no haber sido detectados durante el desarrollo.
+   -Fallos en la comunicación entre módulos, causando interrupciones en el flujo de trabajo.
+
+2. Problemas de Rendimiento
+   -El sistema puede no manejar la carga esperada, resultando en tiempos de respuesta lentos y posible caída del sistema.
+   -Degradación del rendimiento bajo alta carga, afectando la operatividad del hospital.
+
+3. Vulnerabilidades de Seguridad
+   -Brechas de seguridad debido a la falta de pruebas adecuadas.
+   -Riesgo de accesos no autorizados a datos sensibles.
+
+4. Experiencia del Usuario
+   -Mala experiencia del usuario debido a interfaces mal diseñadas o fallas en el sistema.
+   -Rechazo del sistema por parte de los usuarios finales, afectando la adopción y uso del nuevo sistema.
+
+5. Costos Adicionales
+   -Necesidad de correcciones y ajustes después de la implementación, resultando en costos adicionales.
+   -Daño a la reputación de la organización y pérdida de confianza por parte de los usuarios.
+
+Implementar una etapa de revisión exhaustiva y adecuada integración es esencial para el éxito del despliegue de un sistema de gestión hospitalaria, asegurando que el sistema funcione de manera eficiente y segura, cumpliendo con todas las necesidades y expectativas de los usuarios.
+
+
+
+
+Orden de Ejecución de las Fases
+
+FASE 1: ANÁLISIS LÍNEA BASE
+Analista de Negocios: Especialista en capturar y documentar los requerimientos y procesos actuales.
+Especialista en Sistemas de Información Hospitalaria: Conocimiento profundo del sistema hospitalario actual.
+Arquitecto de Soluciones: Experto en diseñar soluciones tecnológicas alineadas con los requerimientos.
+Consultor de Procesos: Para optimizar los procesos identificados.
+FASE 2: CATÁLOGOS/SEGURIDAD
+Desarrollador Backend: Para la implementación de catálogos en el sistema.
+Especialista en Seguridad Informática: Para definir y configurar medidas de seguridad y control de accesos.
+Administrador de Bases de Datos (DBA): Para la gestión segura de los catálogos y datos.
+FASE 3: ADMINISTRATIVO/DOCENCIA
+Analista Funcional: Para adaptar los módulos administrativos y de docencia a los requerimientos específicos.
+Desarrollador de Software: Para la implementación de las funcionalidades administrativas.
+Especialista en Capacitación: Para desarrollar materiales y estrategias de formación en el uso del nuevo sistema.
+FASE 4.1: SISTEMA DE GESTIÓN HOSPITALARIA
+Especialista en Sistemas de Información Hospitalaria: Para asegurar la correcta implementación del módulo de gestión hospitalaria.
+Desarrollador de Software: Para la codificación y personalización del sistema.
+Analista de Pruebas: Para asegurar que las funcionalidades del sistema de gestión hospitalaria cumplen con los requerimientos.
+FASE 4.2: FINANCIERO/ABASTECIMIENTOS
+Especialista en Sistemas Financieros: Conocimiento en módulos financieros y de abastecimientos en sistemas de gestión.
+Desarrollador de Software: Para la implementación de estos módulos.
+Contador o Auditor: Para verificar que los procesos financieros se implementan correctamente.
+FASE 5: REPORTERÍA
+Especialista en Inteligencia de Negocios (BI): Para el desarrollo de reportes y dashboards.
+Analista de Datos: Para diseñar e implementar las consultas y reportes necesarios.
+Desarrollador de BI: Para la integración y despliegue de la reportería en la plataforma seleccionada.
+FASE 6: PRUEBAS
+Analista de Pruebas: Responsable de diseñar y ejecutar casos de prueba.
+Ingeniero de QA (Quality Assurance): Para garantizar la calidad del software desarrollado.
+Especialista en Automatización de Pruebas: Para automatizar pruebas repetitivas y de carga.
+FASE 7: INTEGRACIÓN
+Ingeniero de Integración: Para asegurar que todos los módulos se integren sin problemas.
+Especialista en Interoperabilidad: Para gestionar la interacción entre sistemas distintos (internos y externos).
+Desarrollador de APIs: Para la creación de interfaces que conecten los diferentes módulos.
+FASE 8: SITIO ALTERNO
+Ingeniero de Infraestructura: Para configurar y asegurar el sitio alterno.
+Especialista en Recuperación ante Desastres: Para diseñar y probar los planes de contingencia.
+Administrador de Redes: Para gestionar la conectividad y redundancia del sitio alterno.
+FASE 9: PASO A PRODUCCIÓN
+Ingeniero de DevOps: Para la automatización del despliegue en el ambiente de producción.
+Administrador de Sistemas: Para supervisar el entorno de producción.
+Especialista en Soporte Técnico: Para asegurar la estabilidad del sistema durante la transición.
+FASE 10: SOPORTE Y FEEDBACK
+Especialista en Soporte Técnico: Para atender y resolver incidencias post-producción.
+Analista de Feedback: Para recopilar y analizar las sugerencias y problemas reportados por los usuarios.
+Gestor de Proyectos: Para coordinar las actividades de soporte y feedback, asegurando la mejora continua.
+
+
+# Recursos
+Perfil
+Costo x hora
+Horas
+Fases intervención en el proyecto
+Total
+$1.00
+
+
+$18.90
+$664.00
+FASE 1(ANALISIS LINEA BASE)
+
+
+
+
+$12,549.60
+$1.00
+
+
+$18.90
+$1,746.00
+FASE 2(CATALOGOS/SEGURIDAD)
+
+
+
+
+$32,999.40
+$2.00
+
+
+$18.90
+$7,016.00
+FASE 3(ADMINISTRATIVO/DOCENCIA)
+
+
+
+
+$132,602.40
+$10.00
+
+
+$18.90
+$25,651.00
+FASE 4.1(SISTEMA GESTIÓN HOSPITALARIA)
+
+
+
+
+$484,803.90
+$17.00
+
+
+$18.90
+$44,610.00
+FASE 4.2(FINANCIERO/ABSTECIMIENTOS)
+
+
+
+
+$843,129.00
+$7.00
+
+
+$18.90
+$16,952.00
+FASE 5(REPORTERIA)
+
+
+
+
+$320,392.80
+$1.00
+
+
+$18.90
+$2,400.00
+FASE 6(PRUEBAS)
+
+
+
+
+$45,360.00
+$1.00
+
+
+$18.90
+$599.00
+FASE 7(INTEGRACION)
+
+
+
+
+$11,321.10
+$1.00
+
+
+$18.90
+$160.00
+FASE 8(SITIO ALTERNO)
+
+
+
+
+$3,024.00
+$1.00
+
+
+$18.90
+$600.00
+FASE 9(PASO A PRODUCCION)
+
+
+
+
+$11,340.00
+$1.00
+
+
+$18.90
+$2,396.00
+FASE 10(SOPORTE Y FEEDBACK)
+
+
+
+
+$45,284.40
+Subtotal:
+
+
+
+
+
+
+
+
+
+
+
+
+$1,942,806.60
+I.V.A (15%):
+
+
+
+
+
+
+
+
+
+
+
+
+$291,420.99
+Total
+
+
+
+
+
+
+
+
+
+
+
+
+$2,234,227.59
+
+
+
+
+
+
+Se debe tomar también en cuenta que en cuanto a la necesidad de la de TIC originalmente fue modernizar el sistema actual y en este caso las necesidades de cambio total del sistema es por parte de las autoridades específicamente la alta cúpula del hospital que ha decidido hacer este cambio no considerando lo que el departamento de tecnologías de la información y comunicaciones en este caso específicamente el ingeniero Jaime Padilla y el ingeniero Cristian Ruiz han visto como algo menos riesgoso pero de todas maneras hemos decidido colaborarles con la generación de la documentación necesaria. Una cosa también que se debe tomar en cuenta es que no se ha completado la disgregación de todos los requerimientos y tampoco existe firmas de responsabilidad de los usuarios finales con respecto a los requerimientos como solía hacerse dentro del sistema de gestión hospitalario actual y eso puede ser observado a futuro.
+
+
+
+Una cosa clave es que DTIC quiere modernizar el motor de base de datos actual mejorarlo y darle una interfaz web para que no exista la migración de datos es decir 0% de perdida de datos, en cualquier otro caso se pide el 100% de la migración de todos los pacientes.
+
+
+
+-- normativa
+
+Para elaborar un informe técnico sobre el manejo de un sistema de gestión hospitalaria y su información, considerando tanto la normativa ecuatoriana como internacional, es fundamental tener en cuenta diversas leyes, reglamentos y estándares. A continuación, se presentan algunas de las normativas y marcos legales relevantes que debes considerar:
+
+### Normativa Ecuatoriana
+
+1. **Constitución de la República del Ecuador (2008):*
+
+2. **Ley Orgánica de Protección de Datos Personales (LOPDP) (2021):**
+
+3. **Ley Orgánica de Salud (LOS):**
+
+4. **Reglamento de la Ley Orgánica de Salud:**
+5. **Ley Orgánica del Sistema Nacional de Contratación Pública (LOSNCP):**
+6. **Ley de Comercio Electrónico, Firmas Electrónicas y Mensajes de Datos:**
+3. **Estándares Internacionales de Seguridad de la Información (ISO/IEC 27001):**
+4. **Estándares HL7 y FHIR (Fast Healthcare Interoperability Resources):**
+   - Estos estándares son ampliamente utilizados a nivel internacional para la interoperabilidad de los sistemas de información en salud. Garantizan que los datos de salud puedan ser compartidos de manera segura y eficiente entre diferentes sistemas.
+
+5. **Normas ISO 27799 (Seguridad de la Información en Salud):**
+   - Específica para la gestión de la seguridad de la información en el ámbito de la salud, ofrece directrices para proteger la información personal de los pacientes en el contexto de los sistemas de información de salud.
+
+### Consideraciones Adicionales
+
+- **Política Nacional de Salud Digital:** Es importante estar al tanto de cualquier política o estrategia nacional relacionada con la salud digital o la informatización del sistema de salud en Ecuador.
+- **Normas Técnicas para la Interoperabilidad de Sistemas de Información en Salud (NTIS):** Emitidas por el Ministerio de Salud Pública, estas normas son esenciales para garantizar que los sistemas de información hospitalaria se integren adecuadamente con otros sistemas de salud a nivel nacional.
+
+
+
+Se ha decidido QUE SE VA A UTILIZAR SOFTWARE PRIVATIVO EN BASE A
+Se va a optar por un software privativo con componente de valor agregado ecuatoriano, de acuerdo con la prelación 2 del Artículo 148 del "Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación", está justificada por las necesidades específicas del Hospital de Especialidades Fuerzas Armadas No. 1 (HE-1). Luego de una evaluación exhaustiva de las alternativas propuestas, se determinó que la opción seleccionada no solo es la más económica, con un presupuesto de $1’828383.39 (Un millón ochocientos veintiocho mil trescientos ochenta y tres dólares con 39/100.) incluido impuestos, sino que también cumple con los estrictos requerimientos técnicos y operativos que demanda el hospital. Esta solución garantiza altos niveles de seguridad de la información, interoperabilidad con sistemas clave del sector público, como Esigef, ISSFA y SRI, y la escalabilidad necesaria para acompañar el crecimiento de las operaciones del hospital. Además, cumple con la normativa del sector salud en Ecuador, todo mientras promueve el desarrollo de la economía local al incluir un importante componente de valor agregado ecuatoriano.
+
+La elección de esta opción privativa está respaldada por la falta de alternativas de código abierto que puedan cumplir con los estándares técnicos, regulatorios y de seguridad requeridos por el HE-1. Las evaluaciones realizadas demostraron que las opciones de software de código abierto no lograban satisfacer las necesidades operativas críticas del hospital, ya sea por limitaciones técnicas o por la imposibilidad de adaptarlas a un costo razonable. Con base en estos análisis, se justifica la selección del software privativo.
+
+
+///////////////////////////////////////////////
+Arquitectura Definida para el Desarrollo.
+Actualmente, la capa de Oracle Forms 6i que se utiliza en el sistema hospitalario sigue una arquitectura cliente-servidor, la cual ha quedado desfasada y ya no recibe soporte oficial. Esto representa un desafío importante, ya que cualquier problema o necesidad de actualización requiere soluciones personalizadas, lo que puede incrementar los costos de mantenimiento y dificultar la resolución de problemas de compatibilidad o seguridad.
+
+Sin embargo, uno de los aspectos clave que se puede aprovechar es que el motor de base de datos utilizado actualmente en el hospital tiene la capacidad de ser actualizado a la versión más reciente disponible. Esta actualización permitiría mantener una infraestructura de base de datos robusta y moderna, que no solo mejoraría el rendimiento y la seguridad, sino que también permitiría implementar nuevas funcionalidades más fácilmente, garantizando la continuidad operativa del hospital sin comprometer la integridad de la información almacenada.
+
+Con la implementación de una nueva solución basada en una arquitectura monolítica para la capa web o GUI, se puede reemplazar la capa de Oracle Forms 6i, modernizando la interfaz de usuario y adaptándola a tecnologías actuales. Al mismo tiempo, se puede mantener y optimizar el motor de base de datos actual mediante la migración a versiones más avanzadas, lo que asegura que la infraestructura de datos esté actualizada y compatible con las demandas tecnológicas y de seguridad del sistema hospitalario.
+
+Este enfoque garantiza que se minimicen los riesgos de pérdida de información durante la transición y que el sistema de gestión hospitalaria pueda evolucionar de manera segura, mejorando la experiencia del usuario y asegurando la longevidad y escalabilidad del sistema en el futuro.
+</file>
+
+<file path="docker-compose.yml">
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: rag_qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:16333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      QDRANT_HTTP_MAX_BODY_SIZE: 100000000
+      QDRANT_GRPC_MAX_RECV_MESSAGE_SIZE: 100000000
+      QDRANT__STORAGE__PERFORMANCE__MAX_OPTIMIZATION_THREADS: 4
+
+  app:
+    build: .
+    container_name: rag_rust_app
+    restart: unless-stopped
+    depends_on:
+      - qdrant
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      RUST_LOG: info
+
+volumes:
+  qdrant_storage:
+</file>
+
+<file path="Dockerfile">
+FROM rust:1-trixie AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config \
+    libssl-dev \
+    clang \
+    cmake \
+    protobuf-compiler \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY Cargo.toml ./
+COPY src ./src
+RUN cargo build --release
+
+FROM debian:trixie-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    poppler-utils \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=builder /app/target/release/rag-rust-openrouter /usr/local/bin/rag-rust-openrouter
+
+ENV APP_HOST=0.0.0.0
+ENV APP_PORT=8080
+ENV DOCS_DIR=/app/data/documents
+ENV STATE_DIR=/app/data/state
+
+EXPOSE 8080
+CMD ["rag-rust-openrouter"]
+</file>
+
+<file path="nul">
+warning: Not a git repository. Use --no-index to compare two paths outside a working tree
+usage: git diff --no-index [<options>] <path> <path> [<pathspec>...]
+
+Diff output format options
+    -p, --patch           generate patch
+    -s, --no-patch        suppress diff output
+    -u                    generate patch
+    -U, --unified[=<n>]   generate diffs with <n> lines context
+    -W, --[no-]function-context
+                          generate diffs with <n> lines context
+    --raw                 generate the diff in raw format
+    --patch-with-raw      synonym for '-p --raw'
+    --patch-with-stat     synonym for '-p --stat'
+    --numstat             machine friendly --stat
+    --shortstat           output only the last line of --stat
+    -X, --dirstat[=<param1>,<param2>...]
+                          output the distribution of relative amount of changes for each sub-directory
+    --cumulative          synonym for --dirstat=cumulative
+    --dirstat-by-file[=<param1>,<param2>...]
+                          synonym for --dirstat=files,<param1>,<param2>...
+    --check               warn if changes introduce conflict markers or whitespace errors
+    --summary             condensed summary such as creations, renames and mode changes
+    --name-only           show only names of changed files
+    --name-status         show only names and status of changed files
+    --stat[=<width>[,<name-width>[,<count>]]]
+                          generate diffstat
+    --stat-width <width>  generate diffstat with a given width
+    --stat-name-width <width>
+                          generate diffstat with a given name width
+    --stat-graph-width <width>
+                          generate diffstat with a given graph width
+    --stat-count <count>  generate diffstat with limited lines
+    --[no-]compact-summary
+                          generate compact summary in diffstat
+    --binary              output a binary diff that can be applied
+    --[no-]full-index     show full pre- and post-image object names on the "index" lines
+    --[no-]color[=<when>] show colored diff
+    --ws-error-highlight <kind>
+                          highlight whitespace errors in the 'context', 'old' or 'new' lines in the diff
+    -z                    do not munge pathnames and use NULs as output field terminators in --raw or --numstat
+    --[no-]abbrev[=<n>]   use <n> digits to display object names
+    --src-prefix <prefix> show the given source prefix instead of "a/"
+    --dst-prefix <prefix> show the given destination prefix instead of "b/"
+    --line-prefix <prefix>
+                          prepend an additional prefix to every line of output
+    --no-prefix           do not show any source or destination prefix
+    --default-prefix      use default prefixes a/ and b/
+    --inter-hunk-context <n>
+                          show context between diff hunks up to the specified number of lines
+    --output-indicator-new <char>
+                          specify the character to indicate a new line instead of '+'
+    --output-indicator-old <char>
+                          specify the character to indicate an old line instead of '-'
+    --output-indicator-context <char>
+                          specify the character to indicate a context instead of ' '
+
+Diff rename options
+    -B, --break-rewrites[=<n>[/<m>]]
+                          break complete rewrite changes into pairs of delete and create
+    -M, --find-renames[=<n>]
+                          detect renames
+    -D, --irreversible-delete
+                          omit the preimage for deletes
+    -C, --find-copies[=<n>]
+                          detect copies
+    --[no-]find-copies-harder
+                          use unmodified files as source to find copies
+    --no-renames          disable rename detection
+    --[no-]rename-empty   use empty blobs as rename source
+    --[no-]follow         continue listing the history of a file beyond renames
+    -l <n>                prevent rename/copy detection if the number of rename/copy targets exceeds given limit
+
+Diff algorithm options
+    --minimal             produce the smallest possible diff
+    -w, --ignore-all-space
+                          ignore whitespace when comparing lines
+    -b, --ignore-space-change
+                          ignore changes in amount of whitespace
+    --ignore-space-at-eol ignore changes in whitespace at EOL
+    --ignore-cr-at-eol    ignore carrier-return at the end of line
+    --ignore-blank-lines  ignore changes whose lines are all blank
+    -I, --[no-]ignore-matching-lines <regex>
+                          ignore changes whose all lines match <regex>
+    --[no-]indent-heuristic
+                          heuristic to shift diff hunk boundaries for easy reading
+    --patience            generate diff using the "patience diff" algorithm
+    --histogram           generate diff using the "histogram diff" algorithm
+    --diff-algorithm <algorithm>
+                          choose a diff algorithm
+    --anchored <text>     generate diff using the "anchored diff" algorithm
+    --word-diff[=<mode>]  show word diff, using <mode> to delimit changed words
+    --word-diff-regex <regex>
+                          use <regex> to decide what a word is
+    --color-words[=<regex>]
+                          equivalent to --word-diff=color --word-diff-regex=<regex>
+    --[no-]color-moved[=<mode>]
+                          moved lines of code are colored differently
+    --[no-]color-moved-ws <mode>
+                          how white spaces are ignored in --color-moved
+
+Other diff options
+    --[no-]relative[=<prefix>]
+                          when run from subdir, exclude changes outside and show relative paths
+    -a, --[no-]text       treat all files as text
+    -R                    swap two inputs, reverse the diff
+    --[no-]exit-code      exit with 1 if there were differences, 0 otherwise
+    --[no-]quiet          disable all output of the program
+    --[no-]ext-diff       allow an external diff helper to be executed
+    --[no-]textconv       run external text conversion filters when comparing binary files
+    --ignore-submodules[=<when>]
+                          ignore changes to submodules in the diff generation
+    --submodule[=<format>]
+                          specify how differences in submodules are shown
+    --ita-invisible-in-index
+                          hide 'git add -N' entries from the index
+    --ita-visible-in-index
+                          treat 'git add -N' entries as real in the index
+    -S <string>           look for differences that change the number of occurrences of the specified string
+    -G <regex>            look for differences that change the number of occurrences of the specified regex
+    --pickaxe-all         show all changes in the changeset with -S or -G
+    --pickaxe-regex       treat <string> in -S as extended POSIX regular expression
+    -O <file>             control the order in which files appear in the output
+    --rotate-to <path>    show the change in the specified path first
+    --skip-to <path>      skip the output to the specified path
+    --find-object <object-id>
+                          look for differences that change the number of occurrences of the specified object
+    --diff-filter [(A|C|D|M|R|T|U|X|B)...[*]]
+                          select files by diff type
+    --max-depth <depth>   maximum tree depth to recurse
+    --output <file>       output to a specific file
+</file>
+
+<file path="rag-cli.sh">
+#!/bin/bash
+# rag-cli.sh — Probador CLI para Rust Local RAG
+# Uso:
+#   ./rag-cli.sh "pregunta"                    # modo rápido + LLM
+#   ./rag-cli.sh -m informe "pregunta"         # modo informe
+#   ./rag-cli.sh -n "pregunta"                 # sin LLM (respuesta local)
+#   ./rag-cli.sh -s "pregunta"                 # modo streaming (SSE)
+#   ./rag-cli.sh -m informe -n "pregunta"      # informe sin LLM
+
+set -euo pipefail
+
+BASE_URL="${RAG_URL:-http://127.0.0.1:8080}"
+USER="${RAG_USER:-admin}"
+PASS="${RAG_PASS:-admin123}"
+MODE="rapido"
+NO_LLM=false
+STREAM=false
+TOPK=""
+
+usage() {
+    echo "Uso: $0 [-m rapido|informe] [-n] [-s] [-t N] <pregunta>"
+    echo ""
+    echo "  -m MODE    Modo: rapido (default) | informe"
+    echo "  -n         Sin OpenRouter (respuesta local)"
+    echo "  -s         Streaming SSE (tiempo real)"
+    echo "  -t N       Top-K manual (default: 3 rápido, 6 informe)"
+    echo "  -h         Esta ayuda"
+    echo ""
+    echo "Variables de entorno:"
+    echo "  RAG_URL    URL base (default: http://127.0.0.1:8080)"
+    echo "  RAG_USER   Usuario (default: admin)"
+    echo "  RAG_PASS   Contraseña (default: admin123)"
+    exit 0
+}
+
+while getopts "m:nst:h" opt; do
+    case $opt in
+        m) MODE="$OPTARG" ;;
+        n) NO_LLM=true ;;
+        s) STREAM=true ;;
+        t) TOPK="$OPTARG" ;;
+        h) usage ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+QUESTION="${*:-}"
+if [ -z "$QUESTION" ]; then
+    read -rp "Pregunta: " QUESTION
+fi
+if [ -z "$QUESTION" ]; then
+    echo "Error: debe proporcionar una pregunta." >&2
+    exit 1
+fi
+
+# --- Login ---
+TMPFILE=$(mktemp)
+trap 'rm -f "$TMPFILE"' EXIT
+
+echo "→ Autenticando como $USER..." >&2
+LOGIN_RESP=$(curl -sS -c "$TMPFILE" -X POST "$BASE_URL/api/login" \
+    -H "Content-Type: application/json" \
+    -d "{\"username\":\"$USER\",\"password\":\"$PASS\"}" 2>&1)
+
+if ! echo "$LOGIN_RESP" | grep -q '"ok":true'; then
+    echo "Error: login fallido — $LOGIN_RESP" >&2
+    exit 1
+fi
+
+# --- Calcular top_k ---
+if [ -z "$TOPK" ]; then
+    if [ "$MODE" = "informe" ]; then
+        TOPK=6
+    else
+        TOPK=3
+    fi
+fi
+
+USE_LLM="true"
+if $NO_LLM; then
+    USE_LLM="false"
+fi
+
+BODY=$(cat <<EOF
+{"question":"$QUESTION","use_llm":$USE_LLM,"mode":"$MODE","top_k":$TOPK}
+EOF
+)
+
+echo "→ Modo: $MODE | top_k: $TOPK | LLM: $USE_LLM" >&2
+echo "" >&2
+
+# --- Llamada a la API ---
+if $STREAM; then
+    echo "═╦═ RESPUESTA (streaming) ═══════════════════════════════════" >&2
+    echo "" >&2
+    
+    curl -sS -b "$TMPFILE" -X POST "$BASE_URL/api/chat-stream" \
+        -H "Content-Type: application/json" \
+        -d "$BODY" 2>&1 | while IFS= read -r line; do
+        if [[ "$line" == data:* ]]; then
+            data="${line#data: }"
+            case "$data" in
+                __FRAGMENTS__*)
+                    echo "📎 Fragmentos recuperados" >&2
+                    ;;
+                __CACHED__*)
+                    echo -e "\n💾 Cache:\n${data#__CACHED__}" 
+                    ;;
+                __LOCAL__*)
+                    echo -e "\n📋 Local:\n${data#__LOCAL__}"
+                    ;;
+                __ANSWER__*)
+                    # Limpiar pantalla parcial, mostrar progresivo
+                    text="${data#__ANSWER__}"
+                    printf "\r\033[K%s" "$text"
+                    ;;
+                __ERROR__*)
+                    echo -e "\n❌ Error: ${data#__ERROR__}" >&2
+                    ;;
+            esac
+        fi
+    done
+    echo ""
+else
+    echo "═╦═ RESPUESTA ═══════════════════════════════════════════════" >&2
+    
+    RESP=$(curl -sS -b "$TMPFILE" -X POST "$BASE_URL/api/chat" \
+        -H "Content-Type: application/json" \
+        -d "$BODY" 2>&1)
+    
+    if echo "$RESP" | grep -q '"error"'; then
+        echo "❌ $(echo "$RESP" | grep -o '"error":"[^"]*"' | head -1)" >&2
+        exit 1
+    fi
+    
+    # Extraer y mostrar campos clave
+    ANSWER=$(echo "$RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['answer'])" 2>/dev/null || echo "$RESP")
+    USED_LLM=$(echo "$RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['used_llm'])" 2>/dev/null || echo "?")
+    MODEL=$(echo "$RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('model',''))" 2>/dev/null || echo "")
+    FRAG_COUNT=$(echo "$RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('fragments',[])))" 2>/dev/null || echo "?")
+    
+    if [ "$USED_LLM" = "True" ]; then
+        echo "🤖 LLM: $MODEL | Fragmentos: $FRAG_COUNT"
+    elif echo "$ANSWER" | grep -q '\[Cache\]'; then
+        echo "💾 Cache | Fragmentos: $FRAG_COUNT"
+        ANSWER="${ANSWER//\[Cache\] /}"
+    else
+        echo "📋 Local | Fragmentos: $FRAG_COUNT"
+    fi
+    echo ""
+    echo "$ANSWER"
+fi
+
+echo "" >&2
+echo "═╩════════════════════════════════════════════════════════════" >&2
+</file>
+
+<file path="README.md">
+# Rust Local RAG + OpenRouter
+
+MVP para búsqueda semántica privada con Rust, Qdrant y embeddings locales en CPU. OpenRouter se usa únicamente para redactar la respuesta final, cuando se configura `OPENROUTER_API_KEY`.
+
+## Qué hace
+
+- Lee documentos desde `./data/documents`.
+- Soporta `.txt`, `.md` y `.pdf`.
+- Extrae texto de PDF usando `pdftotext` dentro del contenedor.
+- Divide documentos grandes en fragmentos.
+- Genera embeddings locales con `fastembed`.
+- Guarda vectores en Qdrant local.
+- Detecta cambios por hash SHA-256.
+- Reindexa solo archivos nuevos o modificados.
+- Elimina del índice archivos borrados de la carpeta.
+- Permite chatear desde una interfaz web simple.
+- Puede funcionar sin OpenRouter en modo privado.
+
+## Estructura
+
+```text
+rag_rust_openrouter/
+├── docker-compose.yml
+├── Dockerfile
+├── Cargo.toml
+├── .env.example
+├── README.md
+├── src/
+│   └── main.rs
+└── data/
+    ├── documents/
+    │   └── README.md
+    └── state/
+```
+
+## Uso rápido
+
+```bash
+cp .env.example .env
+```
+
+Opcionalmente edite `.env` y coloque:
+
+```bash
+OPENROUTER_API_KEY=sk-or-xxxxxxxx
+OPENROUTER_MODEL=openai/gpt-5.2
+OPENROUTER_MAX_TOKENS=4096
+```
+
+`OPENROUTER_MAX_TOKENS` controla la longitud máxima de la respuesta del LLM. El valor por defecto es 4096 tokens (~3000 palabras). Increméntelo si necesita informes más extensos.
+
+Coloque sus documentos en:
+
+```bash
+./data/documents
+```
+
+Levante el sistema:
+
+```bash
+docker compose up --build
+```
+
+Abra:
+
+```text
+http://localhost:8080
+```
+
+Qdrant queda disponible solo en localhost:
+
+```text
+http://localhost:6333/dashboard
+```
+
+## Modo privado
+
+Si `OPENROUTER_API_KEY` está vacío, no se llama al LLM externo. La aplicación solo devuelve los fragmentos relevantes encontrados localmente.
+
+## Actualización periódica
+
+La variable `INDEX_INTERVAL_SECONDS` controla cada cuánto se revisa la carpeta de documentos. Por defecto es cada 3600 segundos.
+
+```bash
+INDEX_INTERVAL_SECONDS=3600
+```
+
+## Recomendación inicial
+
+Para un documento grande, primero pruebe con un PDF o TXT. Cuando funcione bien, agregue más documentos. El primer arranque puede tardar porque el modelo de embeddings local se descarga y queda cacheado dentro del volumen `./data`/contenedor.
+
+## Seguridad básica
+
+- La documentación no se envía a OpenRouter durante la indexación.
+- OpenRouter solo recibe los fragmentos recuperados para responder, si `OPENROUTER_API_KEY` está configurada y el usuario marca la opción de usar LLM.
+- Qdrant y la app están publicados en `127.0.0.1`, no en toda la red.
+</file>
+
+<file path="src/main.rs">
+use anyhow::{anyhow, Context, Result};
+use axum::{
+    extract::{DefaultBodyLimit, Multipart, State},
+    http::{header, HeaderMap, HeaderValue, StatusCode},
+    response::{
+        sse::{Event, Sse},
+        Html, IntoResponse, Response,
+    },
+    routing::{get, post},
+    Json, Router,
+};
+use chrono::Utc;
+use encoding_rs::WINDOWS_1252;
+use fastembed::{EmbeddingModel, InitOptions, TextEmbedding};
+use reqwest::Client;
+use rusqlite::{params, Connection, OptionalExtension};
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
+use std::{
+    collections::HashSet,
+    convert::Infallible,
+    env, fs,
+    path::{Path, PathBuf},
+    process::Command,
+    sync::{Arc, Mutex},
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
+use tokio::{net::TcpListener, sync::mpsc};
+use tokio_stream::{wrappers::ReceiverStream, StreamExt};
+use tower_http::{cors::CorsLayer, trace::TraceLayer};
+use tracing::{error, info, warn};
+use uuid::Uuid;
+use walkdir::WalkDir;
+
+const VECTOR_SIZE: usize = 384;
+const CHUNK_WORDS: usize = 300;
+const CHUNK_OVERLAP_WORDS: usize = 50;
+const EMBED_BATCH_SIZE: usize = 4;
+const INDEX_PIPELINE_VERSION: &str = "2026-05-13-e5large-v1";
+const COOKIE_NAME: &str = "rag_session";
+
+#[derive(Clone)]
+struct AppState {
+    config: Arc<Config>,
+    http: Client,
+    embedder: Arc<Mutex<TextEmbedding>>,
+    index_lock: Arc<tokio::sync::Mutex<()>>,
+}
+
+#[derive(Clone, Debug)]
+struct Config {
+    docs_dir: PathBuf,
+    state_dir: PathBuf,
+    qdrant_url: String,
+    collection: String,
+    openrouter_api_key: Option<String>,
+    openrouter_model: String,
+    openrouter_max_tokens: u32,
+    index_interval_seconds: u64,
+    default_top_k: usize,
+    app_host: String,
+    app_port: u16,
+    admin_username: String,
+    admin_password: String,
+    auth_salt: String,
+    session_hours: i64,
+}
+
+impl Config {
+    fn from_env() -> Self {
+        let docs_dir = env::var("DOCS_DIR").unwrap_or_else(|_| "/app/data/documents".to_string());
+        let state_dir = env::var("STATE_DIR").unwrap_or_else(|_| "/app/data/state".to_string());
+        let qdrant_url = env::var("QDRANT_URL").unwrap_or_else(|_| "http://qdrant:6333".to_string());
+        let collection = env::var("QDRANT_COLLECTION").unwrap_or_else(|_| "docs_rag".to_string());
+
+        let openrouter_api_key = env::var("OPENROUTER_API_KEY")
+            .ok()
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty());
+
+        let openrouter_model = env::var("OPENROUTER_MODEL").unwrap_or_else(|_| "openai/gpt-5.2".to_string());
+        let openrouter_max_tokens = env::var("OPENROUTER_MAX_TOKENS").ok().and_then(|v| v.parse().ok()).unwrap_or(4096);
+        let index_interval_seconds = env::var("INDEX_INTERVAL_SECONDS").ok().and_then(|v| v.parse().ok()).unwrap_or(3600);
+        let default_top_k = env::var("DEFAULT_TOP_K").ok().and_then(|v| v.parse().ok()).unwrap_or(5);
+        let app_host = env::var("APP_HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
+        let app_port = env::var("APP_PORT").ok().and_then(|v| v.parse().ok()).unwrap_or(8080);
+
+        let admin_username = env::var("ADMIN_USERNAME").unwrap_or_else(|_| "admin".to_string());
+        let admin_password = env::var("ADMIN_PASSWORD").unwrap_or_else(|_| "admin123".to_string());
+        let auth_salt = env::var("AUTH_SALT").unwrap_or_else(|_| "cambie-esta-sal-local".to_string());
+        let session_hours = env::var("SESSION_HOURS").ok().and_then(|v| v.parse().ok()).unwrap_or(24);
+
+        Self {
+            docs_dir: PathBuf::from(docs_dir),
+            state_dir: PathBuf::from(state_dir),
+            qdrant_url,
+            collection,
+            openrouter_api_key,
+            openrouter_model,
+            openrouter_max_tokens,
+            index_interval_seconds,
+            default_top_k,
+            app_host,
+            app_port,
+            admin_username,
+            admin_password,
+            auth_salt,
+            session_hours,
+        }
+    }
+
+    fn db_path(&self) -> PathBuf {
+        self.state_dir.join("manifest.sqlite")
+    }
+}
+
+#[derive(Debug, Serialize)]
+struct IndexSummary {
+    scanned_files: usize,
+    indexed_files: usize,
+    skipped_files: usize,
+    deleted_files: usize,
+    chunks_indexed: usize,
+    errors: Vec<String>,
+}
+
+impl Default for IndexSummary {
+    fn default() -> Self {
+        Self {
+            scanned_files: 0,
+            indexed_files: 0,
+            skipped_files: 0,
+            deleted_files: 0,
+            chunks_indexed: 0,
+            errors: vec![],
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct LoginRequest {
+    username: String,
+    password: String,
+}
+
+#[derive(Debug, Serialize)]
+struct LoginResponse {
+    ok: bool,
+    user: AuthUser,
+}
+
+#[derive(Debug, Serialize, Clone)]
+struct AuthUser {
+    username: String,
+    role: String,
+    is_active: bool,
+    blocked_reason: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CreateUserRequest {
+    username: String,
+    password: String,
+    role: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BlockUserRequest {
+    username: String,
+    blocked: bool,
+    reason: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+struct UserRow {
+    username: String,
+    role: String,
+    is_active: bool,
+    created_at: String,
+    blocked_reason: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+struct UploadResponse {
+    ok: bool,
+    files: Vec<String>,
+    message: String,
+}
+
+#[derive(Debug, Serialize)]
+struct DocumentRow {
+    path: String,
+    indexed_at: String,
+    chunk_count: i64,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+struct ChatRequest {
+    question: String,
+    top_k: Option<usize>,
+    use_llm: Option<bool>,
+    mode: Option<String>,
+    selected_sources: Option<Vec<String>>,
+}
+
+#[derive(Debug, Serialize)]
+struct ChatResponse {
+    answer: String,
+    used_llm: bool,
+    model: Option<String>,
+    fragments: Vec<SearchFragment>,
+}
+
+#[derive(Debug, Serialize)]
+struct StreamEvent<'a, T: Serialize> {
+    kind: &'a str,
+    payload: T,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct SearchFragment {
+    score: f32,
+    source: String,
+    chunk_index: usize,
+    text: String,
+}
+
+#[derive(Debug, Serialize)]
+struct StatusResponse {
+    docs_dir: String,
+    qdrant_url: String,
+    collection: String,
+    openrouter_enabled: bool,
+    openrouter_model: String,
+    index_interval_seconds: u64,
+    manifest_documents: i64,
+    user: AuthUser,
+}
+
+#[derive(Debug)]
+struct AppError {
+    status: StatusCode,
+    message: String,
+}
+
+impl AppError {
+    fn new(status: StatusCode, message: impl Into<String>) -> Self {
+        Self {
+            status,
+            message: message.into(),
+        }
+    }
+
+    fn unauthorized() -> Self {
+        Self::new(StatusCode::UNAUTHORIZED, "Debe iniciar sesión.")
+    }
+
+    fn forbidden() -> Self {
+        Self::new(StatusCode::FORBIDDEN, "No tiene permisos para esta operación.")
+    }
+}
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
+        error!("{}", self.message);
+        (self.status, Json(json!({ "error": self.message }))).into_response()
+    }
+}
+
+impl From<anyhow::Error> for AppError {
+    fn from(err: anyhow::Error) -> Self {
+        Self::new(StatusCode::INTERNAL_SERVER_ERROR, err.to_string())
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    tracing_subscriber::fmt()
+        .with_env_filter(env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string()))
+        .init();
+
+    let config = Arc::new(Config::from_env());
+
+    fs::create_dir_all(&config.docs_dir)?;
+    fs::create_dir_all(&config.state_dir)?;
+
+    init_db(&config)?;
+    ensure_default_admin(&config)?;
+
+    let http = Client::builder()
+        .timeout(Duration::from_secs(180))
+        .pool_max_idle_per_host(0)
+        .build()?;
+
+    wait_for_qdrant(&http, &config.qdrant_url).await?;
+    ensure_qdrant_collection(&http, &config).await?;
+
+    info!("Inicializando modelo de embeddings local en CPU...");
+
+    let embedder = TextEmbedding::try_new(
+        InitOptions::new(EmbeddingModel::ParaphraseMLMiniLML12V2).with_show_download_progress(true),
+    )?;
+
+    let state = AppState {
+        config,
+        http,
+        embedder: Arc::new(Mutex::new(embedder)),
+        index_lock: Arc::new(tokio::sync::Mutex::new(())),
+    };
+
+    let state_for_indexer = state.clone();
+    tokio::spawn(async move {
+        periodic_indexer(state_for_indexer).await;
+    });
+
+    let app = Router::new()
+        .route("/", get(index_html))
+        .route("/api/login", post(login))
+        .route("/api/logout", post(logout))
+        .route("/api/me", get(me))
+        .route("/api/status", get(status))
+        .route("/api/chat", post(chat))
+        .route("/api/chat-stream", post(chat_stream))
+        .route("/api/admin/reindex", post(reindex_now))
+        .route("/api/admin/upload", post(upload_documents))
+        .route("/api/admin/users", get(list_users).post(create_user))
+        .route("/api/admin/users/block", post(block_user))
+        .route("/api/admin/documents", get(list_documents))
+        .layer(DefaultBodyLimit::max(100 * 1024 * 1024))
+        .layer(CorsLayer::permissive())
+        .layer(TraceLayer::new_for_http())
+        .with_state(state.clone());
+
+    let addr = format!("{}:{}", state.config.app_host, state.config.app_port);
+    let listener = TcpListener::bind(&addr).await?;
+
+    info!("Servidor listo en http://{}", addr);
+
+    axum::serve(listener, app).await?;
+
+    Ok(())
+}
+
+async fn index_html() -> Html<&'static str> {
+    Html(INDEX_HTML)
+}
+
+async fn login(
+    State(state): State<AppState>,
+    Json(req): Json<LoginRequest>,
+) -> Result<Response, AppError> {
+    let username = req.username.trim().to_lowercase();
+
+    if username.is_empty() || req.password.is_empty() {
+        return Err(AppError::new(
+            StatusCode::BAD_REQUEST,
+            "Usuario y contraseña son obligatorios.",
+        ));
+    }
+
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+
+    let row: Option<(i64, String, String, i64, Option<String>)> = conn
+        .query_row(
+            "SELECT id, password_hash, role, is_active, blocked_reason FROM users WHERE username = ?1",
+            params![username],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?)),
+        )
+        .optional()
+        .map_err(anyhow::Error::from)?;
+
+    let Some((user_id, password_hash, role, is_active, blocked_reason)) = row else {
+        return Err(AppError::new(
+            StatusCode::UNAUTHORIZED,
+            "Credenciales incorrectas.",
+        ));
+    };
+
+    if is_active == 0 {
+        return Err(AppError::new(
+            StatusCode::FORBIDDEN,
+            blocked_reason.unwrap_or_else(|| "Usuario bloqueado.".to_string()),
+        ));
+    }
+
+    if password_hash != hash_password(&state.config, &req.password) {
+        return Err(AppError::new(
+            StatusCode::UNAUTHORIZED,
+            "Credenciales incorrectas.",
+        ));
+    }
+
+    let token = Uuid::new_v4().to_string();
+    let now = Utc::now().timestamp();
+    let expires_at = now + state.config.session_hours * 3600;
+
+    conn.execute(
+        "INSERT INTO sessions(token, user_id, created_at, expires_at) VALUES (?1, ?2, ?3, ?4)",
+        params![token, user_id, now, expires_at],
+    )
+    .map_err(anyhow::Error::from)?;
+
+    let user = AuthUser {
+        username: username.clone(),
+        role,
+        is_active: true,
+        blocked_reason: None,
+    };
+
+    let cookie = format!(
+        "{}={}; Path=/; HttpOnly; SameSite=Lax; Max-Age={}",
+        COOKIE_NAME,
+        token,
+        state.config.session_hours * 3600
+    );
+
+    let mut headers = HeaderMap::new();
+
+    headers.insert(
+        header::SET_COOKIE,
+        HeaderValue::from_str(&cookie).map_err(|e| anyhow!(e.to_string()))?,
+    );
+
+    Ok((headers, Json(LoginResponse { ok: true, user })).into_response())
+}
+
+async fn logout(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Response, AppError> {
+    if let Some(token) = read_session_cookie(&headers) {
+        let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+        let _ = conn.execute("DELETE FROM sessions WHERE token = ?1", params![token]);
+    }
+
+    let mut headers = HeaderMap::new();
+
+    headers.insert(
+        header::SET_COOKIE,
+        HeaderValue::from_static("rag_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"),
+    );
+
+    Ok((headers, Json(json!({"ok": true}))).into_response())
+}
+
+async fn me(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<AuthUser>, AppError> {
+    let user = require_user(&state, &headers)?;
+    Ok(Json(user))
+}
+
+async fn status(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<StatusResponse>, AppError> {
+    let user = require_user(&state, &headers)?;
+    let count = count_manifest_documents(&state.config).map_err(anyhow::Error::from)?;
+
+    Ok(Json(StatusResponse {
+        docs_dir: state.config.docs_dir.display().to_string(),
+        qdrant_url: state.config.qdrant_url.clone(),
+        collection: state.config.collection.clone(),
+        openrouter_enabled: state.config.openrouter_api_key.is_some(),
+        openrouter_model: state.config.openrouter_model.clone(),
+        index_interval_seconds: state.config.index_interval_seconds,
+        manifest_documents: count,
+        user,
+    }))
+}
+
+async fn reindex_now(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<IndexSummary>, AppError> {
+    require_admin(&state, &headers)?;
+    let summary = run_indexer(&state).await.map_err(anyhow::Error::from)?;
+    Ok(Json(summary))
+}
+
+async fn chat(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<ChatRequest>,
+) -> Result<Json<ChatResponse>, AppError> {
+    require_user(&state, &headers)?;
+
+    let question = req.question.trim();
+
+    if question.is_empty() {
+        return Err(AppError::new(
+            StatusCode::BAD_REQUEST,
+            "La pregunta no puede estar vacía.",
+        ));
+    }
+
+    let (top_k, max_chars, max_tokens) = (
+        req.top_k.unwrap_or(state.config.default_top_k).clamp(1, 15),
+        2500usize,
+        state.config.openrouter_max_tokens,
+    );
+
+    let fragments = semantic_search(&state, question, top_k)
+        .await
+        .map_err(anyhow::Error::from)?;
+    let filtered_fragments = filter_fragments_by_sources(&fragments, req.selected_sources.as_deref());
+    let context_fragments = merge_fragments_as_single_context(&filtered_fragments);
+
+    let wants_llm = req.use_llm.unwrap_or(true);
+    let can_use_llm = wants_llm && state.config.openrouter_api_key.is_some();
+
+    if can_use_llm {
+        if let Some(cached) = check_faq_cache(&state.config, question) {
+            return Ok(Json(ChatResponse {
+                answer: format!("[Cache] {cached}"),
+                used_llm: false,
+                model: None,
+                fragments,
+            }));
+        }
+
+        let answer = call_openrouter(&state, question, &context_fragments, max_chars, max_tokens)
+            .await
+            .map_err(anyhow::Error::from)?;
+
+        let _ = store_faq_cache(&state.config, question, &answer);
+
+        Ok(Json(ChatResponse {
+                answer,
+                used_llm: true,
+                model: Some(state.config.openrouter_model.clone()),
+                fragments: filtered_fragments,
+            }))
+    } else {
+        let answer = build_local_response(question, &context_fragments);
+
+        Ok(Json(ChatResponse {
+            answer,
+            used_llm: false,
+            model: None,
+            fragments: filtered_fragments,
+        }))
+    }
+}
+
+async fn chat_stream(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<ChatRequest>,
+) -> Sse<ReceiverStream<Result<Event, Infallible>>> {
+    let (tx, rx) = mpsc::channel::<Result<Event, Infallible>>(64);
+
+    tokio::spawn(async move {
+        async fn send_event<T: Serialize>(
+            tx: &mpsc::Sender<Result<Event, Infallible>>,
+            kind: &'static str,
+            payload: T,
+        ) {
+            let data = match serde_json::to_string(&StreamEvent { kind, payload }) {
+                Ok(data) => data,
+                Err(e) => {
+                    let fallback = json!({
+                        "kind": "error",
+                        "payload": format!("No se pudo serializar el evento SSE: {e}")
+                    })
+                    .to_string();
+                    let _ = tx.send(Ok(Event::default().data(fallback))).await;
+                    return;
+                }
+            };
+
+            let _ = tx.send(Ok(Event::default().data(data))).await;
+        }
+
+        let _user = match require_user(&state, &headers) {
+            Ok(u) => u,
+            Err(e) => {
+                send_event(&tx, "error", e.message).await;
+                return;
+            }
+        };
+
+        let question = req.question.trim().to_string();
+        if question.is_empty() {
+            send_event(&tx, "error", "La pregunta no puede estar vacía.").await;
+            return;
+        }
+
+        let (top_k, max_chars, max_tokens) = (req.top_k.unwrap_or(6).clamp(1, 15), 2500usize, state.config.openrouter_max_tokens);
+
+        let fragments = match semantic_search(&state, &question, top_k).await {
+            Ok(f) => f,
+            Err(e) => {
+                send_event(&tx, "error", e.to_string()).await;
+                return;
+            }
+        };
+        let filtered_fragments =
+            filter_fragments_by_sources(&fragments, req.selected_sources.as_deref());
+        let context_fragments = merge_fragments_as_single_context(&filtered_fragments);
+
+        send_event(&tx, "fragments", &filtered_fragments).await;
+
+        let wants_llm = req.use_llm.unwrap_or(true);
+        let can_use_llm = wants_llm && state.config.openrouter_api_key.is_some();
+
+        if can_use_llm {
+            if let Some(cached) = check_faq_cache(&state.config, &question) {
+                send_event(&tx, "cached", cached).await;
+                return;
+            }
+
+            match call_openrouter_stream(&state, &question, &context_fragments, max_chars, max_tokens).await
+            {
+                Ok(mut orx) => {
+                    let mut full = String::new();
+                    while let Some(delta) = orx.recv().await {
+                        match delta {
+                            Ok(chunk) => {
+                                full.push_str(&chunk);
+                                send_event(&tx, "answer", &full).await;
+                            }
+                            Err(e) => {
+                                if !full.is_empty() {
+                                    send_event(&tx, "answer", &full).await;
+                                }
+                                send_event(&tx, "error", e.to_string()).await;
+                                break;
+                            }
+                        }
+                    }
+                    let _ = store_faq_cache(&state.config, &question, &full);
+                }
+                Err(e) => {
+                    send_event(&tx, "error", e.to_string()).await;
+                }
+            }
+        } else {
+            let answer = build_local_response(&question, &context_fragments);
+            send_event(&tx, "local", answer).await;
+        }
+    });
+
+    Sse::new(ReceiverStream::new(rx))
+}
+
+async fn list_users(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<Vec<UserRow>>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+
+    let mut stmt = conn
+        .prepare(
+            "SELECT username, role, is_active, created_at, blocked_reason FROM users ORDER BY username",
+        )
+        .map_err(anyhow::Error::from)?;
+
+    let rows = stmt
+        .query_map([], |r| {
+            Ok(UserRow {
+                username: r.get(0)?,
+                role: r.get(1)?,
+                is_active: r.get::<_, i64>(2)? != 0,
+                created_at: r.get(3)?,
+                blocked_reason: r.get(4)?,
+            })
+        })
+        .map_err(anyhow::Error::from)?;
+
+    let mut out = Vec::new();
+
+    for row in rows {
+        out.push(row.map_err(anyhow::Error::from)?);
+    }
+
+    Ok(Json(out))
+}
+
+async fn create_user(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<CreateUserRequest>,
+) -> Result<Json<UserRow>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let username = req.username.trim().to_lowercase();
+    let role = req.role.unwrap_or_else(|| "user".to_string());
+
+    if username.len() < 3 || req.password.len() < 4 {
+        return Err(AppError::new(
+            StatusCode::BAD_REQUEST,
+            "El usuario debe tener al menos 3 caracteres y la clave al menos 4.",
+        ));
+    }
+
+    if role != "admin" && role != "user" {
+        return Err(AppError::new(
+            StatusCode::BAD_REQUEST,
+            "El rol debe ser admin o user.",
+        ));
+    }
+
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+    let now = Utc::now().to_rfc3339();
+
+    conn.execute(
+        "INSERT INTO users(username, password_hash, role, is_active, created_at, blocked_reason) VALUES (?1, ?2, ?3, 1, ?4, NULL)",
+        params![username, hash_password(&state.config, &req.password), role, now],
+    )
+    .map_err(|e| {
+        AppError::new(
+            StatusCode::BAD_REQUEST,
+            format!("No se pudo crear el usuario: {e}"),
+        )
+    })?;
+
+    Ok(Json(UserRow {
+        username,
+        role,
+        is_active: true,
+        created_at: now,
+        blocked_reason: None,
+    }))
+}
+
+async fn block_user(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<BlockUserRequest>,
+) -> Result<Json<Value>, AppError> {
+    let current = require_admin(&state, &headers)?;
+    let username = req.username.trim().to_lowercase();
+
+    if username == current.username {
+        return Err(AppError::new(
+            StatusCode::BAD_REQUEST,
+            "El administrador no puede bloquear su propia sesión.",
+        ));
+    }
+
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+    let active = if req.blocked { 0 } else { 1 };
+
+    let reason = if req.blocked {
+        req.reason
+            .or_else(|| Some("Bloqueado por administración.".to_string()))
+    } else {
+        None
+    };
+
+    conn.execute(
+        "UPDATE users SET is_active = ?1, blocked_reason = ?2 WHERE username = ?3",
+        params![active, reason, username],
+    )
+    .map_err(anyhow::Error::from)?;
+
+    if req.blocked {
+        conn.execute(
+            "DELETE FROM sessions WHERE user_id IN (SELECT id FROM users WHERE username = ?1)",
+            params![username],
+        )
+        .map_err(anyhow::Error::from)?;
+    }
+
+    Ok(Json(json!({"ok": true})))
+}
+
+async fn upload_documents(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    mut multipart: Multipart,
+) -> Result<Json<UploadResponse>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let mut saved = Vec::new();
+
+    fs::create_dir_all(&state.config.docs_dir).map_err(anyhow::Error::from)?;
+
+    while let Some(field) = multipart
+        .next_field()
+        .await
+        .map_err(|e| AppError::new(StatusCode::BAD_REQUEST, e.to_string()))?
+    {
+        let Some(file_name) = field.file_name().map(|s| s.to_string()) else {
+            continue;
+        };
+
+        let safe = sanitize_filename(&file_name);
+
+        if !is_supported_filename(&safe) {
+            return Err(AppError::new(
+                StatusCode::BAD_REQUEST,
+                format!("Formato no permitido: {safe}. Use .txt, .md o .pdf"),
+            ));
+        }
+
+        let bytes = field
+            .bytes()
+            .await
+            .map_err(|e| AppError::new(StatusCode::BAD_REQUEST, e.to_string()))?;
+
+        if bytes.is_empty() {
+            continue;
+        }
+
+        if bytes.len() > 80 * 1024 * 1024 {
+            return Err(AppError::new(
+                StatusCode::BAD_REQUEST,
+                "El archivo supera 80 MB.",
+            ));
+        }
+
+        let dest = state.config.docs_dir.join(&safe);
+        fs::write(&dest, &bytes).map_err(anyhow::Error::from)?;
+        saved.push(safe);
+    }
+
+    if saved.is_empty() {
+        return Err(AppError::new(
+            StatusCode::BAD_REQUEST,
+            "No se recibió ningún archivo válido.",
+        ));
+    }
+
+    let state_clone = state.clone();
+
+    tokio::spawn(async move {
+        match run_indexer(&state_clone).await {
+            Ok(summary) => info!("Indexación posterior a carga web: {:?}", summary),
+            Err(e) => error!("Error indexando después de carga: {e:#}"),
+        }
+    });
+
+    Ok(Json(UploadResponse {
+        ok: true,
+        files: saved,
+        message: "Archivo(s) subido(s). La indexación se ejecuta sin detener el servicio.".to_string(),
+    }))
+}
+
+async fn list_documents(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<Vec<DocumentRow>>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+
+    let mut stmt = conn
+        .prepare("SELECT path, indexed_at, chunk_count FROM documents ORDER BY indexed_at DESC")
+        .map_err(anyhow::Error::from)?;
+
+    let rows = stmt
+        .query_map([], |r| {
+            Ok(DocumentRow {
+                path: r.get(0)?,
+                indexed_at: r.get(1)?,
+                chunk_count: r.get(2)?,
+            })
+        })
+        .map_err(anyhow::Error::from)?;
+
+    let mut out = Vec::new();
+
+    for row in rows {
+        out.push(row.map_err(anyhow::Error::from)?);
+    }
+
+    Ok(Json(out))
+}
+
+fn require_user(state: &AppState, headers: &HeaderMap) -> Result<AuthUser, AppError> {
+    get_user_from_headers(state, headers)?.ok_or_else(AppError::unauthorized)
+}
+
+fn require_admin(state: &AppState, headers: &HeaderMap) -> Result<AuthUser, AppError> {
+    let user = require_user(state, headers)?;
+
+    if user.role == "admin" {
+        Ok(user)
+    } else {
+        Err(AppError::forbidden())
+    }
+}
+
+fn get_user_from_headers(
+    state: &AppState,
+    headers: &HeaderMap,
+) -> Result<Option<AuthUser>, AppError> {
+    let Some(token) = read_session_cookie(headers) else {
+        return Ok(None);
+    };
+
+    let now = Utc::now().timestamp();
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+
+    let row = conn
+        .query_row(
+            r#"
+            SELECT u.username, u.role, u.is_active, u.blocked_reason
+            FROM sessions s
+            JOIN users u ON u.id = s.user_id
+            WHERE s.token = ?1 AND s.expires_at > ?2
+            "#,
+            params![token, now],
+            |r| {
+                Ok(AuthUser {
+                    username: r.get(0)?,
+                    role: r.get(1)?,
+                    is_active: r.get::<_, i64>(2)? != 0,
+                    blocked_reason: r.get(3)?,
+                })
+            },
+        )
+        .optional()
+        .map_err(anyhow::Error::from)?;
+
+    if let Some(user) = row {
+        if user.is_active {
+            Ok(Some(user))
+        } else {
+            Ok(None)
+        }
+    } else {
+        Ok(None)
+    }
+}
+
+fn read_session_cookie(headers: &HeaderMap) -> Option<String> {
+    let cookie = headers.get(header::COOKIE)?.to_str().ok()?;
+
+    for part in cookie.split(';') {
+        let trimmed = part.trim();
+
+        if let Some(value) = trimmed.strip_prefix(&format!("{}=", COOKIE_NAME)) {
+            if !value.trim().is_empty() {
+                return Some(value.trim().to_string());
+            }
+        }
+    }
+
+    None
+}
+
+async fn periodic_indexer(state: AppState) {
+    loop {
+        match run_indexer(&state).await {
+            Ok(summary) => info!("Indexación periódica: {:?}", summary),
+            Err(e) => error!("Error en indexación periódica: {e:#}"),
+        }
+
+        tokio::time::sleep(Duration::from_secs(state.config.index_interval_seconds)).await;
+    }
+}
+
+async fn run_indexer(state: &AppState) -> Result<IndexSummary> {
+    let _guard = state.index_lock.lock().await;
+
+    let mut summary = IndexSummary::default();
+    let mut seen_paths = HashSet::new();
+
+    let entries = WalkDir::new(&state.config.docs_dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.file_type().is_file())
+        .filter(|e| is_supported_file(e.path()))
+        .collect::<Vec<_>>();
+
+    for entry in entries {
+        summary.scanned_files += 1;
+
+        let path = entry.path().to_path_buf();
+        let rel = relative_source(&state.config.docs_dir, &path);
+
+        seen_paths.insert(rel.clone());
+
+        match index_one_file(state, &path, &rel).await {
+            Ok(IndexFileOutcome::Indexed(chunks)) => {
+                summary.indexed_files += 1;
+                summary.chunks_indexed += chunks;
+            }
+            Ok(IndexFileOutcome::Skipped) => {
+                summary.skipped_files += 1;
+            }
+            Err(e) => {
+                let msg = format!("{}: {e:#}", rel);
+                warn!("{msg}");
+                summary.errors.push(msg);
+            }
+        }
+    }
+
+    let known = list_manifest_paths(&state.config)?;
+
+    for old_path in known {
+        if !seen_paths.contains(&old_path) {
+            delete_points_by_source(&state.http, &state.config, &old_path).await?;
+            remove_manifest_document(&state.config, &old_path)?;
+            summary.deleted_files += 1;
+        }
+    }
+
+    Ok(summary)
+}
+
+enum IndexFileOutcome {
+    Indexed(usize),
+    Skipped,
+}
+
+async fn index_one_file(
+    state: &AppState,
+    path: &Path,
+    rel_source: &str,
+) -> Result<IndexFileOutcome> {
+    let bytes = fs::read(path).with_context(|| format!("No se pudo leer {}", path.display()))?;
+    let hash = file_hash_with_pipeline(&bytes);
+    let modified = file_modified_epoch(path)?;
+
+    if manifest_has_same_hash(&state.config, rel_source, &hash)? {
+        return Ok(IndexFileOutcome::Skipped);
+    }
+
+    let text = extract_text(path, &bytes)?;
+    let chunks = chunk_text(&text, CHUNK_WORDS, CHUNK_OVERLAP_WORDS);
+
+    delete_points_by_source(&state.http, &state.config, rel_source).await?;
+
+    let mut total = 0usize;
+
+    for (batch_start, batch) in chunks.chunks(EMBED_BATCH_SIZE).enumerate() {
+        let passages: Vec<String> = batch
+            .iter()
+            .map(|c| format!("passage: {}", c))
+            .collect();
+
+        let vectors = {
+            let mut embedder = state
+                .embedder
+                .lock()
+                .map_err(|_| anyhow!("No se pudo bloquear el modelo de embeddings"))?;
+
+            embedder.embed(passages, None)?
+        };
+
+        let mut points = Vec::new();
+
+        for (i, vector) in vectors.into_iter().enumerate() {
+            let chunk_index = batch_start * EMBED_BATCH_SIZE + i;
+
+            let id = Uuid::new_v5(
+                &Uuid::NAMESPACE_URL,
+                format!("{}:{}:{}", rel_source, hash, chunk_index).as_bytes(),
+            );
+
+            points.push(json!({
+                "id": id.to_string(),
+                "vector": vector,
+                "payload": {
+                    "source": rel_source,
+                    "chunk_index": chunk_index,
+                    "text": batch[i],
+                    "hash": hash,
+                    "indexed_at": Utc::now().to_rfc3339()
+                }
+            }));
+        }
+
+        total += points.len();
+
+        upsert_points(&state.http, &state.config, points).await?;
+        tokio::time::sleep(Duration::from_millis(200)).await;
+    }
+
+    upsert_manifest_document(&state.config, rel_source, &hash, modified, total)?;
+
+    Ok(IndexFileOutcome::Indexed(total))
+}
+
+fn extract_text(path: &Path, bytes: &[u8]) -> Result<String> {
+    let ext = path
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("")
+        .to_lowercase();
+
+    match ext.as_str() {
+        "txt" | "md" => Ok(decode_text(bytes)),
+        "pdf" => extract_pdf_text(path),
+        _ => Err(anyhow!("Formato no soportado: {}", ext)),
+    }
+}
+
+fn extract_pdf_text(path: &Path) -> Result<String> {
+    let output = Command::new("pdftotext")
+        .arg("-layout")
+        .arg(path)
+        .arg("-")
+        .output()
+        .with_context(|| "No se pudo ejecutar pdftotext. Verifique poppler-utils en el contenedor.")?;
+
+    if !output.status.success() {
+        return Err(anyhow!("pdftotext falló para {}", path.display()));
+    }
+
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
+fn decode_text(bytes: &[u8]) -> String {
+    match String::from_utf8(bytes.to_vec()) {
+        Ok(s) => s,
+        Err(_) => {
+            let (cow, _, _) = WINDOWS_1252.decode(bytes);
+            cow.to_string()
+        }
+    }
+}
+
+fn chunk_text(text: &str, chunk_words: usize, overlap_words: usize) -> Vec<String> {
+    let words: Vec<&str> = text.split_whitespace().collect();
+
+    if words.is_empty() {
+        return vec![];
+    }
+
+    if words.len() <= chunk_words {
+        return vec![words.join(" ")];
+    }
+
+    let mut chunks = Vec::new();
+    let mut start = 0usize;
+
+    while start < words.len() {
+        let end = (start + chunk_words).min(words.len());
+        let chunk = words[start..end].join(" ");
+
+        if chunk.trim().len() > 40 {
+            chunks.push(chunk);
+        }
+
+        if end == words.len() {
+            break;
+        }
+
+        start = end.saturating_sub(overlap_words);
+    }
+
+    chunks
+}
+
+async fn semantic_search(
+    state: &AppState,
+    question: &str,
+    top_k: usize,
+) -> Result<Vec<SearchFragment>> {
+    let embedding = {
+        let mut embedder = state
+            .embedder
+            .lock()
+            .map_err(|_| anyhow!("No se pudo bloquear el modelo de embeddings"))?;
+
+        let mut vectors = embedder.embed(vec![format!("query: {}", question)], None)?;
+
+        vectors
+            .pop()
+            .ok_or_else(|| anyhow!("No se generó embedding para la pregunta"))?
+    };
+
+    let url = format!(
+        "{}/collections/{}/points/search",
+        state.config.qdrant_url, state.config.collection
+    );
+
+    let body = json!({
+        "vector": embedding,
+        "limit": top_k,
+        "with_payload": true
+    });
+
+    let value: Value = state
+        .http
+        .post(url)
+        .json(&body)
+        .send()
+        .await?
+        .error_for_status()?
+        .json()
+        .await?;
+
+    let result = value
+        .get("result")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+
+    let mut fragments = Vec::new();
+
+    for item in result {
+        let score = item.get("score").and_then(|v| v.as_f64()).unwrap_or(0.0) as f32;
+        let payload = item.get("payload").cloned().unwrap_or(Value::Null);
+
+        let source = payload
+            .get("source")
+            .and_then(|v| v.as_str())
+            .unwrap_or("sin_fuente")
+            .to_string();
+
+        let chunk_index = payload
+            .get("chunk_index")
+            .and_then(|v| v.as_u64())
+            .unwrap_or(0) as usize;
+
+        let text = payload
+            .get("text")
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
+
+        fragments.push(SearchFragment {
+            score,
+            source,
+            chunk_index,
+            text,
+        });
+    }
+
+    Ok(fragments)
+}
+
+fn filter_fragments_by_sources(
+    fragments: &[SearchFragment],
+    selected_sources: Option<&[String]>,
+) -> Vec<SearchFragment> {
+    let Some(selected_sources) = selected_sources else {
+        return fragments.to_vec();
+    };
+
+    if selected_sources.is_empty() {
+        return Vec::new();
+    }
+
+    let selected: HashSet<&str> = selected_sources.iter().map(|s| s.as_str()).collect();
+
+    fragments
+        .iter()
+        .filter(|f| selected.contains(f.source.as_str()))
+        .cloned()
+        .collect()
+}
+
+fn merge_fragments_as_single_context(fragments: &[SearchFragment]) -> Vec<SearchFragment> {
+    if fragments.len() <= 1 {
+        return fragments.to_vec();
+    }
+
+    let mut ordered = fragments.to_vec();
+    ordered.sort_by(|a, b| {
+        a.source
+            .cmp(&b.source)
+            .then_with(|| a.chunk_index.cmp(&b.chunk_index))
+    });
+
+    let mut merged_sources = Vec::new();
+    let mut seen_sources = HashSet::new();
+    let mut merged_text = String::new();
+
+    for fragment in &ordered {
+        if seen_sources.insert(fragment.source.clone()) {
+            merged_sources.push(fragment.source.clone());
+        }
+
+        if !merged_text.is_empty() {
+            merged_text.push_str("\n\n");
+        }
+
+        merged_text.push_str(&format!(
+            "[Fuente: {} | fragmento {}]\n{}",
+            fragment.source,
+            fragment.chunk_index + 1,
+            fragment.text.trim()
+        ));
+    }
+
+    let best_score = ordered
+        .iter()
+        .map(|f| f.score)
+        .fold(f32::MIN, f32::max);
+
+    vec![SearchFragment {
+        score: best_score,
+        source: merged_sources.join(" + "),
+        chunk_index: 0,
+        text: merged_text,
+    }]
+}
+
+async fn call_openrouter(
+    state: &AppState,
+    question: &str,
+    fragments: &[SearchFragment],
+    max_chars_per_fragment: usize,
+    max_tokens: u32,
+) -> Result<String> {
+    let api_key = state
+        .config
+        .openrouter_api_key
+        .as_ref()
+        .ok_or_else(|| anyhow!("OPENROUTER_API_KEY no está configurada"))?;
+
+    if fragments.is_empty() {
+        return Ok(
+            "No se encontró información suficiente en los documentos cargados para responder con fundamento."
+                .to_string(),
+        );
+    }
+
+    let mut context = String::new();
+    for (i, f) in fragments.iter().enumerate() {
+        context.push_str(&format!(
+            "[Evidencia {} | fuente: {}] {}\n",
+            i + 1,
+            f.source,
+            limit_chars(&f.text, max_chars_per_fragment)
+        ));
+    }
+
+    let _system_prompt = r#"Eres un asistente experto en análisis documental que responde en español.
+
+Produce una respuesta BREVE, precisa y directa con esta estructura:
+
+## Respuesta
+Contesta la pregunta en 1-3 frases, sin rodeos.
+
+## Análisis Detallado
+Desglosa cada pieza de evidencia relevante. Explica qué dice, qué implica y cómo se relaciona con la pregunta. No omitas detalles importantes.
+
+## Conclusión
+Resume las implicaciones prácticas y responde directamente a la pregunta.
+
+Reglas:
+- Responde ÚNICAMENTE con base en la evidencia proporcionada.
+- Si la evidencia no alcanza para algún punto, dilo explícitamente.
+- Sé exhaustivo: es preferible extenderse que omitir información.
+- Usa formato Markdown para estructurar (## títulos, **negritas**, - listas)."#;
+
+    let system_prompt = r#"Eres un asistente experto en analisis documental que responde en espanol.
+
+Produce una respuesta breve, precisa y directa con esta estructura:
+
+## Respuesta
+Contesta la pregunta en 1-3 frases, sin rodeos.
+
+## Sustento
+Incluye solo 2-3 puntos cortos con la evidencia mas relevante.
+
+Reglas:
+- Responde unicamente con base en la evidencia proporcionada.
+- Si la evidencia no alcanza para identificar algo con certeza, dilo explicitamente.
+- Prioriza precision sobre extension.
+- Evita repeticiones, relleno y conclusiones obvias.
+- Usa Markdown simple."#;
+
+    let user_prompt = format!(
+        "Pregunta del usuario:\n{}\n\nEvidencia:\n{}\n\nGenera una respuesta breve y precisa:",
+        question, context
+    );
+
+    let body = json!({
+        "model": state.config.openrouter_model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.1,
+        "max_tokens": max_tokens.max(500),
+        "top_p": 0.8,
+        "frequency_penalty": 0.3,
+    });
+
+    let value: Value = state
+        .http
+        .post("https://openrouter.ai/api/v1/chat/completions")
+        .bearer_auth(api_key)
+        .header("Content-Type", "application/json")
+        .header("X-OpenRouter-Title", "Rust Local RAG")
+        .json(&body)
+        .timeout(Duration::from_secs(30))
+        .send()
+        .await?
+        .error_for_status()?
+        .json()
+        .await?;
+
+    Ok(value
+        .get("choices")
+        .and_then(|v| v.as_array())
+        .and_then(|arr| arr.first())
+        .and_then(|choice| choice.get("message"))
+        .and_then(|msg| msg.get("content"))
+        .and_then(|v| v.as_str())
+        .unwrap_or("No se recibió contenido.")
+        .to_string())
+}
+
+async fn call_openrouter_stream(
+    state: &AppState,
+    question: &str,
+    fragments: &[SearchFragment],
+    max_chars_per_fragment: usize,
+    max_tokens: u32,
+) -> Result<mpsc::Receiver<Result<String>>> {
+    let api_key = state
+        .config
+        .openrouter_api_key
+        .as_ref()
+        .ok_or_else(|| anyhow!("OPENROUTER_API_KEY no está configurada"))?;
+
+    if fragments.is_empty() {
+        let (tx, rx) = mpsc::channel(1);
+        let _ = tx
+            .send(Ok(
+                "No se encontró información suficiente en los documentos cargados.".to_string(),
+            ))
+            .await;
+        return Ok(rx);
+    }
+
+    let mut context = String::new();
+    for (i, f) in fragments.iter().enumerate() {
+        context.push_str(&format!(
+            "[Evidencia {} | fuente: {}] {}\n",
+            i + 1,
+            f.source,
+            limit_chars(&f.text, max_chars_per_fragment)
+        ));
+    }
+
+    let _system_prompt =
+        r#"Eres un asistente experto en análisis documental que responde en español.
+
+Produce siempre un INFORME EXTENDIDO estructurado de la siguiente manera:
+
+## Resumen Ejecutivo
+Sintetiza en 2-3 frases el hallazgo principal.
+
+## Análisis Detallado
+Desglosa cada pieza de evidencia relevante. Explica qué dice, qué implica y cómo se relaciona con la pregunta. No omitas detalles importantes.
+
+## Conclusión
+Resume las implicaciones prácticas y responde directamente a la pregunta.
+
+Reglas:
+- Responde ÚNICAMENTE con base en la evidencia proporcionada.
+- Si la evidencia no alcanza para algún punto, dilo explícitamente.
+- Sé exhaustivo: es preferible extenderse que omitir información.
+- Usa formato Markdown para estructurar (## títulos, **negritas**, - listas)."#;
+
+    let system_prompt = r#"Eres un asistente experto en analisis documental que responde en espanol.
+
+Produce una respuesta breve, precisa y directa con esta estructura:
+
+## Respuesta
+Contesta la pregunta en 1-3 frases, sin rodeos.
+
+## Sustento
+Incluye solo 2-3 puntos cortos con la evidencia mas relevante.
+
+Reglas:
+- Responde unicamente con base en la evidencia proporcionada.
+- Si la evidencia no alcanza para identificar algo con certeza, dilo explicitamente.
+- Prioriza precision sobre extension.
+- Evita repeticiones, relleno y conclusiones obvias.
+- Usa Markdown simple."#;
+
+    let user_prompt = format!(
+        "Pregunta del usuario:\n{}\n\nEvidencia:\n{}\n\nGenera una respuesta breve y precisa:",
+        question, context
+    );
+
+    let body = json!({
+        "model": state.config.openrouter_model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.1,
+        "max_tokens": max_tokens.max(500),
+        "top_p": 0.8,
+        "frequency_penalty": 0.3,
+        "stream": true
+    });
+
+    let response = state
+        .http
+        .post("https://openrouter.ai/api/v1/chat/completions")
+        .bearer_auth(api_key)
+        .header("Content-Type", "application/json")
+        .header("X-OpenRouter-Title", "Rust Local RAG")
+        .json(&body)
+        .timeout(Duration::from_secs(120))
+        .send()
+        .await?
+        .error_for_status()?;
+
+    let (tx, rx) = mpsc::channel::<Result<String>>(64);
+
+    tokio::spawn(async move {
+        let mut stream = response.bytes_stream();
+        let mut buffer = String::new();
+
+        while let Some(chunk_result) = stream.next().await {
+            match chunk_result {
+                Ok(bytes) => {
+                    buffer.push_str(&String::from_utf8_lossy(&bytes));
+
+                    while let Some(pos) = buffer.find('\n') {
+                        let line = buffer[..pos].trim().to_string();
+                        buffer = buffer[pos + 1..].to_string();
+
+                        if let Some(data) = line.strip_prefix("data: ") {
+                            if data == "[DONE]" {
+                                return;
+                            }
+                            if let Ok(parsed) = serde_json::from_str::<Value>(data) {
+                                if let Some(content) =
+                                    parsed["choices"][0]["delta"]["content"].as_str()
+                                {
+                                    if !content.is_empty() {
+                                        let _ = tx.send(Ok(content.to_string())).await;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
+                    let _ = tx.send(Err(anyhow::Error::from(e))).await;
+                    return;
+                }
+            }
+        }
+    });
+
+    Ok(rx)
+}
+
+fn build_local_response(question: &str, fragments: &[SearchFragment]) -> String {
+    if fragments.is_empty() {
+        return "No se encontró información suficiente en los documentos cargados para responder con fundamento. Puede subir más documentos o ejecutar la reindexación desde la administración.".to_string();
+    }
+
+    let mut response = String::new();
+
+    response.push_str("## Respuesta\n");
+    response.push_str("Se encontró información relacionada con la consulta en las fuentes recuperadas.\n\n");
+
+    response.push_str(&format!("## Consulta\n{}\n\n", question));
+
+    response.push_str("## Sustento\n");
+
+    for f in fragments.iter().take(2) {
+        response.push_str(&format!("- {}\n", clean_excerpt(&f.text, 180)));
+    }
+
+    let mut sources: Vec<String> = fragments.iter().map(|f| f.source.clone()).collect();
+    sources.sort();
+    sources.dedup();
+
+    response.push_str("\n**Fuente consultada:** ");
+    response.push_str(&sources.join(", "));
+
+    response
+}
+
+async fn wait_for_qdrant(http: &Client, qdrant_url: &str) -> Result<()> {
+    let url = format!("{}/", qdrant_url.trim_end_matches('/'));
+
+    for _ in 0..60 {
+        if let Ok(resp) = http.get(&url).send().await {
+            if resp.status().is_success() {
+                return Ok(());
+            }
+        }
+
+        tokio::time::sleep(Duration::from_secs(1)).await;
+    }
+
+    Err(anyhow!("Qdrant no respondió en {}", qdrant_url))
+}
+
+async fn ensure_qdrant_collection(http: &Client, config: &Config) -> Result<()> {
+    let get_url = format!("{}/collections/{}", config.qdrant_url, config.collection);
+
+    let exists = http
+        .get(&get_url)
+        .send()
+        .await
+        .map(|r| r.status().is_success())
+        .unwrap_or(false);
+
+    if exists {
+        return Ok(());
+    }
+
+    let create_url = format!("{}/collections/{}", config.qdrant_url, config.collection);
+
+    let body = json!({
+        "vectors": {
+            "size": VECTOR_SIZE,
+            "distance": "Cosine"
+        }
+    });
+
+    http.put(create_url)
+        .json(&body)
+        .send()
+        .await?
+        .error_for_status()?;
+
+    Ok(())
+}
+
+async fn upsert_points(http: &Client, config: &Config, points: Vec<Value>) -> Result<()> {
+    if points.is_empty() {
+        return Ok(());
+    }
+
+    let url = format!(
+        "{}/collections/{}/points?wait=true",
+        config.qdrant_url, config.collection
+    );
+
+    let mut last_err = None;
+    for attempt in 0u32..3 {
+        if attempt > 0 {
+            tokio::time::sleep(Duration::from_millis(500 * (attempt as u64 + 1))).await;
+        }
+        match http
+            .put(&url)
+            .json(&json!({ "points": &points }))
+            .send()
+            .await
+        {
+            Ok(resp) => match resp.error_for_status() {
+                Ok(_) => return Ok(()),
+                Err(e) => last_err = Some(anyhow::Error::from(e)),
+            },
+            Err(e) => last_err = Some(anyhow::Error::from(e)),
+        }
+    }
+
+    Err(last_err.unwrap_or_else(|| anyhow!("upsert_points: falló sin error específico")))
+}
+
+async fn delete_points_by_source(http: &Client, config: &Config, source: &str) -> Result<()> {
+    let url = format!(
+        "{}/collections/{}/points/delete?wait=true",
+        config.qdrant_url, config.collection
+    );
+
+    let body = json!({
+        "filter": {
+            "must": [
+                {
+                    "key": "source",
+                    "match": {
+                        "value": source
+                    }
+                }
+            ]
+        }
+    });
+
+    http.post(url)
+        .json(&body)
+        .send()
+        .await?
+        .error_for_status()?;
+
+    Ok(())
+}
+
+fn init_db(config: &Config) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+
+    conn.execute_batch(
+        r#"
+        CREATE TABLE IF NOT EXISTS documents (
+            path TEXT PRIMARY KEY,
+            hash TEXT NOT NULL,
+            modified INTEGER NOT NULL,
+            indexed_at TEXT NOT NULL,
+            chunk_count INTEGER NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS faq_cache (
+            question_hash TEXT PRIMARY KEY,
+            question TEXT NOT NULL,
+            response TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            role TEXT NOT NULL CHECK(role IN ('admin','user')),
+            is_active INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL,
+            blocked_reason TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS sessions (
+            token TEXT PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            created_at INTEGER NOT NULL,
+            expires_at INTEGER NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+        "#,
+    )?;
+
+    Ok(())
+}
+
+fn ensure_default_admin(config: &Config) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+
+    let count: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM users WHERE role = 'admin'",
+        [],
+        |r| r.get(0),
+    )?;
+
+    if count == 0 {
+        conn.execute(
+            "INSERT INTO users(username, password_hash, role, is_active, created_at) VALUES (?1, ?2, 'admin', 1, ?3)",
+            params![
+                config.admin_username.to_lowercase(),
+                hash_password(config, &config.admin_password),
+                Utc::now().to_rfc3339()
+            ],
+        )?;
+
+        info!("Administrador inicial creado: {}", config.admin_username);
+    }
+
+    Ok(())
+}
+
+fn hash_password(config: &Config, password: &str) -> String {
+    let mut hasher = Sha256::new();
+
+    hasher.update(config.auth_salt.as_bytes());
+    hasher.update(b":");
+    hasher.update(password.as_bytes());
+
+    hex::encode(hasher.finalize())
+}
+
+fn check_faq_cache(config: &Config, question: &str) -> Option<String> {
+    let conn = Connection::open(config.db_path()).ok()?;
+    let normalized = normalize_question(question);
+    let hash = faq_question_hash(&normalized);
+
+    let mut stmt = conn
+        .prepare("SELECT response FROM faq_cache WHERE question_hash = ?1")
+        .ok()?;
+
+    stmt.query_row(params![hash], |row| row.get(0)).ok()
+}
+
+fn store_faq_cache(config: &Config, question: &str, response: &str) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+    let normalized = normalize_question(question);
+    let hash = faq_question_hash(&normalized);
+
+    conn.execute(
+        "INSERT OR REPLACE INTO faq_cache(question_hash, question, response, created_at) VALUES (?1, ?2, ?3, ?4)",
+        params![hash, normalized, response, Utc::now().to_rfc3339()],
+    )?;
+
+    Ok(())
+}
+
+fn faq_question_hash(question: &str) -> String {
+    let mut hasher = Sha256::new();
+
+    hasher.update(question.as_bytes());
+
+    hex::encode(hasher.finalize())[..16].to_string()
+}
+
+fn normalize_question(question: &str) -> String {
+    question
+        .trim()
+        .to_lowercase()
+        .chars()
+        .filter(|c| c.is_alphanumeric() || c.is_whitespace())
+        .collect()
+}
+
+fn manifest_has_same_hash(config: &Config, path: &str, hash: &str) -> Result<bool> {
+    let conn = Connection::open(config.db_path())?;
+
+    let existing: Option<String> = conn
+        .query_row(
+            "SELECT hash FROM documents WHERE path = ?1",
+            params![path],
+            |row| row.get(0),
+        )
+        .optional()?;
+
+    Ok(existing.map(|h| h == hash).unwrap_or(false))
+}
+
+fn upsert_manifest_document(
+    config: &Config,
+    path: &str,
+    hash: &str,
+    modified: i64,
+    chunk_count: usize,
+) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+
+    conn.execute(
+        r#"
+        INSERT INTO documents(path, hash, modified, indexed_at, chunk_count)
+        VALUES (?1, ?2, ?3, ?4, ?5)
+        ON CONFLICT(path) DO UPDATE SET
+            hash = excluded.hash,
+            modified = excluded.modified,
+            indexed_at = excluded.indexed_at,
+            chunk_count = excluded.chunk_count
+        "#,
+        params![
+            path,
+            hash,
+            modified,
+            Utc::now().to_rfc3339(),
+            chunk_count as i64
+        ],
+    )?;
+
+    Ok(())
+}
+
+fn remove_manifest_document(config: &Config, path: &str) -> Result<()> {
+    let conn = Connection::open(config.db_path())?;
+    conn.execute("DELETE FROM documents WHERE path = ?1", params![path])?;
+    Ok(())
+}
+
+fn list_manifest_paths(config: &Config) -> Result<Vec<String>> {
+    let conn = Connection::open(config.db_path())?;
+    let mut stmt = conn.prepare("SELECT path FROM documents")?;
+    let rows = stmt.query_map([], |row| row.get::<_, String>(0))?;
+
+    let mut paths = Vec::new();
+
+    for row in rows {
+        paths.push(row?);
+    }
+
+    Ok(paths)
+}
+
+fn count_manifest_documents(config: &Config) -> Result<i64> {
+    let conn = Connection::open(config.db_path())?;
+    let count = conn.query_row("SELECT COUNT(*) FROM documents", [], |row| row.get(0))?;
+    Ok(count)
+}
+
+fn file_hash_with_pipeline(bytes: &[u8]) -> String {
+    let mut hasher = Sha256::new();
+
+    hasher.update(INDEX_PIPELINE_VERSION.as_bytes());
+    hasher.update(bytes);
+
+    hex::encode(hasher.finalize())
+}
+
+fn file_modified_epoch(path: &Path) -> Result<i64> {
+    let modified = fs::metadata(path)?.modified().unwrap_or(SystemTime::now());
+
+    Ok(modified
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs() as i64)
+}
+
+fn relative_source(root: &Path, path: &Path) -> String {
+    path.strip_prefix(root)
+        .unwrap_or(path)
+        .to_string_lossy()
+        .replace('\\', "/")
+}
+
+fn is_supported_file(path: &Path) -> bool {
+    path.extension()
+        .and_then(|e| e.to_str())
+        .map(|ext| matches!(ext.to_lowercase().as_str(), "txt" | "md" | "pdf"))
+        .unwrap_or(false)
+}
+
+fn is_supported_filename(name: &str) -> bool {
+    Path::new(name)
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(|ext| matches!(ext.to_lowercase().as_str(), "txt" | "md" | "pdf"))
+        .unwrap_or(false)
+}
+
+fn sanitize_filename(name: &str) -> String {
+    let base = Path::new(name)
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or("documento.txt");
+
+    base.chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '.' || c == '-' || c == '_' {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect()
+}
+
+fn limit_chars(text: &str, max_chars: usize) -> String {
+    let mut out = String::new();
+
+    for (i, ch) in text.chars().enumerate() {
+        if i >= max_chars {
+            out.push_str("...");
+            break;
+        }
+
+        out.push(ch);
+    }
+
+    out
+}
+
+fn clean_excerpt(text: &str, max_chars: usize) -> String {
+    limit_chars(&text.split_whitespace().collect::<Vec<_>>().join(" "), max_chars)
+}
+
+const INDEX_HTML: &str = r#"
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG Institucional</title>
+<style>
+:root{
+  --bg:#f4f6fb;
+  --card:#fff;
+  --text:#172033;
+  --muted:#667085;
+  --border:#e4e7ec;
+  --primary:#1d4ed8;
+  --primary2:#1e40af;
+  --good:#047857;
+  --warn:#b45309;
+  --bad:#b42318;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  background:linear-gradient(180deg,#eef4ff,#f8fafc 260px);
+  color:var(--text);
+}
+
+.wrap{
+  max-width:1180px;
+  margin:0 auto;
+  padding:24px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.brand h1{
+  font-size:25px;
+  margin:0;
+}
+
+.brand p{
+  margin:5px 0 0;
+  color:var(--muted);
+}
+
+.card{
+  background:rgba(255,255,255,.94);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 14px 40px rgba(16,24,40,.08);
+  margin-bottom:16px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:16px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+input,textarea,select{
+  width:100%;
+  border:1px solid #d0d5dd;
+  border-radius:14px;
+  padding:12px 13px;
+  font-size:15px;
+  background:white;
+}
+
+textarea{
+  min-height:130px;
+  resize:vertical;
+}
+
+label{
+  font-weight:700;
+  font-size:13px;
+  display:block;
+  margin:10px 0 6px;
+  color:#344054;
+}
+
+button{
+  border:0;
+  border-radius:14px;
+  padding:12px 15px;
+  font-weight:800;
+  cursor:pointer;
+  background:var(--primary);
+  color:white;
+  box-shadow:0 6px 18px rgba(29,78,216,.18);
+}
+
+button:hover{
+  background:var(--primary2);
+}
+
+button.secondary{
+  background:#475467;
+}
+
+button.good{
+  background:var(--good);
+}
+
+button.warn{
+  background:var(--warn);
+}
+
+button.bad{
+  background:var(--bad);
+}
+
+button.light{
+  background:#eff4ff;
+  color:#1d4ed8;
+  box-shadow:none;
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.tab{
+  background:#fff;
+  color:#344054;
+  border:1px solid var(--border);
+  box-shadow:none;
+}
+
+.tab.active{
+  background:#1d4ed8;
+  color:white;
+  border-color:#1d4ed8;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  padding:5px 10px;
+  background:#eef4ff;
+  color:#1d4ed8;
+  font-size:12px;
+  font-weight:800;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.answer{
+  line-height:1.65;
+  font-size:16px;
+}
+
+.answer h1,.answer h2,.answer h3{
+  margin:14px 0 8px;
+}
+
+.answer p{
+  margin:9px 0;
+}
+
+.answer ul{
+  padding-left:22px;
+}
+
+.answer blockquote{
+  border-left:4px solid #bfdbfe;
+  margin:10px 0;
+  padding:7px 12px;
+  background:#eff6ff;
+  border-radius:10px;
+}
+
+.answer code{
+  background:#eef2ff;
+  border-radius:6px;
+  padding:2px 5px;
+}
+
+.bubble{
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.source{
+  border-left:4px solid #d0d5dd;
+  background:#f9fafb;
+  padding:10px 12px;
+  border-radius:12px;
+  margin:10px 0;
+}
+
+.source .meta{
+  font-size:12px;
+  color:#667085;
+  margin-bottom:5px;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.table th,.table td{
+  border-bottom:1px solid var(--border);
+  padding:10px;
+  text-align:left;
+  font-size:14px;
+}
+
+.table th{
+  color:#475467;
+  background:#f9fafb;
+}
+
+.login{
+  max-width:430px;
+  margin:8vh auto;
+}
+
+.notice{
+  padding:10px 12px;
+  border-radius:14px;
+  background:#fef3c7;
+  color:#92400e;
+  margin-top:10px;
+}
+
+.ok{
+  background:#d1fae5;
+  color:#065f46;
+}
+
+.err{
+  background:#fee4e2;
+  color:#991b1b;
+}
+
+@media(max-width:850px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .top{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginView" class="login card hidden">
+    <div class="brand">
+      <h1>Ingreso al RAG institucional</h1>
+      <p>Ingrese con el usuario creado por el administrador.</p>
+    </div>
+
+    <label>Usuario</label>
+    <input id="loginUser" autocomplete="username" value="admin">
+
+    <label>Contraseña</label>
+    <input id="loginPass" type="password" autocomplete="current-password" placeholder="Contraseña">
+
+    <div class="row" style="margin-top:14px">
+      <button onclick="login()">Ingresar</button>
+    </div>
+
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="appView" class="hidden">
+    <div class="top">
+      <div class="brand">
+        <h1>RAG Institucional</h1>
+        <p>Consulta documentación local con respuestas naturales y administración de usuarios.</p>
+      </div>
+
+      <div class="row">
+        <span class="pill" id="userPill">Usuario</span>
+        <button class="secondary" onclick="logout()">Salir</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('chat')" id="tabChat">Chat</button>
+      <button class="tab hidden" onclick="showTab('admin')" id="tabAdmin">Administración</button>
+    </div>
+
+    <section id="chatTab">
+      <div class="grid">
+        <div class="card">
+          <label>Pregunta — Informe Extendido</label>
+
+          <textarea id="question" placeholder="Ejemplo: Analiza los resultados de laboratorio del documento cargado"></textarea>
+
+          <div class="row" style="margin-top:10px">
+            <label class="row" style="margin:0;font-weight:600">
+              <input id="useLlm" type="checkbox" checked style="width:auto"> usar OpenRouter
+            </label>
+
+            <button onclick="ask()" id="askBtn">Preguntar</button>
+          </div>
+
+          <div id="answerBox" class="bubble hidden">
+            <div class="row">
+              <span id="answerBadge" class="pill">Informe extendido</span>
+            </div>
+
+            <div id="answer" class="answer"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0">Estado</h3>
+          <div id="statusBox" class="muted">Cargando...</div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="light" onclick="status()">Actualizar estado</button>
+          </div>
+
+          <details style="margin-top:14px">
+            <summary class="muted">Ver respaldo documental consultado</summary>
+            <div class="row" style="margin:10px 0">
+              <label class="row" style="margin:0;font-weight:600">
+                <input id="restrictToMarked" type="checkbox" style="width:auto"> usar solo fuentes marcadas
+              </label>
+              <button class="light" type="button" onclick="askWithMarkedSources()">Responder con marcadas</button>
+            </div>
+            <div id="sources"></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="adminTab" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <h3 style="margin-top:0">Subir información</h3>
+          <p class="muted">Permite subir .pdf, .txt o .md sin bajar el servicio. Luego se indexa en segundo plano.</p>
+
+          <input id="fileInput" type="file" multiple accept=".pdf,.txt,.md">
+
+          <div class="row" style="margin-top:12px">
+            <button class="good" onclick="uploadFiles()">Subir documentos</button>
+            <button class="secondary" onclick="reindex()">Reindexar ahora</button>
+          </div>
+
+          <div id="uploadMsg"></div>
+
+          <h3>Documentos indexados</h3>
+          <div id="docsBox" class="muted">Sin cargar.</div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0">Usuarios</h3>
+
+          <label>Nuevo usuario</label>
+          <input id="newUser" placeholder="usuario">
+
+          <label>Contraseña</label>
+          <input id="newPass" type="password" placeholder="contraseña">
+
+          <label>Rol</label>
+          <select id="newRole">
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+
+          <div class="row" style="margin-top:12px">
+            <button onclick="createUser()">Crear usuario</button>
+          </div>
+
+          <div id="userMsg"></div>
+          <div id="usersBox" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+let currentUser = null;
+let lastFragments = [];
+
+async function api(url, opts = {}) {
+  const r = await fetch(url, { credentials: 'same-origin', ...opts });
+
+  let data = null;
+
+  try {
+    data = await r.json();
+  } catch {}
+
+  if (!r.ok) {
+    throw new Error(data?.error || 'Error de servidor');
+  }
+
+  return data;
+}
+
+function msg(id, text, cls = 'notice') {
+  document.getElementById(id).innerHTML = `<div class="${cls}">${escapeHtml(text)}</div>`;
+}
+
+async function boot() {
+  try {
+    currentUser = await api('/api/me');
+    showApp();
+  } catch {
+    document.getElementById('loginView').classList.remove('hidden');
+  }
+}
+
+function showApp() {
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('appView').classList.remove('hidden');
+
+  document.getElementById('userPill').textContent = `${currentUser.username} · ${currentUser.role}`;
+
+  if (currentUser.role === 'admin') {
+    document.getElementById('tabAdmin').classList.remove('hidden');
+    loadUsers();
+    loadDocs();
+  }
+
+  status();
+}
+
+async function login() {
+  try {
+    const username = document.getElementById('loginUser').value;
+    const password = document.getElementById('loginPass').value;
+
+    const data = await api('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+
+    currentUser = data.user;
+    showApp();
+  } catch (e) {
+    msg('loginMsg', e.message, 'notice err');
+  }
+}
+
+async function logout() {
+  await api('/api/logout', { method: 'POST' }).catch(() => {});
+  location.reload();
+}
+
+function showTab(t) {
+  document.getElementById('chatTab').classList.toggle('hidden', t !== 'chat');
+  document.getElementById('adminTab').classList.toggle('hidden', t !== 'admin');
+
+  document.getElementById('tabChat').classList.toggle('active', t === 'chat');
+  document.getElementById('tabAdmin').classList.toggle('active', t === 'admin');
+}
+
+async function status() {
+  try {
+    const s = await api('/api/status');
+
+    document.getElementById('statusBox').innerHTML =
+      `<p><b>Documentos:</b> ${s.manifest_documents}</p>
+       <p><b>OpenRouter:</b> ${s.openrouter_enabled ? 'habilitado' : 'modo privado'}</p>
+       <p><b>Modelo:</b> ${escapeHtml(s.openrouter_model)}</p>
+       <p><b>Actualización:</b> cada ${s.index_interval_seconds}s</p>`;
+  } catch (e) {
+    document.getElementById('statusBox').textContent = e.message;
+  }
+}
+
+async function ask() {
+  await runQuestion(false);
+}
+
+async function askWithMarkedSources() {
+  await runQuestion(true);
+}
+
+function getMarkedSources() {
+  return Array.from(document.querySelectorAll('.source-select:checked'))
+    .map(input => input.value)
+    .filter(Boolean);
+}
+
+async function runQuestion(forceMarked) {
+  const question = document.getElementById('question').value.trim();
+
+  if (!question) {
+    return;
+  }
+
+  const askBtn = document.getElementById('askBtn');
+  askBtn.disabled = true;
+  askBtn.textContent = 'Consultando...';
+
+  document.getElementById('answerBox').classList.remove('hidden');
+  document.getElementById('answer').innerHTML = '<p>🔍 Buscando en documentos...</p>';
+  document.getElementById('sources').innerHTML = '';
+
+  try {
+    const use_llm = document.getElementById('useLlm').checked;
+    const top_k = 6;
+    const restrictToMarked = document.getElementById('restrictToMarked').checked || forceMarked;
+    const selected_sources = restrictToMarked ? getMarkedSources() : [];
+
+    if (restrictToMarked && selected_sources.length === 0) {
+      document.getElementById('answer').innerHTML =
+        '<div class="notice err">Debe marcar al menos una fuente.</div>';
+      return;
+    }
+
+    const response = await fetch('/api/chat-stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, use_llm, top_k, selected_sources }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    let fragments = [];
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      const events = buffer.split('\n\n');
+      buffer = events.pop() || '';
+
+      for (const rawEvent of events) {
+        const dataLines = rawEvent
+          .split('\n')
+          .filter(line => line.startsWith('data: '))
+          .map(line => line.slice(6));
+
+        if (!dataLines.length) continue;
+
+        let evt = null;
+
+        try {
+          evt = JSON.parse(dataLines.join('\n'));
+        } catch {
+          continue;
+        }
+
+        if (evt.kind === 'fragments') {
+          fragments = Array.isArray(evt.payload) ? evt.payload : [];
+          lastFragments = fragments;
+          document.getElementById('answer').innerHTML = '<p>⏳ Procesando con IA...</p>';
+        } else if (evt.kind === 'cached') {
+          const ans = String(evt.payload || '');
+          document.getElementById('answer').innerHTML = renderMarkdown(ans);
+          document.getElementById('answerBadge').textContent = '📋 Informe (caché)';
+        } else if (evt.kind === 'local') {
+          const ans = String(evt.payload || '');
+          document.getElementById('answer').innerHTML = renderMarkdown(ans);
+          document.getElementById('answerBadge').textContent = '📄 Respuesta local';
+        } else if (evt.kind === 'answer') {
+          const ans = String(evt.payload || '');
+          document.getElementById('answer').innerHTML = renderMarkdown(ans);
+          document.getElementById('answerBadge').textContent = '✨ Informe extendido';
+        } else if (evt.kind === 'error') {
+          document.getElementById('answer').innerHTML =
+            `<div class="notice err">${escapeHtml(String(evt.payload || 'Error desconocido'))}</div>`;
+        }
+      }
+    }
+
+    if (fragments.length > 0) {
+      renderSources(fragments);
+    }
+  } catch (e) {
+    document.getElementById('answer').innerHTML =
+      `<div class="notice err">${escapeHtml(e.message)}</div>`;
+  } finally {
+    askBtn.disabled = false;
+    askBtn.textContent = 'Preguntar';
+  }
+}
+
+function renderSources(frags) {
+  if (!frags.length) {
+    lastFragments = [];
+    document.getElementById('sources').innerHTML =
+      '<p class="muted">No se encontraron respaldos.</p>';
+    return;
+  }
+
+  lastFragments = frags;
+  document.getElementById('sources').innerHTML = frags
+    .map((f, i) =>
+      `<div class="source">
+        <label class="meta" style="display:flex;align-items:center;gap:8px">
+          <input class="source-select" type="checkbox" value="${escapeHtml(f.source)}" checked style="width:auto">
+          <span>Documento ${i + 1}: ${escapeHtml(shortSource(f.source))}</span>
+        </label>
+        <div>${escapeHtml(f.text).slice(0, 650)}...</div>
+      </div>`
+    )
+    .join('');
+}
+
+async function uploadFiles() {
+  const input = document.getElementById('fileInput');
+
+  if (!input.files.length) {
+    msg('uploadMsg', 'Seleccione al menos un archivo.');
+    return;
+  }
+
+  const fd = new FormData();
+
+  for (const f of input.files) {
+    fd.append('files', f);
+  }
+
+  try {
+    const r = await api('/api/admin/upload', {
+      method: 'POST',
+      body: fd,
+    });
+
+    msg('uploadMsg', r.message, 'notice ok');
+    input.value = '';
+
+    setTimeout(() => {
+      loadDocs();
+      status();
+    }, 1500);
+  } catch (e) {
+    msg('uploadMsg', e.message, 'notice err');
+  }
+}
+
+async function reindex() {
+  try {
+    msg('uploadMsg', 'Reindexando, espere...');
+
+    const r = await api('/api/admin/reindex', {
+      method: 'POST',
+    });
+
+    msg(
+      'uploadMsg',
+      `Listo. Archivos indexados: ${r.indexed_files}, omitidos: ${r.skipped_files}, chunks: ${r.chunks_indexed}`,
+      'notice ok'
+    );
+
+    loadDocs();
+    status();
+  } catch (e) {
+    msg('uploadMsg', e.message, 'notice err');
+  }
+}
+
+async function loadDocs() {
+  try {
+    const docs = await api('/api/admin/documents');
+
+    document.getElementById('docsBox').innerHTML = docs.length
+      ? `<table class="table">
+          <tr>
+            <th>Documento</th>
+            <th>Chunks</th>
+            <th>Indexado</th>
+          </tr>
+          ${docs
+            .map(
+              d =>
+                `<tr>
+                  <td>${escapeHtml(d.path)}</td>
+                  <td>${d.chunk_count}</td>
+                  <td>${escapeHtml(d.indexed_at)}</td>
+                </tr>`
+            )
+            .join('')}
+        </table>`
+      : 'No hay documentos indexados.';
+  } catch (e) {
+    document.getElementById('docsBox').textContent = e.message;
+  }
+}
+
+async function loadUsers() {
+  try {
+    const users = await api('/api/admin/users');
+
+    document.getElementById('usersBox').innerHTML =
+      `<table class="table">
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+        ${users
+          .map(
+            u =>
+              `<tr>
+                <td>${escapeHtml(u.username)}</td>
+                <td>${u.role}</td>
+                <td>${u.is_active ? 'Activo' : 'Bloqueado'}</td>
+                <td>${
+                  u.username === currentUser.username
+                    ? ''
+                    : `<button class="${u.is_active ? 'bad' : 'good'}" onclick="toggleUser('${escapeJs(
+                        u.username
+                      )}', ${u.is_active})">${u.is_active ? 'Bloquear' : 'Activar'}</button>`
+                }</td>
+              </tr>`
+          )
+          .join('')}
+      </table>`;
+  } catch (e) {
+    document.getElementById('usersBox').textContent = e.message;
+  }
+}
+
+async function createUser() {
+  try {
+    const username = document.getElementById('newUser').value;
+    const password = document.getElementById('newPass').value;
+    const role = document.getElementById('newRole').value;
+
+    await api('/api/admin/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, role }),
+    });
+
+    msg('userMsg', 'Usuario creado.', 'notice ok');
+
+    document.getElementById('newUser').value = '';
+    document.getElementById('newPass').value = '';
+
+    loadUsers();
+  } catch (e) {
+    msg('userMsg', e.message, 'notice err');
+  }
+}
+
+async function toggleUser(username, isActive) {
+  try {
+    let reason = null;
+
+    if (isActive) {
+      reason =
+        prompt('Motivo del bloqueo:', 'Bloqueado por falta de pago.') ||
+        'Bloqueado por administración.';
+    }
+
+    await api('/api/admin/users/block', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, blocked: isActive, reason }),
+    });
+
+    loadUsers();
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+function renderMarkdown(md) {
+  let s = escapeHtml(md || '');
+
+  s = s
+    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*)$/gm, '<h1>$1</h1>');
+
+  s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>');
+
+  let lines = s.split('\n');
+  let out = '';
+  let inList = false;
+
+  for (let line of lines) {
+    if (/^\s*[-•] /.test(line)) {
+      if (!inList) {
+        out += '<ul>';
+        inList = true;
+      }
+
+      out += '<li>' + line.replace(/^\s*[-•] /, '') + '</li>';
+    } else {
+      if (inList) {
+        out += '</ul>';
+        inList = false;
+      }
+
+      if (line.trim() === '') {
+        out += '';
+      } else if (line.startsWith('<h') || line.startsWith('<blockquote')) {
+        out += line;
+      } else {
+        out += '<p>' + line + '</p>';
+      }
+    }
+  }
+
+  if (inList) {
+    out += '</ul>';
+  }
+
+  return out;
+}
+
+function shortSource(s) {
+  return String(s || '').split('/').pop();
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>'"]/g, s => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;',
+  }[s]));
+}
+
+function escapeJs(str) {
+  return String(str ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+boot();
+</script>
+</body>
+</html>
+"#;
+</file>
+
+</files>
