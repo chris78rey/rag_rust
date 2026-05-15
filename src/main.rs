@@ -59,6 +59,7 @@ struct Config {
     admin_password: String,
     auth_salt: String,
     session_hours: i64,
+    answer_max_words: usize,
 }
 
 impl Config {
@@ -81,6 +82,7 @@ impl Config {
         let admin_password = env::var("ADMIN_PASSWORD").unwrap_or_else(|_| "admin123".to_string());
         let auth_salt = env::var("AUTH_SALT").unwrap_or_else(|_| "cambie-esta-sal-local".to_string());
         let session_hours = env::var("SESSION_HOURS").ok().and_then(|v| v.parse().ok()).unwrap_or(24);
+        let answer_max_words = env::var("ANSWER_MAX_WORDS").ok().and_then(|v| v.parse().ok()).unwrap_or(100);
 
         Self {
             docs_dir: PathBuf::from(docs_dir),
@@ -96,6 +98,7 @@ impl Config {
             admin_password,
             auth_salt,
             session_hours,
+            answer_max_words,
         }
     }
 
@@ -307,7 +310,9 @@ async fn main() -> Result<()> {
         .route("/api/admin/upload", post(upload_documents))
         .route("/api/admin/users", get(list_users).post(create_user))
         .route("/api/admin/users/block", post(block_user))
-        .route("/api/admin/documents", get(list_documents))
+        .route("/api/admin/documents", get(list_documents).delete(delete_document))
+        .route("/api/admin/text", post(paste_text))
+        .route("/api/admin/cache/clear", post(clear_cache))
         .layer(DefaultBodyLimit::max(100 * 1024 * 1024))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())
@@ -505,7 +510,9 @@ async fn chat(
             .await
             .map_err(anyhow::Error::from)?;
 
-        let _ = store_faq_cache(&state.config, question, &answer);
+        if !is_empty_answer(&answer) {
+            let _ = store_faq_cache(&state.config, question, &answer);
+        }
 
         Ok(Json(ChatResponse {
                 answer,
@@ -611,7 +618,9 @@ async fn chat_stream(
                             }
                         }
                     }
-                    let _ = store_faq_cache(&state.config, &question, &full);
+                    if !is_empty_answer(&full) {
+                        let _ = store_faq_cache(&state.config, &question, &full);
+                    }
                 }
                 Err(e) => {
                     send_event(&tx, "error", e.to_string()).await;
@@ -852,6 +861,91 @@ async fn list_documents(
     }
 
     Ok(Json(out))
+}
+
+#[derive(Debug, Deserialize)]
+struct PasteTextRequest {
+    filename: String,
+    content: String,
+}
+
+async fn paste_text(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<PasteTextRequest>,
+) -> Result<Json<Value>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let filename = sanitize_filename(&req.filename);
+    if filename.is_empty() || !filename.ends_with(".txt") {
+        return Err(AppError::new(StatusCode::BAD_REQUEST, "El nombre debe terminar en .txt"));
+    }
+    if req.content.trim().is_empty() {
+        return Err(AppError::new(StatusCode::BAD_REQUEST, "El contenido no puede estar vacío."));
+    }
+
+    let dest = state.config.docs_dir.join(&filename);
+    fs::write(&dest, req.content.as_bytes()).map_err(|e| {
+        AppError::new(StatusCode::INTERNAL_SERVER_ERROR, format!("No se pudo guardar: {e}"))
+    })?;
+
+    let state_clone = state.clone();
+    tokio::spawn(async move {
+        match run_indexer(&state_clone).await {
+            Ok(s) => info!("Indexación post-texto: {:?}", s),
+            Err(e) => error!("Error indexando texto: {e:#}"),
+        }
+    });
+
+    info!("Texto pegado como documento: {filename}");
+    Ok(Json(json!({"ok": true, "file": filename})))
+}
+
+#[derive(Debug, Deserialize)]
+struct DeleteDocumentRequest {
+    path: String,
+}
+
+async fn delete_document(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(req): Json<DeleteDocumentRequest>,
+) -> Result<Json<Value>, AppError> {
+    require_admin(&state, &headers)?;
+
+    let path = req.path.trim().to_string();
+    if path.is_empty() || path.contains("..") || path.starts_with('/') || path.starts_with('\\') {
+        return Err(AppError::new(StatusCode::BAD_REQUEST, "Ruta inválida."));
+    }
+
+    let file_path = state.config.docs_dir.join(&path);
+    if !file_path.starts_with(&state.config.docs_dir) {
+        return Err(AppError::new(StatusCode::BAD_REQUEST, "La ruta no pertenece a la carpeta de documentos."));
+    }
+
+    delete_chunks_by_source(&state.config, &path).map_err(anyhow::Error::from)?;
+    remove_manifest_document(&state.config, &path).map_err(anyhow::Error::from)?;
+
+    if file_path.exists() {
+        fs::remove_file(&file_path).map_err(|e| {
+            AppError::new(StatusCode::INTERNAL_SERVER_ERROR, format!("No se pudo eliminar: {e}"))
+        })?;
+    }
+
+    info!("Documento eliminado: {path}");
+    Ok(Json(json!({"ok": true, "deleted": path})))
+}
+
+async fn clear_cache(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<Value>, AppError> {
+    require_admin(&state, &headers)?;
+    let conn = Connection::open(state.config.db_path()).map_err(anyhow::Error::from)?;
+    let count = conn.query_row("SELECT COUNT(*) FROM faq_cache", [], |r| r.get::<_, i64>(0)).unwrap_or(0);
+    conn.execute("DELETE FROM faq_cache", []).map_err(anyhow::Error::from)?;
+    info!("Caché limpiado: {count} entradas");
+    Ok(Json(json!({"ok": true, "cleared": count})))
 }
 
 fn require_user(state: &AppState, headers: &HeaderMap) -> Result<AuthUser, AppError> {
@@ -1705,11 +1799,15 @@ Reglas:
 - Sé exhaustivo: es preferible extenderse que omitir información.
 - Usa formato Markdown para estructurar (## títulos, **negritas**, - listas)."#;
 
-    let system_prompt = r#"Eres un asistente experto en analisis documental que responde en espanol.
+    let max_words = state.config.answer_max_words;
+    let system_prompt = format!(
+        r#"Eres un asistente experto en analisis documental que responde en espanol.
 
 Tu trabajo es redactar un INFORME EXTENDIDO usando unicamente la evidencia entregada.
 No inventes datos, autores, leyes, diagnosticos, articulos, cifras ni conclusiones que no esten sustentadas.
 Si la evidencia es parcial, indicalo sin bloquear la respuesta completa.
+
+LIMITE MAXIMO: {} palabras. Se estricto con este limite.
 
 Estructura obligatoria:
 
@@ -1732,11 +1830,13 @@ Indica que puntos no pueden afirmarse con seguridad si no aparecen en las fuente
 Cierra con una respuesta clara, practica y util.
 
 Reglas:
-- Usa Markdown.
+- Usa HTML para tablas: <table><tr><th>Col</th></tr><tr><td>Valor</td></tr></table>.
 - Mantiene tono profesional e institucional.
 - No digas que eres IA.
 - No uses frases de relleno.
-- Prioriza claridad, detalle y utilidad."#;
+- Prioriza claridad, detalle y utilidad."#,
+        max_words
+    );
 
     let user_prompt = format!(
         "Pregunta del usuario:\n{}\n\nPaquete de evidencia recuperado por Rust:\n{}\n\nRedacta el informe extendido con base estricta en esa evidencia:",
@@ -1833,11 +1933,15 @@ Reglas:
 - Sé exhaustivo: es preferible extenderse que omitir información.
 - Usa formato Markdown para estructurar (## títulos, **negritas**, - listas)."#;
 
-    let system_prompt = r#"Eres un asistente experto en analisis documental que responde en espanol.
+    let max_words = state.config.answer_max_words;
+    let system_prompt = format!(
+        r#"Eres un asistente experto en analisis documental que responde en espanol.
 
 Tu trabajo es redactar un INFORME EXTENDIDO usando unicamente la evidencia entregada.
 No inventes datos, autores, leyes, diagnosticos, articulos, cifras ni conclusiones que no esten sustentadas.
 Si la evidencia es parcial, indicalo sin bloquear la respuesta completa.
+
+LIMITE MAXIMO: {} palabras. Se estricto con este limite.
 
 Estructura obligatoria:
 
@@ -1860,11 +1964,13 @@ Indica que puntos no pueden afirmarse con seguridad si no aparecen en las fuente
 Cierra con una respuesta clara, practica y util.
 
 Reglas:
-- Usa Markdown.
+- Usa HTML para tablas: <table><tr><th>Col</th></tr><tr><td>Valor</td></tr></table>.
 - Mantiene tono profesional e institucional.
 - No digas que eres IA.
 - No uses frases de relleno.
-- Prioriza claridad, detalle y utilidad."#;
+- Prioriza claridad, detalle y utilidad."#,
+        max_words
+    );
 
     let user_prompt = format!(
         "Pregunta del usuario:\n{}\n\nPaquete de evidencia recuperado por Rust:\n{}\n\nRedacta el informe extendido con base estricta en esa evidencia:",
@@ -2096,6 +2202,14 @@ fn faq_question_hash(question: &str) -> String {
     hasher.update(question.as_bytes());
 
     hex::encode(hasher.finalize())[..16].to_string()
+}
+
+fn is_empty_answer(response: &str) -> bool {
+    let r = response.trim().to_lowercase();
+    r.is_empty()
+        || r.contains("no se encontró información")
+        || r.contains("no se encontro informacion")
+        || r.contains("sin informacion")
 }
 
 fn normalize_question(question: &str) -> String {
@@ -2465,6 +2579,30 @@ button:disabled{
   padding:2px 5px;
 }
 
+.answer table{
+  border-collapse:collapse;
+  width:100%;
+  margin:12px 0;
+  font-size:14px;
+}
+
+.answer th{
+  background:#f1f5f9;
+  border:1px solid #d0d5dd;
+  padding:8px 10px;
+  text-align:left;
+  font-weight:700;
+}
+
+.answer td{
+  border:1px solid #e4e7ec;
+  padding:8px 10px;
+}
+
+.answer tr:nth-child(even) td{
+  background:#f8fafc;
+}
+
 .bubble{
   background:#f8fafc;
   border:1px solid var(--border);
@@ -2596,6 +2734,7 @@ button:disabled{
           <div id="answerBox" class="bubble hidden">
             <div class="row">
               <span id="answerBadge" class="pill">Informe extendido</span>
+              <button class="light" onclick="copyAnswer()" style="padding:4px 12px;font-size:12px">📋 Copiar</button>
             </div>
 
             <div id="answer" class="answer"></div>
@@ -2635,6 +2774,15 @@ button:disabled{
           <div class="row" style="margin-top:12px">
             <button class="good" onclick="uploadFiles()">Subir documentos</button>
             <button class="secondary" onclick="reindex()">Reindexar ahora</button>
+          </div>
+
+          <h3 style="margin-top:18px">Pegar texto como documento</h3>
+          <label>Nombre del documento</label>
+          <input id="pasteName" placeholder="ej: normativa_actualizada.txt">
+          <label>Contenido</label>
+          <textarea id="pasteContent" placeholder="Pegue aquí el texto..." style="min-height:120px"></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="good" onclick="pasteText()">Pegar como documento</button>
           </div>
 
           <div id="uploadMsg"></div>
@@ -2903,6 +3051,42 @@ function renderSources(frags) {
     .join('');
 }
 
+async function pasteText() {
+  const name = document.getElementById('pasteName').value.trim();
+  const content = document.getElementById('pasteContent').value.trim();
+  if (!name) { msg('uploadMsg', 'Escriba un nombre para el documento.'); return; }
+  if (!content) { msg('uploadMsg', 'Pegue el contenido.'); return; }
+  try {
+    const r = await api('/api/admin/text', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: name.endsWith('.txt') ? name : name + '.txt', content }),
+    });
+    msg('uploadMsg', 'Texto guardado como «' + r.file + '». Indexando...', 'notice ok');
+    document.getElementById('pasteName').value = '';
+    document.getElementById('pasteContent').value = '';
+    setTimeout(() => { loadDocs(); status(); }, 1500);
+  } catch (e) { msg('uploadMsg', e.message, 'notice err'); }
+}
+
+function copyAnswer() {
+  const el = document.getElementById('answer');
+  if (!el || !el.textContent.trim()) return;
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    const btn = event.target;
+    btn.textContent = '✅ Copiado!';
+    setTimeout(() => { btn.textContent = '📋 Copiar'; }, 1500);
+  }).catch(() => alert('No se pudo copiar'));
+}
+
+async function deleteDoc(path) {
+  if (!confirm('¿Eliminar «' + path + '»?\nSe borrará el archivo y su índice.')) return;
+  try {
+    await api('/api/admin/documents', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path }) });
+    loadDocs(); status();
+  } catch (e) { alert(e.message); }
+}
+
 async function uploadFiles() {
   const input = document.getElementById('fileInput');
 
@@ -2974,6 +3158,7 @@ async function loadDocs() {
                   <td>${escapeHtml(d.path)}</td>
                   <td>${d.chunk_count}</td>
                   <td>${escapeHtml(d.indexed_at)}</td>
+                  <td><button class="bad" onclick="deleteDoc('${escapeJs(d.path)}')" style="padding:4px 10px;font-size:12px">🗑 Borrar</button></td>
                 </tr>`
             )
             .join('')}
@@ -3065,7 +3250,19 @@ async function toggleUser(username, isActive) {
 }
 
 function renderMarkdown(md) {
-  let s = escapeHtml(md || '');
+  // Proteger tablas HTML antes de escapar
+  let tables = [];
+  let s = (md || '').replace(/<table>[\s\S]*?<\/table>/gi, function(m) {
+    tables.push(m);
+    return '\x00TABLE' + (tables.length - 1) + '\x00';
+  });
+
+  s = escapeHtml(s);
+
+  // Reinsertar tablas sin escapar
+  s = s.replace(/\x00TABLE(\d+)\x00/g, function(_, i) {
+    return '<div style="overflow-x:auto;margin:12px 0">' + tables[parseInt(i)] + '</div>';
+  });
 
   s = s
     .replace(/^### (.*)$/gm, '<h3>$1</h3>')

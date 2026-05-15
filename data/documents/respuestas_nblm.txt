@@ -1,0 +1,10 @@
+2. La Nueva Pregunta: El Dilema de las Vías de Abordaje
+Vamos a sacarlo de la anestesia y llevarlo a las reglas de honorarios quirúrgicos, un área donde los auditores novatos siempre se equivocan al aplicar descuentos.
+La Pregunta: "Imagina que estás auditando la factura de un cirujano. En un mismo tiempo de quirófano y bajo la misma anestesia, el cirujano le realiza al paciente una apendicectomía (incisión en el abdomen) y luego le extrae un tumor benigno profundo en el muslo (incisión en la pierna).
+El analista de facturación de tu hospital le ha aplicado a la cuenta la 'Regla de Procedimientos Múltiples', pagándole al cirujano el 100% por la apendicectomía y descontándole el 50% de sus honorarios por el tumor del muslo.
+Como Director de Auditoría, ¿apruebas ese descuento del 50% al segundo procedimiento argumentando que se hicieron bajo la misma anestesia y el mismo día, o le pagas el 100% de ambos?"
+La Respuesta (Para ti): El descuento es un error gravísimo y debes pagarle ambos al 100%.
+La trampa: La regla general del tarifario dicta que en procedimientos múltiples "se paga el 100% del honorario por el procedimiento de más alto valor y el 50% por cada procedimiento adicional"
+. Muchos auditores aplican esto a ciegas.
+La resolución: El manual establece una regla inquebrantable para proteger al médico: si el profesional realiza más de un procedimiento clínico o quirúrgico en el mismo paciente, pero con "distinta vía de abordaje" (incisiones en zonas anatómicas diferentes, como abdomen y pierna), se exceptúa la regla del descuento y "procederá a cobrar los procedimientos con el 100% del honorario"
+. ¡Aplicar el 50% en este caso es robarle al cirujano!
