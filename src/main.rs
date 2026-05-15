@@ -2734,7 +2734,7 @@ button:disabled{
           <div id="answerBox" class="bubble hidden">
             <div class="row">
               <span id="answerBadge" class="pill">Informe extendido</span>
-              <button class="light" onclick="copyAnswer()" style="padding:4px 12px;font-size:12px">📋 Copiar</button>
+              <button class="light" onclick="copyAnswer(this)" style="padding:4px 12px;font-size:12px">📋 Copiar</button>
             </div>
 
             <div id="answer" class="answer"></div>
@@ -3069,11 +3069,10 @@ async function pasteText() {
   } catch (e) { msg('uploadMsg', e.message, 'notice err'); }
 }
 
-function copyAnswer() {
+function copyAnswer(btn) {
   const el = document.getElementById('answer');
   if (!el || !el.textContent.trim()) return;
   navigator.clipboard.writeText(el.innerText).then(() => {
-    const btn = event.target;
     btn.textContent = '✅ Copiado!';
     setTimeout(() => { btn.textContent = '📋 Copiar'; }, 1500);
   }).catch(() => alert('No se pudo copiar'));
