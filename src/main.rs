@@ -1828,10 +1828,6 @@ async fn chat_stream(
             discover_related_evidence(&question, &search_result.all_fragments)
         } else { Vec::new() };
 
-        let merged_for_preview = merged_fragments_for_context(&filtered_fragments);
-        let context_preview = merge_fragments_as_single_context(&merged_for_preview);
-        send_event(&tx, "pre_llm", build_local_response(&question, &context_preview)).await;
-
         let sufficiency = verify_evidence_sufficiency(&search_plan, &search_result.session);
         send_event(&tx, "sufficiency", &json!({
             "is_sufficient": sufficiency.is_sufficient,
@@ -1845,17 +1841,6 @@ async fn chat_stream(
             &question, &filtered_fragments, &search_result.session.evidence_ledger,
             &search_result.extracted_facts, &related, 900,
         );
-
-        let draft_answer = build_local_response(&question, &merged_for_preview);
-        send_event(&tx, "draft_answer", &draft_answer).await;
-        send_event(&tx, "critique", &json!({
-            "ok": !search_result.extracted_facts.is_empty() || !filtered_fragments.is_empty(),
-            "message": if search_result.extracted_facts.is_empty() {
-                "La respuesta provisional no tiene hechos exactos; debe validarse con el LLM."
-            } else {
-                "La respuesta provisional tiene evidencia recuperada y puede validarse con el LLM."
-            }
-        })).await;
 
         let answer = match call_openrouter_final_answer(&state, &prompt_template, &evidence_summary, state.config.openrouter_max_tokens).await {
             Ok(a) => a,
@@ -4555,6 +4540,7 @@ fn filter_fragments_by_sources(
         .collect()
 }
 
+#[allow(dead_code)]
 fn merge_fragments_as_single_context(fragments: &[SearchFragment]) -> Vec<SearchFragment> {
     if fragments.len() <= 1 {
         return fragments.to_vec();
@@ -6407,27 +6393,6 @@ button:disabled{
             <span id="expansionText"></span>
           </div>
 
-          <div id="preLlmBox" class="bubble hidden" style="margin-top:12px">
-            <div class="row">
-              <span class="pill">Pre-LLM</span>
-            </div>
-            <div id="preLlm" class="answer"></div>
-          </div>
-
-          <div id="draftBox" class="bubble hidden" style="margin-top:12px">
-            <div class="row">
-              <span class="pill">Borrador</span>
-            </div>
-            <div id="draftAnswer" class="answer"></div>
-          </div>
-
-          <div id="critiqueBox" class="bubble hidden" style="margin-top:12px">
-            <div class="row">
-              <span class="pill">Crítica</span>
-            </div>
-            <div id="critiqueText" class="answer"></div>
-          </div>
-
           <div id="answerBox" class="bubble hidden">
             <div class="row">
               <span id="answerBadge" class="pill">Informe extendido</span>
@@ -6605,9 +6570,6 @@ async function runQuestion(forceMarked) {
   askBtn.textContent = 'Consultando...';
 
   document.getElementById('answerBox').classList.remove('hidden');
-  document.getElementById('preLlmBox').classList.add('hidden');
-  document.getElementById('draftBox').classList.add('hidden');
-  document.getElementById('critiqueBox').classList.add('hidden');
   document.getElementById('answer').innerHTML = '<p>🔍 Buscando en documentos...</p>';
   document.getElementById('sources').innerHTML = '';
   document.getElementById('expansionInfo').classList.add('hidden');
@@ -6665,16 +6627,6 @@ async function runQuestion(forceMarked) {
           fragments = Array.isArray(evt.payload) ? evt.payload : [];
           lastFragments = fragments;
           document.getElementById('answer').innerHTML = '<p>⏳ Procesando con IA...</p>';
-        } else if (evt.kind === 'pre_llm') {
-          document.getElementById('preLlmBox').classList.remove('hidden');
-          document.getElementById('preLlm').innerHTML = renderMarkdown(String(evt.payload || ''));
-        } else if (evt.kind === 'draft_answer') {
-          document.getElementById('draftBox').classList.remove('hidden');
-          document.getElementById('draftAnswer').innerHTML = renderMarkdown(String(evt.payload || ''));
-        } else if (evt.kind === 'critique') {
-          document.getElementById('critiqueBox').classList.remove('hidden');
-          const msg = evt.payload?.message || 'Sin crítica disponible.';
-          document.getElementById('critiqueText').innerHTML = renderMarkdown(String(msg));
         } else if (evt.kind === 'cached') {
           document.getElementById('answer').innerHTML = renderMarkdown(String(evt.payload || ''));
           document.getElementById('answerBadge').textContent = '📋 Informe (caché)';
